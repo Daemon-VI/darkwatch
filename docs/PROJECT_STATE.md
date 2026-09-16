@@ -16,7 +16,7 @@ it protects, with their names, emails, phones, domains and usernames. It then:
 5. Runs daily from Task Scheduler.
 
 It lives at `C:\Users\Rishi\darkwatch`: Python 3.12, `uv`, with the code in `src/darkwatch/`. It is
-a git repo on `main` with no remote. The live watchlist holds Rithik's own identifiers and is
+a git repo on `main`, pushed to the private GitHub repo `Daemon-VI/darkwatch`. The live watchlist holds Rithik's own identifiers and is
 gitignored.
 
 ## Verified on 2026-09-16

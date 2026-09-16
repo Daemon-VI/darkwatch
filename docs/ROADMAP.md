@@ -14,8 +14,10 @@ none of them is needed for it to work.
 3. **Optional webhook or email.** Set `DARKWATCH_WEBHOOK_URL` or `DARKWATCH_SMTP_*` in `.env`,
    then run `darkwatch notify-test`. Both code paths are tested against local servers, but
    neither has sent to a real Discord channel or mailbox.
-4. **Push to GitHub if wanted.** The repo is local only. A public repo is fine: the watchlist,
-   `.env`, `data/` and `reports/` are gitignored.
+4. **Make the GitHub repo public if wanted.** `Daemon-VI/darkwatch` is private. Nothing personal
+   is tracked (the watchlist, `.env`, `data/` and `reports/` are gitignored), so
+   `gh repo edit Daemon-VI/darkwatch --visibility public --accept-visibility-change-consequences`
+   is safe.
 
 ## Next
 
