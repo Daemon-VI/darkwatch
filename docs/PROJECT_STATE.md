@@ -1,19 +1,38 @@
 # Darkwatch — project state
 
-Last updated: 2026-09-16 (v0.2.0, complete end to end on this laptop).
+Last updated: 2026-09-16 (v0.2.1: person-profile source, desktop shortcuts, complete `.env.example`).
 
 ## What it is
 
 Darkwatch is a dark web exposure monitor. It reads a YAML watchlist of the people and companies
 it protects, with their names, emails, phones, domains and usernames. It then:
 
-1. Searches ransomware leak-site trackers, breach and paste data, Ahmia's onion index, and the
-   onion pages behind it. Onion pages are fetched over a `tor.exe` that Darkwatch starts and
-   stops itself.
+1. Searches ransomware leak-site trackers, breach and paste data, public-profile sites for each
+   username, Ahmia's onion index, and the onion pages behind it. Onion pages are fetched over a
+   `tor.exe` that Darkwatch starts and stops itself.
 2. Scores each hit and de-duplicates it in SQLite.
 3. Writes a Markdown, HTML and JSON report with an action list for every hit.
 4. Alerts through a Windows notification and an ntfy phone push. Webhook and email are optional.
-5. Runs daily from Task Scheduler.
+5. Runs daily from Task Scheduler, or on demand from two Desktop shortcuts.
+
+## v0.2.1 additions (2026-09-16)
+
+- **`sites` source — an individual's public footprint.** For each `username` term it checks which
+  sites carry a profile (GitHub, Dev.to, Keybase, Replit, Gravatar, Chess.com, Hacker News), then
+  reads each found profile for the person's *other* watched identifiers. Verified live: for the
+  real watchlist it found `Daemon-VI` and `rithikkrishnat` on GitHub, and pulled the real name
+  "Rithik Krishna T" off the Daemon-VI profile page (2 of 14 checks matched, 5 LOW hits, 7.8 s).
+  Profile hits score LOW and carry no signals; the page's own chrome never manufactures one.
+  The default site list was chosen by testing live which sites give a clean 404 for a free handle:
+  GitLab, npm and Reddit answer 403 to non-browser requests, and PyPI and Telegram soft-404, so
+  they are excluded. Extra sites go in `person_sites` as `{username}` URL templates.
+- **Desktop shortcuts.** `darkwatch shortcut` creates "Darkwatch - Scan now" and
+  "Darkwatch - Report" on the Desktop, verified by reading each `.lnk` back: they point at the
+  project's `python.exe` / `pythonw.exe` with `run --open` and `open`.
+- **`.env.example` completed.** It is generated from `config.ENV_EXAMPLE` (the same text `init`
+  writes) and now lists every variable, including `DARKWATCH_NTFY_TOPIC`,
+  `DARKWATCH_SMTP_STARTTLS` and `DARKWATCH_TOR_EXE`.
+- 141 tests pass; lint clean.
 
 It lives at `C:\Users\Rishi\darkwatch`: Python 3.12, `uv`, with the code in `src/darkwatch/`. It is
 a git repo on `main`, pushed to the public GitHub repo `Daemon-VI/darkwatch` (public since 2026-09-16). The live watchlist holds Rithik's own identifiers and is

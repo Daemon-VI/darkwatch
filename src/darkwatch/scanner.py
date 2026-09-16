@@ -128,7 +128,7 @@ def run_scan(
     unknown = [n for n in wanted if n not in reg]
     if unknown:
         raise ValueError(f"unknown sources {unknown}; available: {sorted(reg)}")
-    needs_tor = use_tor and any(n in ("ahmia", "seeds") for n in wanted)
+    needs_tor = use_tor and any(n in ("ahmia", "seeds") for n in wanted)  # sites is clearnet
 
     store = Store(s.db_path)
     run_id = store.start_run(wanted)

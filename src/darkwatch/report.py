@@ -68,6 +68,11 @@ ACTIONS_BY_SOURCE: dict[str, list[str]] = {
     "ahmia-index": [
         "Open the page in Tor Browser to confirm the listing still contains the identifier.",
     ],
+    "site": [
+        "A public profile under this handle. Confirm it is really this person.",
+        "Review what it exposes (real name, employer, location, other handles) and tighten it if unwanted.",
+        "Reuse of the same handle links these accounts together; consider distinct handles for sensitive ones.",
+    ],
 }
 
 # Extra actions when the evidence carries a signal.

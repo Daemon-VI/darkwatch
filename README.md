@@ -18,6 +18,7 @@ It stores only the URL, the times, and a short snippet around each match.
 | `leaksites` | nothing | Every post that ransomware gangs have made on their leak sites, as crawled by ransomware.live (the full history since 2013, one bulk file cached for 12 hours) and RansomLook (last 30 days). Claim pages are never fetched. |
 | `xposedornot` | nothing | Breaches and pastes that included each email, with the data classes exposed. The free tier allows 25 lookups per hour. |
 | `hibp` | nothing / `DARKWATCH_HIBP_KEY` | Whether a watched domain's own service was breached (free). With a paid key, per-email breaches and pastes too. |
+| `sites` | nothing | Which public sites carry each watched username (GitHub, Dev.to, Keybase, Replit, Gravatar, Chess.com, Hacker News). A found profile is then read for the person's other identifiers, so a handle leads to the real name or email printed on that page. |
 | `ahmia` | Tor for pages | Ahmia's onion search index. With Tor verified, the search itself goes over Tor to Ahmia's onion service, and never over the clearnet (`ahmia_route`). Every listing is checked locally for the exact term, then matching pages are fetched over Tor as text, plus the top 5 per query. |
 | `seeds` | Tor for onion URLs | Pages you choose, re-read every run, with same-host links followed one level deep. |
 
@@ -69,7 +70,18 @@ uv run darkwatch report --open              # rebuild the report from stored hit
 uv run darkwatch runs                       # history: duration, documents, hits, Tor
 uv run darkwatch scan-text dump.txt --save  # check a file you already hold
 uv run darkwatch notify-test                # synthetic alert through every configured channel
+uv run darkwatch shortcut                   # put "Scan now" and "Report" shortcuts on the Desktop
 ```
+
+## Desktop shortcuts
+
+`darkwatch shortcut` puts two shortcuts on your Desktop, so you never need the command line:
+
+- **Darkwatch - Scan now** runs a scan in a console window and opens the report when it finishes.
+- **Darkwatch - Report** opens the latest report with no console window.
+
+Remove them with `darkwatch shortcut --remove`. They point at the project's own interpreter, so
+nothing has to be on `PATH`.
 
 Reports go to `reports/` as Markdown, HTML and JSON. `latest.*` always holds the newest set,
 and older sets beyond `keep_reports` (60) are deleted. The HTML report follows the system
@@ -113,7 +125,7 @@ A hit's score adds up four parts:
 
 1. **The identifier's weight:** phone 3, email 2, domain 2, name 1, username 1, keyword 1.
 2. **One point per signal group:** credentials, financial, government ID, sale, doxxing, access or ransomware.
-3. **The evidence's weight:** leak site 3, onion page 2, seed page 2, breach 2, paste 2, Ahmia listing 1.
+3. **The evidence's weight:** leak site 3, onion page 2, seed page 2, breach 2, paste 2, Ahmia listing 1, public profile 0.
 4. **Minus one point if the evidence is at least 3 years old.** The hit is then marked `dated`.
 
 | Score | Severity |
@@ -128,6 +140,7 @@ Where signals come from depends on the evidence:
 - **Onion and seed pages:** the page title plus 160 characters on either side of the match.
 - **Leak-site posts:** the whole post.
 - **Breaches:** the data classes the breach exposed, such as "Passwords" or "Dates of birth", rather than the prose describing it.
+- **Public profiles:** none. A profile a person put up is expected, so it scores LOW; the page's own wording never manufactures a breach signal. It rises only if another source finds the same identifier somewhere worse.
 
 Every hit lists its signals, so each score can be explained.
 

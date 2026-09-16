@@ -53,7 +53,7 @@ def invoke(*args):
 
 
 def test_version_and_init(tmp_path):
-    assert "darkwatch 0.2.0" in invoke("version").output
+    assert "darkwatch 0.2.1" in invoke("version").output
     target = tmp_path / "w.yaml"
     r = invoke("init", target)
     assert r.exit_code == 0 and target.exists() and (tmp_path / ".env.example").exists()

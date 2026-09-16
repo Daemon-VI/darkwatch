@@ -100,7 +100,7 @@ class FakeSession:
 # --------------------------------------------------------------------------- shared
 def test_registry_order_and_protocol():
     reg = registry()
-    assert list(reg) == ["leaksites", "xposedornot", "hibp", "ahmia", "seeds"]
+    assert list(reg) == ["leaksites", "xposedornot", "hibp", "sites", "ahmia", "seeds"]
     for src in reg.values():
         assert src.description
         assert isinstance(src.unavailable_reason(Settings()), str)
@@ -558,3 +558,79 @@ def test_empty_onion_results_page_links_to_itself_not_to_results():
     ctx = ctx_for(Settings(delay_seconds=0), clear=FakeSession({}), tor=tor, tor_ok=True)
     assert list(AhmiaSource().discover([Term("+91 98765 43210", "phone", "R")], ctx)) == []
     assert ctx.stats.onion_fetches == 0
+
+
+# --------------------------------------------------------------------------- sites (person profiles)
+def test_site_classify():
+    from darkwatch.sources.sites import Site, classify
+
+    plain = Site("X", "https://x/{username}")
+    assert classify(200, "welcome", plain) == "present"
+    assert classify(404, "not found", plain) == "absent"
+    assert classify(403, "", plain) == "unknown"  # blocked: do not guess
+    assert classify(500, "", plain) == "unknown"
+    hn = Site("HN", "u", missing_status=200, absent_markers=("No such user.",))
+    assert classify(200, "No such user.", hn) == "absent"
+    assert classify(200, "created: 2016 karma: 9", hn) == "present"
+
+
+def test_build_sites_adds_extras():
+    from darkwatch.config import Settings
+    from darkwatch.sources.sites import build_sites
+
+    only_extra = build_sites(Settings(person_site_builtins=False, person_sites=["https://s/{username}"]))
+    assert [x.name for x in only_extra] == ["s"]
+    assert build_sites(Settings(person_site_builtins=False)) == []
+    assert "GitHub" in [x.name for x in build_sites(Settings())]
+
+
+def test_sites_discover_finds_profiles_and_coincident_identifiers(http_server):
+    from darkwatch.config import Settings, Target
+    from darkwatch.sources.sites import SiteSource
+
+    # profile for "jdoe" exists and its page shows the person's real name; "ghost" is 404
+    http_server.add("/u/jdoe", 200, "<title>jdoe</title> jdoe - developer, real name Jane Doe, London")
+    http_server.add("/u/ghost", 404, "not found")
+    http_server.add("/hn/jdoe", 404, "not found")  # user sites detect by status only
+    s = Settings(delay_seconds=0, person_site_builtins=False,
+                 person_sites=[http_server.base + "/u/{username}", http_server.base + "/hn/{username}"])
+    terms = Target(name="Jane Doe", usernames=["jdoe", "ghost"]).terms()
+    ctx = ctx_for(s)
+    docs = list(SiteSource().discover(terms, ctx))
+    assert [d.url for d in docs] == [http_server.base + "/u/jdoe"]  # only the real profile, once
+    assert docs[0].source == "site" and docs[0].signal_text == ""
+    # the matcher then reads that profile: the username AND the person's real name are found on it
+    from darkwatch.matcher import Matcher
+    from darkwatch.storage import Store
+
+    with Store(":memory:") as store:
+        run = store.start_run(["x"])
+        result = RunResult(run_id=run, sources=["x"], tor_ok=False, tor_info={})
+        scan_documents(docs, Matcher(terms), store, run, result)
+    kinds = sorted((h.term, h.term_type, h.severity, tuple(h.signals)) for h in result.new_hits)
+    assert ("Jane Doe", "name", "LOW", ()) in kinds  # real name pulled off the profile page
+    assert ("jdoe", "username", "LOW", ()) in kinds
+    assert all(h.signals == [] for h in result.new_hits)  # profile chrome never manufactures signals
+    assert "1/4 profile checks matched" in ctx.stats.note
+
+
+def test_sites_ignores_page_chrome_signals(http_server):
+    from darkwatch.config import Settings, Target
+    from darkwatch.matcher import Matcher
+    from darkwatch.sources.sites import SiteSource
+
+    # a profile whose boilerplate contains signal words must still score LOW with no signals
+    http_server.add("/u/bob", 200, "bob. Reload to refresh your session. password dump for sale btc")
+    s = Settings(delay_seconds=0, person_site_builtins=False, person_sites=[http_server.base + "/u/{username}"])
+    terms = Target(name="Bob", usernames=["bob"]).terms()
+    docs = list(SiteSource().discover(terms, ctx_for(s)))
+    hits = Matcher(terms).find(docs[0].text, source=docs[0].source, signal_text=docs[0].signal_text)
+    assert all(h.signals == [] and h.severity == "LOW" for h in hits)
+
+
+def test_sites_no_usernames_is_a_noop():
+    from darkwatch.config import Settings, Target
+    from darkwatch.sources.sites import SiteSource
+
+    ctx = ctx_for(Settings(delay_seconds=0))
+    assert list(SiteSource().discover(Target(name="Acme", domains=["acme.com"]).terms(), ctx)) == []

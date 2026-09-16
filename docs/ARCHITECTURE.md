@@ -13,6 +13,7 @@ darkwatch run ─ RunLock ─ scanner.run_scan ───────────
                             │     leaksites   ransomware.live victims.json + RansomLook last/30 (FeedCache)
                             │     xposedornot breach-analytics per email (clearnet)
                             │     hibp        breaches?domain= (free); breachedaccount/pasteaccount (key)
+                            │     sites       each username on GitHub/Dev.to/... (clearnet profiles)
                             │     ahmia       token → search (over Tor: onion service, then ahmia.fi)
                             │                 → local term check → onion pages over Tor
                             │     seeds       operator URLs, same-host links depth 1
@@ -36,17 +37,19 @@ report.write_reports (md/html/json + latest.*, prune; current targets only)
 | `fetch.py` | `fetch_text` reads text content types only, caps bytes, and enforces a per-page deadline with a watchdog. It follows redirects by hand and routes each hop. `decode_body` never raises: it takes the header charset, then `<meta>`, then UTF-8, then cp1252. `html_to_text` extracts text. |
 | `cache.py` | `FeedCache`: conditional GET with ETag and Last-Modified, a max age, atomic writes, and a stale copy on network failure. |
 | `matcher.py` | Per-type regexes, six signal groups, `SOURCE_WEIGHT`, the `dated` penalty, and severity bands. |
-| `sources/__init__.py` | `Document`, `SourceStats`, `SourceContext` (sessions, throttle, the shared onion budget, errors), `terms_present` pre-filter, and `registry()`. |
+| `sources/__init__.py` | `Document` (with `signal_text`, `evidence_date`), `SourceStats`, `SourceContext` (sessions, throttle, the shared onion budget, errors), `terms_present` pre-filter, and `registry()`. |
 | `sources/leaksites.py` | Tracker normalisation, the merge across the two trackers, per-post evidence URLs, and documents that carry whole-post `signal_text`. |
 | `sources/xposedornot.py` | Parses breach analytics into breach and paste documents that use data-class `signal_text`. |
 | `sources/hibp.py` | Domain-breach documents (keyless) and per-account documents (keyed). |
 | `sources/ahmia.py` | `search_routes` (onion service, then ahmia.fi over Tor, or clearnet only without Tor), search-form token, results parser that skips Ahmia's own hosts, `plan_fetches`, bounded parallel onion fetches, and suppression of listings that fetched pages make redundant. |
 | `sources/seeds.py` | Operator seed crawl. |
+| `sources/sites.py` | Person footprint: `DEFAULT_SITES`, `classify` (present/absent/unknown), and profile Documents whose page text feeds the matcher the person's other identifiers. |
 | `scanner.py` | `RunResult`, `scan_documents`, and `run_scan`. A source that crashes is recorded against that source and the run continues. |
 | `storage.py` | SQLite `runs`, `pages` keyed on (url, source), and `hits`. Schema v3 migrations and triage statuses live here. |
 | `report.py` | `actions_for(hit)` keyed by evidence, identifier and signals. Markdown, HTML and JSON renderers, `latest.*`, and pruning. |
 | `notify.py` | Windows toast via PowerShell (with a notification-history read for verification), ntfy, webhook, SMTP, and redacted versus full summaries. |
 | `schedule.py` | Task Scheduler XML, `schtasks` wrappers, and `RunLock` (an OS byte-range lock on `data/run.lock`). |
+| `desktop.py` | Windows `.lnk` shortcuts ("Scan now", "Report") built through WScript.Shell, with a read-back for verification. |
 | `cli.py`, `__main__.py` | Typer commands. `--log-file` sends all output to a file for the pythonw task. |
 
 ## Decisions and why
@@ -81,6 +84,16 @@ report.write_reports (md/html/json + latest.*, prune; current targets only)
     away from "passport scans … bank accounts".
   - Breaches: their data classes, because prose such as "was breached" says nothing about
     what was exposed.
+- **A username's public footprint is a source, not an alarm.** For each `username`, the `sites`
+  source checks a handful of sites that expose a profile at a predictable URL. Detection is per
+  site and conservative: 404 (or a declared soft-404 marker) means the handle is free, 200 means
+  it exists, and anything else (a 403 block, a login wall) is "could not tell" and skipped. A
+  found profile is scored LOW and its page text is handed to the matcher, so the person's real
+  name or email printed on that profile is found and recorded against it. The profile's own
+  wording never manufactures a signal, so it stays LOW unless another source says worse. The
+  default site list was chosen by testing live which sites give a clean 404 for a free handle;
+  GitLab, npm and Reddit block non-browser requests, and PyPI and Telegram soft-404, so they are
+  left out.
 - **Old evidence costs a point.** Without it, a 2012 breach scored the same as a 2026 one.
   Evidence at least 3 years old is marked `dated`.
 - **Tor is started per run and owned.** The `__OwningControllerProcess` option makes tor.exe exit

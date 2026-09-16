@@ -1,6 +1,6 @@
 [project]
 name = "darkwatch"
-version = "0.2.0"
+version = "0.2.1"
 description = "Darkwatch: watchlist-driven dark web exposure monitor. Finds a person's or company's identifiers on ransomware leak sites, onion pages (over a managed Tor), breach and paste data; scores, dedupes, reports with next actions and alerts."
 readme = "README.md"
 authors = [

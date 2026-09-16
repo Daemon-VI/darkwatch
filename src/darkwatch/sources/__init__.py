@@ -22,6 +22,7 @@ DOC_SOURCES = {
     "ahmia-index": "Ahmia's stored title and description for an onion page",
     "breach": "a known data breach that included the identifier (XposedOrNot, HIBP)",
     "paste": "a paste-site dump that included the identifier (XposedOrNot, HIBP)",
+    "site": "a public profile page for a watched username (GitHub, Dev.to, ...)",
     "seed": "a page from the operator's seed list",
     "file": "a local file scanned with `darkwatch scan-text`",
 }
@@ -135,12 +136,14 @@ def registry() -> dict[str, Source]:
     from .hibp import HibpSource
     from .leaksites import LeakSiteSource
     from .seeds import SeedSource
+    from .sites import SiteSource
     from .xposedornot import XposedOrNotSource
 
     sources: tuple[Source, ...] = (
         LeakSiteSource(),
         XposedOrNotSource(),
         HibpSource(),
+        SiteSource(),
         AhmiaSource(),
         SeedSource(),
     )

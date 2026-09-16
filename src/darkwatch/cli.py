@@ -15,7 +15,7 @@ from rich.table import Table
 from rich.text import Text
 
 from . import __version__
-from .config import EXAMPLE_WATCHLIST, load_watchlist
+from .config import ENV_EXAMPLE, EXAMPLE_WATCHLIST, load_watchlist
 from .matcher import SEVERITIES, Matcher
 from .storage import OPEN_STATUSES, STATUSES, Hit, Store
 
@@ -142,12 +142,7 @@ def init(path: Annotated[Path, typer.Argument(help="Where to write the example w
     path.write_text(EXAMPLE_WATCHLIST, encoding="utf-8")
     env = path.parent / ".env.example"
     if not env.exists():
-        env.write_text(
-            "DARKWATCH_HIBP_KEY=\nDARKWATCH_NTFY_TOPIC=\nDARKWATCH_WEBHOOK_URL=\nDARKWATCH_SMTP_HOST=\n"
-            "DARKWATCH_SMTP_PORT=587\nDARKWATCH_SMTP_STARTTLS=true\nDARKWATCH_SMTP_USER=\n"
-            "DARKWATCH_SMTP_PASSWORD=\nDARKWATCH_SMTP_FROM=\nDARKWATCH_SMTP_TO=\n",
-            encoding="utf-8",
-        )
+        env.write_text(ENV_EXAMPLE, encoding="utf-8")
     console.print(f"Wrote {path}. Edit the targets, then run: darkwatch run")
 
 
@@ -400,6 +395,32 @@ def report(
     latest = Path(wl.settings.reports_dir) / "latest.html"
     if open_report and latest.exists():
         webbrowser.open(latest.resolve().as_uri())
+
+
+@app.command()
+def shortcut(
+    watchlist: WatchlistOpt = DEFAULT_WATCHLIST,
+    remove: Annotated[bool, typer.Option("--remove", help="Delete the shortcuts instead of creating them.")] = False,
+) -> None:
+    """Put Darkwatch shortcuts on the Desktop (Windows): 'Scan now' and 'Report'."""
+    from . import desktop
+
+    if sys.platform != "win32":
+        err.print("[red]desktop shortcuts are only implemented for Windows[/red]")
+        raise typer.Exit(2)
+    wl = _load(watchlist)
+    if remove:
+        gone = desktop.remove()
+        console.print(f"removed {len(gone)} shortcut(s)" if gone else "no shortcuts to remove")
+        return
+    try:
+        made = desktop.install(wl.path)
+    except (OSError, RuntimeError) as exc:
+        err.print(f"[red]could not create shortcuts:[/red] {exc}")
+        raise typer.Exit(1) from exc
+    for lnk in made:
+        console.print(f"shortcut: {lnk}")
+    console.print("Double-click 'Darkwatch - Scan now' on your Desktop to run a scan.")
 
 
 @app.command("open")

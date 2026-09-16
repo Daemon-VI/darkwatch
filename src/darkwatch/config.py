@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 import yaml
 
 TERM_TYPES = ("email", "domain", "phone", "username", "name", "keyword")
-ALL_SOURCES = ("leaksites", "xposedornot", "hibp", "ahmia", "seeds")
+ALL_SOURCES = ("leaksites", "xposedornot", "hibp", "sites", "ahmia", "seeds")
 
 
 @dataclass(frozen=True)
@@ -135,6 +135,8 @@ class Settings:
     onion_fetch_top: int = 5  # top-ranked Ahmia results fetched per query even without a listing match
     max_onion_fetches: int = 150  # hard cap on onion page fetches per run
     max_seed_pages: int = 50
+    person_site_builtins: bool = True  # check the built-in profile sites (GitHub, Dev.to, ...)
+    person_sites: list[str] = field(default_factory=list)  # extra profile URLs with {username}
     leak_feed_max_age_hours: float = 12.0  # re-download leak-site feeds at most this often
     ransomlook_days: int = 30
     # what to run
@@ -286,6 +288,12 @@ def load_watchlist(path: str | Path) -> Watchlist:
         p = urlparse(seed)
         if p.scheme not in ("http", "https") or not p.hostname:
             raise ValueError(f"seed {seed!r} is not an http(s) URL")
+    for site in settings.person_sites:
+        p = urlparse(site)
+        if p.scheme not in ("http", "https") or not p.hostname:
+            raise ValueError(f"person_sites entry {site!r} is not an http(s) URL")
+        if "{username}" not in site:
+            raise ValueError(f"person_sites entry {site!r} must contain {{username}}")
     for key in ("timeout", "tor_workers", "max_page_bytes", "tor_bootstrap_timeout"):
         if getattr(settings, key) <= 0:
             raise ValueError(f"settings.{key} must be positive")
@@ -363,6 +371,34 @@ def load_watchlist(path: str | Path) -> Watchlist:
     return Watchlist(settings=settings, targets=targets, path=path)
 
 
+ENV_EXAMPLE = """\
+# Darkwatch secrets. Copy to `.env` next to the watchlist and fill in what you use.
+# Never commit `.env`. Every value here is optional; Darkwatch runs without any of them.
+
+# Have I Been Pwned API key: adds per-email breach and paste lookups. https://haveibeenpwned.com/API/Key
+DARKWATCH_HIBP_KEY=
+
+# ntfy phone push: a long, random topic name (anyone who knows it can read the pushes).
+# Subscribe to the same topic in the ntfy app. https://ntfy.sh
+DARKWATCH_NTFY_TOPIC=
+
+# Webhook for a Discord / Slack style channel (receives the full summary).
+DARKWATCH_WEBHOOK_URL=
+
+# Email alerts (receives the full summary). Port 465 uses implicit TLS; otherwise STARTTLS.
+DARKWATCH_SMTP_HOST=
+DARKWATCH_SMTP_PORT=587
+DARKWATCH_SMTP_STARTTLS=true
+DARKWATCH_SMTP_USER=
+DARKWATCH_SMTP_PASSWORD=
+DARKWATCH_SMTP_FROM=
+DARKWATCH_SMTP_TO=
+
+# Path to tor.exe, if it is not auto-detected (PATH, or ../tools/tor-*/tor/tor.exe).
+DARKWATCH_TOR_EXE=
+"""
+
+
 EXAMPLE_WATCHLIST = """\
 # Darkwatch watchlist. Only list people and organisations you are authorised to monitor.
 settings:
@@ -370,7 +406,7 @@ settings:
   tor_manage: auto                      # start tor.exe for the run when nothing is listening on that port
   tor_exe: ""                           # path to tor.exe; empty = auto-detect (PATH, ../tools/tor-*/tor/tor.exe)
   require_tor: true                     # never fetch .onion pages unless the proxy is verified to be Tor
-  sources: [leaksites, xposedornot, hibp, ahmia, seeds]
+  sources: [leaksites, xposedornot, hibp, sites, ahmia, seeds]
   ahmia_route: auto                     # auto: search Ahmia over Tor when Tor is verified; tor; clearnet
   onion_fetch_top: 5                    # Ahmia results fetched per query even when the listing lacks the term
   max_onion_fetches: 150

@@ -78,6 +78,7 @@ SOURCE_WEIGHT = {
     "breach": 2,
     "paste": 2,
     "ahmia-index": 1,
+    "site": 0,  # a public profile the person put up is expected; only its contents raise it
     "file": 0,
 }
 
