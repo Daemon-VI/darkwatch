@@ -9,8 +9,9 @@ from darkwatch import desktop
 def test_shortcuts_for_targets_and_args(tmp_path):
     wl = tmp_path / "watchlist.yaml"
     scs = desktop.shortcuts_for(wl)
-    assert [s.name for s in scs] == ["Darkwatch - Scan now", "Darkwatch - Report"]
-    scan, report = scs
+    assert [s.name for s in scs] == ["Darkwatch", "Darkwatch - Scan now", "Darkwatch - Report"]
+    dash, scan, report = scs
+    assert dash.arguments == f'-m darkwatch web --watchlist "{wl}"' 
     assert scan.target.lower().endswith("python.exe")
     assert scan.arguments == f'-m darkwatch run --open --watchlist "{wl}"'
     assert report.target.lower().endswith(("pythonw.exe", "python.exe"))
@@ -31,9 +32,9 @@ def test_create_and_read_shortcut(tmp_path):
     wl.write_text("x")
     into = tmp_path / "desk"
     made = desktop.install(wl, into=into)
-    assert len(made) == 2 and all(p.exists() for p in made)
+    assert len(made) == 3 and all(p.exists() for p in made)
     target, args = desktop.read_target(into / "Darkwatch - Scan now.lnk")
     assert target.lower().endswith("python.exe")
     assert "run --open" in args and str(wl) in args
     removed = desktop.remove(into=into)
-    assert len(removed) == 2 and not any(Path(p).exists() for p in made)
+    assert len(removed) == 3 and not any(Path(p).exists() for p in made)

@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from darkwatch.config import Settings, Target, Term
+from darkwatch.config import ALL_SOURCES, Settings, Target, Term
 from darkwatch.matcher import Matcher
 from darkwatch.scanner import RunResult, scan_documents
 from darkwatch.sources import Document, SourceContext, SourceStats, registry, terms_present
@@ -100,7 +100,10 @@ class FakeSession:
 # --------------------------------------------------------------------------- shared
 def test_registry_order_and_protocol():
     reg = registry()
-    assert list(reg) == ["leaksites", "xposedornot", "hibp", "sites", "ahmia", "seeds"]
+    assert list(reg) == [
+        "leaksites", "stealers", "leakcheck", "xposedornot", "hibp", "sites", "ahmia", "seeds",
+    ]
+    assert list(reg) == list(ALL_SOURCES)  # the registry and the config list cannot drift apart
     for src in reg.values():
         assert src.description
         assert isinstance(src.unavailable_reason(Settings()), str)
@@ -218,7 +221,9 @@ def test_leaksite_normalise_merge_and_documents():
     merged = merge_records(rl, look)
     assert len(merged) == 2
     assert merged[0]["also_seen_by"] == {"RansomLook"}
-    assert normalise_ransomlook(LOOK_RECORD)["post_url"] == "https://www.ransomlook.io/group/LockBit5"
+    # RansomLook's `link` is a path on ransomlook.io, so it resolves to the post itself
+    assert normalise_ransomlook(LOOK_RECORD)["post_url"] == "https://www.ransomlook.io/x"
+    assert normalise_ransomlook({"post_title": "A", "group_name": "g"})["post_url"] ==         "https://www.ransomlook.io/group/g"
     terms = Target(name="Acme Corp", kind="company", domains=["acme.example"], keywords=["ransomware"]).terms()
     docs = list(to_documents(merged, terms))
     # "ransomware" matches OTHER's own description, but never every record via our template text
@@ -227,13 +232,17 @@ def test_leaksite_normalise_merge_and_documents():
     assert acme.url == ONION_A and acme.source == "leaksite"
     assert docs[1].url == "leaksite:akira/Ransomware%20Victim%20Ltd"  # no claim URL: per-post id
     look_only = normalise_ransomlook(dict(LOOK_RECORD, post_title="Other Co"))
-    assert evidence_url(look_only) == "leaksite:LockBit5/Other%20Co"
+    assert evidence_url(look_only) == "https://www.ransomlook.io/x"  # the post's own path
+    no_link = normalise_ransomlook({"post_title": "Other Co", "group_name": "LockBit5"})
+    assert evidence_url(no_link) == "leaksite:LockBit5/Other%20Co"  # only a group page: synthesise
     assert "Website: acme.example" in acme.text and "200GB" in acme.text
     assert acme.meta["also_seen_by"] == ["RansomLook"]
     hits = Matcher(Target(name="Acme Corp", kind="company", domains=["acme.example"]).terms()).find(
-        acme.text, source=acme.source
+        acme.text, source=acme.source, signal_text=acme.signal_text
     )
-    assert {h.severity for h in hits} == {"CRITICAL", "HIGH"}
+    # scored on the tracker's own words, not on our framing sentence: no signal group fires here,
+    # so both are HIGH from the leaksite weight alone rather than CRITICAL from our own wording
+    assert {h.term.type: h.severity for h in hits} == {"domain": "HIGH", "name": "HIGH"}
 
 
 def test_leaksite_discover_uses_cache(tmp_path, http_server, monkeypatch):
@@ -394,8 +403,9 @@ def test_leaksite_post_signals_read_the_whole_post():
     hit = Matcher([Term("Acme Corp", "name", "A")]).find(
         docs[0].text, source="leaksite", signal_text=docs[0].signal_text, evidence_date=docs[0].evidence_date
     )[0]
-    assert hit.signals == ["financial", "government_id", "sale", "access"]
-    assert hit.severity == "CRITICAL"
+    # the post's own text carries these; "leak site"/"ransomware" is our wording and is excluded
+    assert hit.signals == ["financial", "government_id"]
+    assert hit.severity == "CRITICAL"  # 1 + 4 + 2
 
 
 def test_ahmia_page_fetched_for_one_query_suppresses_listing_in_another():
@@ -625,7 +635,10 @@ def test_sites_ignores_page_chrome_signals(http_server):
     terms = Target(name="Bob", usernames=["bob"]).terms()
     docs = list(SiteSource().discover(terms, ctx_for(s)))
     hits = Matcher(terms).find(docs[0].text, source=docs[0].source, signal_text=docs[0].signal_text)
-    assert all(h.signals == [] and h.severity == "LOW" for h in hits)
+    # no real signal group from the page's own chrome; a bare repeat of the handle is marked
+    # uncorroborated rather than scored
+    assert all(h.severity == "LOW" for h in hits)
+    assert all(set(h.signals) <= {"uncorroborated"} for h in hits)
 
 
 def test_sites_no_usernames_is_a_noop():
@@ -634,3 +647,240 @@ def test_sites_no_usernames_is_a_noop():
 
     ctx = ctx_for(Settings(delay_seconds=0))
     assert list(SiteSource().discover(Target(name="Acme", domains=["acme.com"]).terms(), ctx)) == []
+
+
+# --------------------------------------------------------------------------- stealers (Hudson Rock)
+# Shapes taken from live responses on 2026-09-18: the API returns list values as Python-style
+# string literals, and masks the stolen values themselves.
+HR_INFECTED = {
+    "message": "This email address is associated with a computer that was infected by an info-stealer",
+    "stealers": [
+        {
+            "total_corporate_services": 2,
+            "total_user_services": 17,
+            "date_compromised": "2024-03-11T00:00:00.000Z",
+            "computer_name": "DESKTOP-9F2K",
+            "operating_system": "Windows 10 Pro",
+            "malware_path": "C:\\Users\\jdoe\\AppData\\Local\\Temp\\setup.exe",
+            "antiviruses": "['Windows Defender']",
+            "ip": "106.192.**.***",
+            "top_passwords": "['P********3', 'h*****1']",
+            "top_logins": "['jdoe@mail.example']",
+        }
+    ],
+}
+HR_CLEAN = {"message": "This email address is not associated with ...", "stealers": []}
+
+
+def test_stealer_document_reports_the_machine_and_never_the_secret():
+    from darkwatch.sources.stealers import parse
+
+    docs = parse("jdoe@mail.example", "email", HR_INFECTED)
+    assert len(docs) == 1
+    doc = docs[0]
+    assert doc.source == "stealer"
+    assert doc.evidence_date.startswith("2024-03-11")
+    assert doc.meta["corporate_services"] == 2
+    assert "DESKTOP-9F2K" in doc.title and "DESKTOP-9F2K" in doc.text
+    # the masked forms are kept verbatim: they identify the machine without being a credential
+    assert "P********3" in doc.text and "106.192.**.***" in doc.text
+    # the list-literal strings the API sends are unpacked, not printed raw
+    assert "['P********3'" not in doc.text
+    assert "Windows Defender" in doc.text
+    # an infostealer takes credentials by definition; corporate services also mean network access
+    assert "credentials" in doc.signal_text and "initial access" in doc.signal_text
+
+
+def test_stealer_document_without_corporate_services_claims_no_network_access():
+    from darkwatch.sources.stealers import parse
+
+    record = {**HR_INFECTED["stealers"][0], "total_corporate_services": 0}
+    doc = parse("jdoe@mail.example", "email", {"stealers": [record]})[0]
+    assert "credentials" in doc.signal_text
+    assert "initial access" not in doc.signal_text
+    assert "corporate" not in doc.text
+
+
+def test_stealer_hit_from_an_infection_is_critical():
+    from darkwatch.sources.stealers import parse
+
+    doc = parse("jdoe@mail.example", "email", HR_INFECTED)[0]
+    hit = Matcher([Term("jdoe@mail.example", "email", "J")]).find(
+        doc.text, source=doc.source, signal_text=doc.signal_text, evidence_date=doc.evidence_date
+    )[0]
+    # base 2 (email) + weight 4 (stealer) + credentials + access: a live infection is the most
+    # actionable thing Darkwatch can find about a person, and it is scored that way
+    assert hit.severity == "CRITICAL"
+
+
+def test_stealers_clean_answer_yields_nothing_and_is_counted():
+    from darkwatch.sources.stealers import BASE, StealerSource
+
+    session = FakeSession({BASE: FakeResponse(json_body=HR_CLEAN)})
+    ctx = ctx_for(Settings(delay_seconds=0), clear=session)
+    terms = [Term("jdoe@mail.example", "email", "J"), Term("jdoe", "username", "J")]
+    assert list(StealerSource().discover(terms, ctx)) == []
+    assert ctx.stats.note == "0/2 identifier(s) found in infostealer logs"
+    assert ctx.errors == []
+    assert [c[0].split("/")[-1].split("?")[0] for c in session.calls] == [
+        "search-by-email", "search-by-username"
+    ]
+
+
+def test_stealers_stops_on_rate_limit_and_survives_junk():
+    from darkwatch.sources.stealers import BASE, StealerSource
+
+    ctx = ctx_for(Settings(delay_seconds=0), clear=FakeSession({BASE: FakeResponse(429, "slow down")}))
+    terms = [Term(f"u{i}", "username", "J") for i in range(4)]
+    assert list(StealerSource().discover(terms, ctx)) == []
+    assert any("rate limited" in e for e in ctx.errors)
+    assert ctx.stats.requests == 1  # it stopped rather than burning the remaining three
+
+    ctx = ctx_for(Settings(delay_seconds=0), clear=FakeSession({BASE: FakeResponse(200, "<html>nope")}))
+    assert list(StealerSource().discover([Term("jdoe", "username", "J")], ctx)) == []
+    assert any("not JSON" in e for e in ctx.errors)
+
+
+# --------------------------------------------------------------------------- leakcheck
+LC_FOUND = {
+    "success": True,
+    "found": 3,
+    "fields": ["email", "password", "dob", "ssn", "first_name"],
+    "sources": [
+        {"name": "Canva.com", "date": "2019-05"},
+        {"name": "Collection1", "date": "2019-01"},
+        {"name": "Older.example", "date": "2012-07"},
+    ],
+}
+
+
+def test_leakcheck_names_the_data_classes_that_leaked():
+    from darkwatch.sources.leakcheck import parse
+
+    docs = parse("jdoe@mail.example", LC_FOUND)
+    assert [d.title for d in docs] == ["Breach: Canva.com", "Breach: Collection1", "Breach: Older.example"]
+    assert [d.evidence_date for d in docs] == ["2019-05", "2019-01", "2012-07"]  # newest first
+    # the field names become the words the signal groups recognise, so severity reflects what leaked
+    assert "social security" in docs[0].signal_text and "date of birth" in docs[0].signal_text
+    assert all(d.source == "breach" for d in docs)
+    assert len({d.url for d in docs}) == 3  # one stable identity per breach, not per query
+
+
+def test_leakcheck_scores_a_government_id_leak_above_a_plain_one():
+    from darkwatch.sources.leakcheck import parse
+
+    m = Matcher([Term("jdoe@mail.example", "email", "J")])
+    hot = parse("jdoe@mail.example", LC_FOUND)[0]
+    mild = parse("jdoe@mail.example", {**LC_FOUND, "fields": ["email"]})[0]
+    hot_hit = m.find(hot.text, source=hot.source, signal_text=hot.signal_text)[0]
+    mild_hit = m.find(mild.text, source=mild.source, signal_text=mild.signal_text)[0]
+    assert set(hot_hit.signals) >= {"credentials", "government_id"}
+    assert hot_hit.score > mild_hit.score
+
+
+def test_leakcheck_not_found_is_a_clean_negative():
+    from darkwatch.sources.leakcheck import API, LeakCheckSource
+
+    body = {"success": False, "error": "Not found"}
+    session = FakeSession({API.split("?")[0]: FakeResponse(json_body=body)})
+    ctx = ctx_for(Settings(delay_seconds=0), clear=session)
+    terms = [Term("jdoe@mail.example", "email", "J"), Term("acme.com", "domain", "A")]
+    assert list(LeakCheckSource().discover(terms, ctx)) == []
+    # only the email was looked up: LeakCheck's public tier answers for emails and usernames
+    assert len(session.calls) == 1
+    assert ctx.stats.note == "0/1 identifier(s) found in breach data"
+
+
+def test_leakcheck_caps_breaches_per_identifier():
+    from darkwatch.sources.leakcheck import MAX_SOURCES_PER_TERM, parse
+
+    many = {**LC_FOUND, "sources": [{"name": f"b{i}", "date": "2020-01"} for i in range(60)]}
+    assert len(parse("jdoe@mail.example", many)) == MAX_SOURCES_PER_TERM
+
+
+# --------------------------------------------------------------------------- xposedornot by domain
+XON_DOMAIN = {
+    "status": "success",
+    "exposedBreaches": [
+        {
+            "breachID": "Adobe",
+            "breachedDate": "2013-10-04T00:00:00.000Z",
+            "exposedData": ["Email", "Password", "Password Hints"],
+            "exposedRecords": 152445165,
+            "passwordRisk": "easytocrack",
+        }
+    ],
+}
+
+
+def test_xposedornot_domain_breach_becomes_evidence():
+    from darkwatch.sources.xposedornot import parse_domain
+
+    docs = parse_domain("acme.example", XON_DOMAIN)
+    assert len(docs) == 1
+    doc = docs[0]
+    assert doc.meta == {"provider": "XposedOrNot", "breach": "Adobe", "domain": "acme.example"}
+    assert "152,445,165 records" in doc.text
+    assert "easytocrack" in doc.text
+    assert doc.evidence_date.startswith("2013-10-04")
+    assert "Password" in doc.signal_text
+    assert parse_domain("acme.example", {"status": "error"}) == []
+
+
+def test_default_sites_are_well_formed_and_distinct():
+    from darkwatch.sources.sites import DEFAULT_SITES, SiteSource
+
+    assert len(DEFAULT_SITES) >= 24
+    assert len({s.name for s in DEFAULT_SITES}) == len(DEFAULT_SITES)
+    assert len({s.url for s in DEFAULT_SITES}) == len(DEFAULT_SITES)
+    for site in DEFAULT_SITES:
+        assert "{username}" in site.url
+        assert site.url.startswith("https://")
+        # a soft-404 site is only usable if it declares the marker that proves absence
+        if site.missing_status == 200:
+            assert site.absent_markers, f"{site.name} needs an absent marker"
+        assert "%20" in site.profile_url("a b"), f"{site.name} must escape the handle"
+    # the description is derived, so it can never name a site the source does not check
+    assert str(len(DEFAULT_SITES)) in SiteSource().description
+
+
+def test_sites_are_checked_in_parallel(http_server):
+    """Two dozen sites per handle is only affordable because the checks overlap."""
+    import threading
+
+    from darkwatch.config import Settings, Target
+    from darkwatch.sources.sites import SiteSource
+
+    for i in range(8):
+        http_server.add(f"/s{i}/jdoe", 200, "jdoe")
+    templates = [http_server.base + f"/s{i}/{{username}}" for i in range(8)]
+    s = Settings(delay_seconds=0, person_site_builtins=False, person_sites=templates, site_workers=8)
+    ctx = ctx_for(s)
+
+    threads: set[str] = set()
+    original = SiteSource._check
+
+    def record(self, site, username, ctx):
+        threads.add(threading.current_thread().name)
+        return original(self, site, username, ctx)
+
+    SiteSource._check = record
+    try:
+        docs = list(SiteSource().discover(Target(name="J", usernames=["jdoe"]).terms(), ctx))
+    finally:
+        SiteSource._check = original
+
+    assert len(docs) == 8
+    assert ctx.stats.requests == 8  # every check is still counted
+    assert len(threads) > 1, "the checks ran one after another"
+    assert all(t.startswith("site") for t in threads)
+    assert "8/8 profile checks matched across 8 site(s)" in ctx.stats.note
+
+
+def test_sites_with_nothing_to_check_is_a_noop():
+    from darkwatch.config import Settings, Target
+    from darkwatch.sources.sites import SiteSource
+
+    # no sites configured and eight workers: no pool larger than the work, no crash
+    ctx = ctx_for(Settings(delay_seconds=0, person_site_builtins=False, person_sites=[], site_workers=8))
+    assert list(SiteSource().discover(Target(name="J", usernames=["jdoe"]).terms(), ctx)) == []

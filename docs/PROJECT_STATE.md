@@ -1,19 +1,130 @@
 # Darkwatch — project state
 
-Last updated: 2026-09-16 (v0.2.1: person-profile source, desktop shortcuts, complete `.env.example`).
+Last updated: 2026-09-18 (v0.3.0: dashboard, keyword search, infostealer and username-breach
+sources, 24 profile sites, and a measured accuracy pass).
 
 ## What it is
 
 Darkwatch is a dark web exposure monitor. It reads a YAML watchlist of the people and companies
 it protects, with their names, emails, phones, domains and usernames. It then:
 
-1. Searches ransomware leak-site trackers, breach and paste data, public-profile sites for each
-   username, Ahmia's onion index, and the onion pages behind it. Onion pages are fetched over a
-   `tor.exe` that Darkwatch starts and stops itself.
+1. Searches ransomware leak-site trackers, infostealer logs, breach and paste data, 24
+   public-profile sites for each username, Ahmia's onion index, and the onion pages behind it.
+   Onion pages are fetched over a `tor.exe` that Darkwatch starts and stops itself.
 2. Scores each hit and de-duplicates it in SQLite.
 3. Writes a Markdown, HTML and JSON report with an action list for every hit.
 4. Alerts through a Windows notification and an ntfy phone push. Webhook and email are optional.
-5. Runs daily from Task Scheduler, or on demand from two Desktop shortcuts.
+5. Runs daily from Task Scheduler, or on demand from three Desktop shortcuts.
+6. Serves a local dashboard (`darkwatch web`) for search, charts, triage, live scans and
+   one-off investigations.
+
+## v0.3.0 additions (2026-09-18)
+
+Prompted by "it's not accurate": the accuracy work was measured rather than asserted, then the
+surface was widened.
+
+### Accuracy
+
+A 90-case regression corpus (`tests/test_recall.py`, 15 renderings per identifier type, taken
+from how identifiers actually appear on leak sites, in HTML and in combolists) measured the
+matcher before and after:
+
+| | Before | After |
+|---|---|---|
+| Recall on the 90-case corpus | 62 of 90 (69%) | **90 of 90 (100%)** |
+| Failures on the 9-case negative set | 1 (a sentence boundary: `Ask Jane. Doe will confirm` matched the name `Jane Doe`) | **0** |
+
+Separately from the negative set, three severity inflations were found and fixed: leak-site posts
+scoring Darkwatch's own wording, a dictionary word as a username reaching CRITICAL, and a bare
+10-digit run scoring HIGH as a phone number.
+
+What was wrong, and what each fix was:
+
+- **Leak-site posts scored themselves.** `signal_text` was Darkwatch's own sentence ("was listed
+  on the leak site of the ransomware group X"), so every post scored the `sale` and `access`
+  signals from wording Darkwatch wrote. Fixed: the signal text is now the tracker's own
+  description, website, sector and country, and a leak-site post instead carries the source
+  weight it deserves (3 → 4). The severity is the same for a real post; it is now honest about why.
+- **Inline markup split identifiers.** `<b>example</b>.com` became `example .com` because
+  `get_text("")` with no block separators ran text together and `get_text(" ")` broke words
+  apart. Fixed: separators are inserted around block tags only.
+- **Defanged domains were invisible.** `example[.]com`, `example(.)com` and `example dot com` —
+  how a domain is written on a leak site so it is not auto-linked — matched nothing.
+- **Zero-width characters defeated matching.** A soft hyphen or `\u200b` inside an address made it
+  unmatchable. Text is now folded (invisible characters removed, look-alike dashes and spaces
+  normalised) before matching, so snippets show the folded text too.
+- **Plaintext combolists said nothing about themselves.** 5,000 lines of `address:password` carry
+  no word a signal regex would catch. Two or more `user:pass` lines now count as credentials.
+- **A dictionary word as a username could reach CRITICAL.** A handle like `admin` or `ronin` in
+  ordinary prose scored as if it were the person. It is now credited at most one point and marked
+  `uncorroborated` unless it appears in handle context (`@name`, `user: name`, a profile URL).
+- **Bare digit runs scored HIGH as phone numbers.** A 10-digit order number is now
+  `uncorroborated` too, unless it is written as a phone (a `+`/trunk prefix, digit grouping, or a
+  phone word before it).
+- **The pre-filter passed documents the matcher then silently dropped.** `Acme Inc` matched
+  `Acme-Inc` but not `AcmeInc`, and `Acme, Inc.` not at all. The separator between two parts of
+  three characters or more is now optional, so both match — while `Al Ice` still does not match
+  `Alice`, and `Jane. Doe` (a sentence boundary) still does not match the name `Jane Doe`.
+
+The email on the watchlist was also cross-checked against two independent breach services by
+hand, and both said "not found", so the "no exposure" result is corroborated rather than assumed.
+
+### New
+
+- **Dashboard** (`darkwatch web`, `src/darkwatch/web/`): keyword search across every finding,
+  filters with live counts, severity-over-time and source-mix charts, triage in place, CSV and
+  JSON export, a scan run from the page with progress streaming over server-sent events, and
+  deep search of a value that is not on the watchlist. One HTML page, no build step, GSAP and a
+  WebGL2 contour field ported from the portfolio. Security: loopback bind, a per-session token
+  required by a router-level dependency, a loopback-only `Host` check, no CORS, POST-only
+  mutations, evidence rendered as text nodes and never linked. A test sweeps all 14 `/api`
+  endpoints from the app's own schema and fails if any answers without the token.
+- **Keyword search in the CLI too:** `darkwatch search` (with `--facets`) and
+  `darkwatch investigate`, which runs the live sources against one value and stores nothing.
+- **`stealers` source** — Hudson Rock Cavalier infostealer logs, keyless, by email, username and
+  domain. The gap that mattered most: every other source answers "a service you used was
+  breached"; this one answers "a machine you typed your password into was infected". Weighted 4,
+  the same as a leak-site post. The free tier masks the values (`P********3`) and Darkwatch keeps
+  only those masked forms.
+- **`leakcheck` source** — LeakCheck's public API, keyless, by email **and username**, naming the
+  data classes each breach exposed (`ssn`, `dob`, `password`), so severity reflects what leaked.
+  The only source that answers for a handle.
+- **XposedOrNot by domain**, so a company target is not single-sourced on HIBP.
+- **`sites` grew from 7 to 24 verified sites** and now runs its checks in parallel (a session per
+  worker thread). 19 of 36 further candidates passed a live present/absent check and 17 of those
+  were new, taking the list from 7 to 24; the 17 that failed are named in `sites.py`, each with
+  the way it failed.
+- **Per-site absence rules for configured sites.** `person_sites` entries may now be a mapping
+  with `missing_status` and `absent_markers`. A site that answers 200 for a free handle without a
+  marker is refused at load time, because it would report every handle as a profile.
+
+### Verified on 2026-09-18
+
+| Check | Result |
+|---|---|
+| `uv run pytest -q` | 217 passed in 32.6 s |
+| `uv run ruff check src tests` | clean |
+| Matcher recall corpus | 90 of 90, 0 false positives |
+| Real watchlist, full run (run #10) | 262.6 s, 19 documents, 4 new hits, 0 escalated, 5 already known, **0 errors**, Tor verified (exit confirmed, bootstrap 9.1 s) |
+| `leaksites` | 31,919 unique posts checked in 12.0 s (21.79 MB fresh download); 0 matches |
+| `stealers` | 0 of 3 identifiers found in infostealer logs, 4.7 s — **no infected machine holds Rithik's credentials** |
+| `leakcheck` | 0 of 3 identifiers found in breach data, 4.9 s |
+| `xposedornot` | no match, 0.7 s |
+| `sites` | 5 of 48 checks matched across 24 sites in 7.5 s, 4 new hits |
+| `ahmia` | 2,168 listings checked over the onion service; 14 of 17 onion pages fetched; 0 hits; 219.5 s |
+| Dashboard against the real database | `/api/summary` served 9 open hits, 18 total, 90 documents, version 0.3.0, all 8 sources listed as enabled |
+
+**The four new findings were verified by hand, and all four are real:**
+
+| Finding | Check |
+|---|---|
+| Docker Hub `rithikkrishnat` | exists, joined 2026-02-27; a free handle returns 404 with `"User not found"` |
+| Hugging Face `rithikkrishnat` | exists, `fullname: "RITHIK KRISHNA"` — which is why the matcher also recorded the *name* against that page |
+| X `Daemon-VI` | 200 for the handle, 404 for a free one |
+| GitHub `rithikkrishnat` | a second GitHub account beside `Daemon-VI` |
+
+All four are LOW with no signals, which is correct: they are profiles Rithik put up himself. The
+expanded site list produced **no false positives**.
 
 ## v0.2.1 additions (2026-09-16)
 
@@ -32,7 +143,7 @@ it protects, with their names, emails, phones, domains and usernames. It then:
 - **`.env.example` completed.** It is generated from `config.ENV_EXAMPLE` (the same text `init`
   writes) and now lists every variable, including `DARKWATCH_NTFY_TOPIC`,
   `DARKWATCH_SMTP_STARTTLS` and `DARKWATCH_TOR_EXE`.
-- 141 tests pass; lint clean.
+- 141 tests passed at that point; lint clean. (217 as of v0.3.0.)
 
 It lives at `C:\Users\Rishi\darkwatch`: Python 3.12, `uv`, with the code in `src/darkwatch/`. It is
 a git repo on `main`, pushed to the public GitHub repo `Daemon-VI/darkwatch` (public since 2026-09-16). The live watchlist holds Rithik's own identifiers and is
@@ -42,7 +153,7 @@ gitignored.
 
 | Check | Result |
 |---|---|
-| `uv run pytest -q` | 133 passed, about 23 s |
+| `uv run pytest -q` | 133 passed, about 23 s (217 as of 2026-09-18) |
 | `uv run ruff check src tests` | clean |
 | Tor Expert Bundle 15.0.23 | GPG signature good (key EF6E 286D DA85 EA2A 4BA7 DE68 4E2C 6E87 9329 8290); installed at `C:\Users\Rishi\tools\tor-15.0.23` |
 | `darkwatch check-tor` (managed Tor) | ready in 43.0 s on a fresh data dir, 4.6 to 18.6 s after that; the exit was confirmed as Tor by check.torproject.org; tor.exe exits after the run and uses about 110 MB of RAM while it runs |
@@ -160,8 +271,14 @@ fixed, and each fix has a regression test:
 ## Known limits
 
 - Ahmia's coverage is Ahmia's: forums that block crawlers are not in its index.
-- Onion page fetches fail 20 to 30% of the time on any given run (11 of 17, 12 of 15, 19 of 25),
-  because onion services are unreliable. Each failure costs up to the 45 s timeout.
-- `.env.example` in the repo lacks `DARKWATCH_NTFY_TOPIC` and `DARKWATCH_SMTP_STARTTLS`. `.env*`
-  files are only edited by hand in this workspace, so the README documents them and `darkwatch init` writes a
-  complete template.
+- Onion page fetches fail 18 to 35% of the time on any given run (11 of 17, 12 of 15, 19 of 25,
+  14 of 17), because onion services are unreliable. Each failure costs up to the 45 s timeout.
+  This is why a full run takes about four minutes: Ahmia was 219.5 s of the 262.6 s in run #10.
+- **Dashboard visuals are verified by screenshot, not by an automated test.** The API and the
+  security posture have tests; that the contour field renders and the charts draw was checked by
+  eye in a browser.
+- **`leakcheck` and `stealers` have never returned a positive against the real watchlist**, so
+  their parsing is proven against recorded API shapes and a known-infected sample rather than
+  against a live hit on this machine.
+- **No key is used for HIBP**, so per-email HIBP lookups are skipped; XposedOrNot and LeakCheck
+  answer the same question for free.

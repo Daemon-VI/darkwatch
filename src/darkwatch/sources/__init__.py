@@ -20,7 +20,8 @@ DOC_SOURCES = {
     "leaksite": "a ransomware / extortion group's leak site listing (via ransomware.live, RansomLook)",
     "onion": "an onion page fetched over Tor",
     "ahmia-index": "Ahmia's stored title and description for an onion page",
-    "breach": "a known data breach that included the identifier (XposedOrNot, HIBP)",
+    "stealer": "an infostealer-infected machine that had the identifier saved (Hudson Rock)",
+    "breach": "a known data breach that included the identifier (XposedOrNot, HIBP, LeakCheck)",
     "paste": "a paste-site dump that included the identifier (XposedOrNot, HIBP)",
     "site": "a public profile page for a watched username (GitHub, Dev.to, ...)",
     "seed": "a page from the operator's seed list",
@@ -134,13 +135,17 @@ def terms_present(text: str, terms: list[Term]) -> list[Term]:
 def registry() -> dict[str, Source]:
     from .ahmia import AhmiaSource
     from .hibp import HibpSource
+    from .leakcheck import LeakCheckSource
     from .leaksites import LeakSiteSource
     from .seeds import SeedSource
     from .sites import SiteSource
+    from .stealers import StealerSource
     from .xposedornot import XposedOrNotSource
 
     sources: tuple[Source, ...] = (
         LeakSiteSource(),
+        StealerSource(),
+        LeakCheckSource(),
         XposedOrNotSource(),
         HibpSource(),
         SiteSource(),

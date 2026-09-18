@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en" data-lens="watch">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="referrer" content="no-referrer" />
+<meta name="color-scheme" content="dark" />
+<title>Darkwatch</title>
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,100..900&family=JetBrains+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+<a class="skip" href="#hits">Skip to the findings</a>
+<div class="cursor" data-cursor aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6">
+        <path d="M12 2.6 20 6v6.1c0 4.6-3.3 8-8 9.3-4.7-1.3-8-4.7-8-9.3V6z" stroke-linejoin="round"/>
+        <circle cx="12" cy="11" r="3.1"/><path d="m14.3 13.4 2.5 2.6" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="wordmark">Darkwatch</span>
+    <span class="ver" data-version></span>
+  </div>
+  <nav class="actions">
+    <button class="btn btn-solid" data-scan>Run scan</button>
+    <button class="btn" data-deep>Deep search</button>
+    <button class="btn" data-open-report>Report</button>
+    <div class="menu">
+      <button class="btn" data-menu-toggle aria-expanded="false">More</button>
+      <div class="menu-pop" data-menu hidden>
+        <a class="menu-item" href="#" data-export="json">Export JSON</a>
+        <a class="menu-item" href="#" data-export="csv">Export CSV</a>
+        <button class="menu-item" data-rebuild>Rebuild report</button>
+        <button class="menu-item" data-pause><span data-pause-label>Pause</span> motion</button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- ---------------------------------------------------------------- hero -->
+  <section class="hero" id="top">
+    <canvas class="field" data-field aria-hidden="true"></canvas>
+    <div class="hero-in wrap">
+      <p class="tag"><span class="dot"></span><span data-watch-line>watching</span></p>
+      <h1 class="h1">
+        <span class="count" data-open-count>0</span>
+        <span class="h1-sub">open <span data-open-word>exposures</span></span>
+      </h1>
+      <p class="sub" data-hero-sub>Ransomware leak sites, breach and paste data, public profiles and onion pages, checked against your watchlist.</p>
+
+      <div class="tiles" data-tiles>
+        <button class="tile" data-sev-tile="CRITICAL"><span class="tile-k">Critical</span><b data-sev="CRITICAL">0</b></button>
+        <button class="tile" data-sev-tile="HIGH"><span class="tile-k">High</span><b data-sev="HIGH">0</b></button>
+        <button class="tile" data-sev-tile="MEDIUM"><span class="tile-k">Medium</span><b data-sev="MEDIUM">0</b></button>
+        <button class="tile" data-sev-tile="LOW"><span class="tile-k">Low</span><b data-sev="LOW">0</b></button>
+        <div class="tile tile-quiet"><span class="tile-k">Last scan</span><b data-last-run>never</b></div>
+      </div>
+    </div>
+    <div class="scroll-hint" aria-hidden="true"><span></span></div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- charts -->
+  <section class="panel wrap" id="pulse">
+    <div class="panel-head">
+      <h2 class="h2">Pulse</h2>
+      <p class="sub">New findings per day, and where the evidence came from.</p>
+    </div>
+    <div class="pulse-grid">
+      <figure class="card chart-card">
+        <figcaption class="card-k">Findings, last 30 days</figcaption>
+        <svg class="spark" data-timeline viewBox="0 0 640 160" preserveAspectRatio="none" role="img" aria-label="New findings per day"></svg>
+        <div class="chart-legend" data-timeline-legend></div>
+      </figure>
+      <figure class="card chart-card">
+        <figcaption class="card-k">Evidence by source</figcaption>
+        <div class="bars" data-source-bars></div>
+      </figure>
+      <figure class="card chart-card">
+        <figcaption class="card-k">Recent runs</figcaption>
+        <div class="runs" data-runs></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ---------------------------------------------------------------- findings -->
+  <section class="panel wrap" id="hits">
+    <div class="panel-head">
+      <h2 class="h2">Findings</h2>
+      <p class="sub">Search every stored finding by keyword: an identifier, a domain, a gang name, anything in the evidence.</p>
+    </div>
+
+    <div class="commandbar" role="search">
+      <div class="searchbox">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
+        <input type="search" data-q placeholder="Search findings by keyword…  (quotes keep a phrase together)" aria-label="Search findings by keyword" autocomplete="off" spellcheck="false" />
+        <kbd>/</kbd>
+      </div>
+      <select class="select" data-order aria-label="Sort findings">
+        <option value="score">Worst first</option>
+        <option value="newest">Newest first</option>
+        <option value="oldest">Oldest first</option>
+        <option value="seen">Last seen</option>
+        <option value="target">By target</option>
+      </select>
+      <label class="check"><input type="checkbox" data-include-closed /> <span>Include closed</span></label>
+    </div>
+
+    <div class="facets" data-facets></div>
+
+    <p class="resultline"><span data-result-line>…</span></p>
+
+    <div class="hitlist" data-hits></div>
+    <div class="more"><button class="btn" data-more hidden>Load more</button></div>
+  </section>
+</main>
+
+<footer class="foot wrap">
+  <span>Darkwatch runs on this machine only. Evidence is stored as a URL, times and a short snippet.</span>
+  <span data-foot-meta></span>
+</footer>
+
+<!-- ---------------------------------------------------------------- deep search drawer -->
+<dialog class="drawer" data-deep-dialog aria-label="Deep search">
+  <form method="dialog" class="drawer-x"><button class="iconbtn" aria-label="Close">✕</button></form>
+  <h3 class="h3">Deep search</h3>
+  <p class="sub">Search the live sources for anything, without adding it to the watchlist. Nothing found here is stored.</p>
+  <div class="deep-form">
+    <input type="search" data-deep-q placeholder="an email, domain, phone, handle or phrase" aria-label="What to search for" />
+    <select class="select" data-deep-type aria-label="Treat the query as">
+      <option value="">Detect type</option>
+      <option value="email">Email</option>
+      <option value="domain">Domain</option>
+      <option value="phone">Phone</option>
+      <option value="username">Username</option>
+      <option value="name">Name</option>
+      <option value="keyword">Keyword</option>
+    </select>
+    <button class="btn btn-solid" data-deep-go>Search</button>
+  </div>
+  <div class="deep-sources" data-deep-sources></div>
+  <div class="joblog" data-deep-log hidden></div>
+  <div class="deep-results" data-deep-results></div>
+</dialog>
+
+<!-- ---------------------------------------------------------------- scan drawer -->
+<dialog class="drawer" data-scan-dialog aria-label="Scan">
+  <form method="dialog" class="drawer-x"><button class="iconbtn" aria-label="Close">✕</button></form>
+  <h3 class="h3">Scan</h3>
+  <p class="sub" data-scan-sub>Every enabled source, with Tor for onion pages. This takes a few minutes.</p>
+  <div class="deep-form">
+    <label class="check"><input type="checkbox" data-scan-tor checked /> <span>Use Tor</span></label>
+    <label class="check"><input type="checkbox" data-scan-notify checked /> <span>Send alerts</span></label>
+    <button class="btn btn-solid" data-scan-go>Start scan</button>
+  </div>
+  <div class="joblog" data-scan-log hidden></div>
+  <div class="deep-results" data-scan-results></div>
+</dialog>
+
+<div class="toasts" data-toasts aria-live="polite"></div>
+
+<script src="/static/vendor/gsap.min.js"></script>
+<script src="/static/vendor/ScrollTrigger.min.js"></script>
+<script src="/static/vendor/Flip.min.js"></script>
+<script src="/static/vendor/ScrambleTextPlugin.min.js"></script>
+<script src="/static/vendor/DrawSVGPlugin.min.js"></script>
+<script src="/static/shader.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

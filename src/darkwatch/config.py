@@ -18,7 +18,9 @@ from urllib.parse import urlparse
 import yaml
 
 TERM_TYPES = ("email", "domain", "phone", "username", "name", "keyword")
-ALL_SOURCES = ("leaksites", "xposedornot", "hibp", "sites", "ahmia", "seeds")
+ALL_SOURCES = (
+    "leaksites", "stealers", "leakcheck", "xposedornot", "hibp", "sites", "ahmia", "seeds",
+)
 
 
 @dataclass(frozen=True)
@@ -136,7 +138,10 @@ class Settings:
     max_onion_fetches: int = 150  # hard cap on onion page fetches per run
     max_seed_pages: int = 50
     person_site_builtins: bool = True  # check the built-in profile sites (GitHub, Dev.to, ...)
-    person_sites: list[str] = field(default_factory=list)  # extra profile URLs with {username}
+    site_workers: int = 8  # parallel profile checks; each site is a different host
+    # Extra profile sites. Each entry is either a "{username}" URL template, or a mapping that
+    # also says how the site reports a free handle (see _person_sites).
+    person_sites: list = field(default_factory=list)
     leak_feed_max_age_hours: float = 12.0  # re-download leak-site feeds at most this often
     ransomlook_days: int = 30
     # what to run
@@ -211,6 +216,60 @@ def _list(x, what: str = "value", *, text_only: bool = False) -> list[str]:
     return out
 
 
+PERSON_SITE_KEYS = {"url", "name", "missing_status", "absent_markers"}
+
+
+def _person_sites(value, what: str = "settings.person_sites") -> list[dict]:
+    """Normalise `person_sites` entries to dicts.
+
+    A bare string is the common case and stays the common case::
+
+        person_sites:
+          - https://example.com/{username}
+
+    A site that answers 200 for a handle nobody has taken needs to say so, or every handle looks
+    like a profile. That is the soft-404 that produced false "profile exists" findings, so the
+    mapping form exists to state the rule::
+
+        person_sites:
+          - url: https://soft.example/u/{username}
+            missing_status: 200
+            absent_markers: ["user not found", "page doesn't exist"]
+    """
+    if value is None:
+        return []
+    items = value if isinstance(value, list | tuple) else [value]
+    out: list[dict] = []
+    for item in items:
+        if isinstance(item, str):
+            item = {"url": item}
+        if not isinstance(item, dict):
+            raise ValueError(f"{what}: expected a URL or a mapping, got {type(item).__name__}")
+        unknown = set(item) - PERSON_SITE_KEYS
+        if unknown:
+            raise ValueError(f"{what}: unknown keys {sorted(unknown)}; allowed: {sorted(PERSON_SITE_KEYS)}")
+        url = str(item.get("url") or "").strip()
+        if not url:
+            raise ValueError(f"{what}: an entry has no url")
+        try:
+            missing = int(item.get("missing_status", 404))
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"{what}: missing_status for {url!r} is not a number") from exc
+        markers = _list(item.get("absent_markers"), f"{what}: absent_markers for {url!r}")
+        if missing == 200 and not markers:
+            raise ValueError(
+                f"{what}: {url!r} sets missing_status: 200, so it must also give absent_markers — "
+                "otherwise every handle would look like a profile that exists"
+            )
+        out.append({
+            "url": url,
+            "name": str(item.get("name") or urlparse(url).hostname or url),
+            "missing_status": missing,
+            "absent_markers": markers,
+        })
+    return out
+
+
 def _bool(x) -> bool:
     if isinstance(x, bool):
         return x
@@ -271,8 +330,12 @@ def load_watchlist(path: str | Path) -> Watchlist:
         raise ValueError(f"unknown settings: {sorted(unknown)}")
     settings = Settings()
     for key, value in s_raw.items():
-        if key != "notify":
-            setattr(settings, key, _coerce(getattr(settings, key), value, f"settings.{key}"))
+        if key == "notify":
+            continue
+        if key == "person_sites":  # strings or mappings, so not a plain list coercion
+            settings.person_sites = _person_sites(value)
+            continue
+        setattr(settings, key, _coerce(getattr(settings, key), value, f"settings.{key}"))
     bad_sources = [s for s in settings.sources if s not in ALL_SOURCES]
     if bad_sources:
         raise ValueError(f"unknown sources {bad_sources}; available: {list(ALL_SOURCES)}")
@@ -288,12 +351,13 @@ def load_watchlist(path: str | Path) -> Watchlist:
         p = urlparse(seed)
         if p.scheme not in ("http", "https") or not p.hostname:
             raise ValueError(f"seed {seed!r} is not an http(s) URL")
-    for site in settings.person_sites:
-        p = urlparse(site)
+    for entry in settings.person_sites:
+        url = entry["url"]
+        p = urlparse(url)
         if p.scheme not in ("http", "https") or not p.hostname:
-            raise ValueError(f"person_sites entry {site!r} is not an http(s) URL")
-        if "{username}" not in site:
-            raise ValueError(f"person_sites entry {site!r} must contain {{username}}")
+            raise ValueError(f"person_sites entry {url!r} is not an http(s) URL")
+        if "{username}" not in url:
+            raise ValueError(f"person_sites entry {url!r} must contain {{username}}")
     for key in ("timeout", "tor_workers", "max_page_bytes", "tor_bootstrap_timeout"):
         if getattr(settings, key) <= 0:
             raise ValueError(f"settings.{key} must be positive")
@@ -406,7 +470,7 @@ settings:
   tor_manage: auto                      # start tor.exe for the run when nothing is listening on that port
   tor_exe: ""                           # path to tor.exe; empty = auto-detect (PATH, ../tools/tor-*/tor/tor.exe)
   require_tor: true                     # never fetch .onion pages unless the proxy is verified to be Tor
-  sources: [leaksites, xposedornot, hibp, sites, ahmia, seeds]
+  sources: [leaksites, stealers, leakcheck, xposedornot, hibp, sites, ahmia, seeds]
   ahmia_route: auto                     # auto: search Ahmia over Tor when Tor is verified; tor; clearnet
   onion_fetch_top: 5                    # Ahmia results fetched per query even when the listing lacks the term
   max_onion_fetches: 150

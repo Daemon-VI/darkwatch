@@ -20,6 +20,7 @@ from . import Document, SourceContext
 log = logging.getLogger(__name__)
 
 ANALYTICS = "https://api.xposedornot.com/v1/breach-analytics?email={email}"
+DOMAIN = "https://api.xposedornot.com/v1/breaches?domain={domain}"
 MAX_EMAILS_PER_RUN = 20
 
 
@@ -94,6 +95,39 @@ def paste_documents(email: str, data: dict) -> list[Document]:
     return docs
 
 
+def domain_document(domain: str, breach: dict) -> Document:
+    """A breach of the service at a watched domain. Keyless, so company targets are never
+    single-sourced on HIBP for this question."""
+    name = str(breach.get("breachID") or "unknown")
+    classes = ", ".join(str(c) for c in (breach.get("exposedData") or []))
+    records = breach.get("exposedRecords")
+    return Document(
+        url=f"https://xposedornot.com/xposed#{quote(name)}",
+        title=f"Breach: {name} ({domain})",
+        text=(
+            f"The service at {domain} ({name}) was breached"
+            + (f" on {str(breach.get('breachedDate'))[:10]}" if breach.get("breachedDate") else "")
+            + (f": {records:,} records" if isinstance(records, int) else "")
+            + f". Exposed: {classes or 'not stated'}."
+            + (f" Password storage: {breach['passwordRisk']}." if breach.get("passwordRisk") else "")
+        ),
+        source="breach",
+        signal_text=classes,
+        evidence_date=str(breach.get("breachedDate") or ""),
+        meta={"provider": "XposedOrNot", "breach": name, "domain": domain},
+    )
+
+
+def parse_domain(domain: str, data: dict) -> list[Document]:
+    if str(data.get("status")) != "success":
+        return []
+    return [
+        domain_document(domain, b)
+        for b in (data.get("exposedBreaches") or [])
+        if isinstance(b, dict)
+    ]
+
+
 def parse_analytics(email: str, data: dict) -> list[Document]:
     docs: list[Document] = []
     exposed = data.get("ExposedBreaches") or {}
@@ -106,13 +140,28 @@ def parse_analytics(email: str, data: dict) -> list[Document]:
 
 class XposedOrNotSource:
     name = "xposedornot"
-    description = "breach and paste exposure for each email (XposedOrNot, free, no key)"
+    description = (
+        "breach and paste exposure for each email, and breaches of the service at each watched "
+        "domain (XposedOrNot, free, no key)"
+    )
 
     def unavailable_reason(self, settings: Settings) -> str:
         return ""
 
     def discover(self, terms: list[Term], ctx: SourceContext) -> Iterator[Document]:
         s = ctx.settings
+        for domain in sorted({t.value for t in terms if t.type == "domain"}):
+            ctx.throttle("xposedornot", 1.5)
+            ctx.progress(f"xposedornot: domain {domain}")
+            try:
+                r = ctx.clear.get(DOMAIN.format(domain=quote(domain)), timeout=s.timeout)
+                if r.status_code == 404:
+                    continue
+                r.raise_for_status()
+                yield from parse_domain(domain, r.json())
+            except Exception as exc:  # noqa: BLE001
+                ctx.error(f"xposedornot domain lookup failed for {domain}: {type(exc).__name__}")
+
         emails = sorted({t.value for t in terms if t.type == "email"})
         if len(emails) > MAX_EMAILS_PER_RUN:
             ctx.error(

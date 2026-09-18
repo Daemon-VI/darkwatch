@@ -1,8 +1,9 @@
 """Desktop shortcuts (Windows .lnk) that launch Darkwatch without the command line.
 
-Two shortcuts on the Desktop:
-- "Darkwatch — Scan now": runs a scan in a console window, then opens the report.
-- "Darkwatch — Report": opens the latest HTML report with no console window.
+Three shortcuts on the Desktop:
+- "Darkwatch": starts the dashboard and opens it in the browser. This is the one to use.
+- "Darkwatch - Scan now": runs a scan in a console window, then opens the report.
+- "Darkwatch - Report": opens the latest HTML report with no console window.
 
 Both point at the project's own interpreter, so nothing has to be on PATH. The .lnk is built
 through WScript.Shell, the same COM object Explorer uses, so the result is an ordinary shortcut.
@@ -56,6 +57,11 @@ def shortcuts_for(watchlist: Path) -> list[Shortcut]:
     wl = str(watchlist)
     workdir = str(watchlist.parent)
     return [
+        Shortcut(
+            "Darkwatch", str(python_for(console=True)),
+            f'-m darkwatch web --watchlist "{wl}"', workdir,
+            "Open the Darkwatch dashboard: search findings, run scans, triage",
+        ),
         Shortcut(
             "Darkwatch - Scan now", str(python_for(console=True)),
             f'-m darkwatch run --open --watchlist "{wl}"', workdir,

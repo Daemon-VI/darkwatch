@@ -145,3 +145,93 @@ def test_numeric_setting_errors_name_the_setting(tmp_path):
     p.write_text("settings:\n  timeout: soon\ntargets:\n  - name: X\n", encoding="utf-8")
     with pytest.raises(ValueError, match="settings.timeout"):
         load_watchlist(p)
+
+
+def test_env_example_on_disk_matches_the_one_init_writes():
+    """`darkwatch init` writes ENV_EXAMPLE; the repo ships `.env.example` for people who read the
+    tree first. They drifted apart once, so the file is the test."""
+    from darkwatch.config import ENV_EXAMPLE
+
+    disk = Path(__file__).resolve().parents[1] / ".env.example"
+    assert disk.read_text(encoding="utf-8") == ENV_EXAMPLE
+
+
+def test_env_example_documents_every_secret_the_settings_read():
+    """A secret Darkwatch reads from the environment but never documents is a feature nobody can
+    turn on."""
+    import re
+
+    from darkwatch.config import ENV_EXAMPLE
+
+    source = (Path(__file__).resolve().parents[1] / "src/darkwatch/config.py").read_text(encoding="utf-8")
+    used = set(re.findall(r'environ(?:\.get)?[\(\[]["\'](DARKWATCH_[A-Z_]+)', source))
+    assert used, "the scan found no environment variables at all"
+    documented = set(re.findall(r"^(DARKWATCH_[A-Z_]+)=", ENV_EXAMPLE, re.MULTILINE))
+    assert used <= documented, f"undocumented: {sorted(used - documented)}"
+
+
+def test_example_watchlist_only_names_real_sources():
+    from darkwatch.config import ALL_SOURCES, EXAMPLE_WATCHLIST
+
+    line = next(ln for ln in EXAMPLE_WATCHLIST.splitlines() if ln.strip().startswith("sources:"))
+    named = [s.strip() for s in line.split("[", 1)[1].rstrip("]").split(",")]
+    assert named == list(ALL_SOURCES)
+
+
+def test_person_sites_accept_a_bare_template_or_a_rule(tmp_path):
+    body = """\
+settings:
+  person_sites:
+    - https://plain.example/{username}
+    - url: https://soft.example/u/{username}
+      name: Soft
+      missing_status: 200
+      absent_markers: ["user not found"]
+targets:
+  - name: Jane Doe
+    usernames: [jdoe]
+"""
+    p = tmp_path / "w.yaml"
+    p.write_text(body, encoding="utf-8")
+    sites = load_watchlist(p).settings.person_sites
+    assert sites[0] == {
+        "url": "https://plain.example/{username}", "name": "plain.example",
+        "missing_status": 404, "absent_markers": [],
+    }
+    assert sites[1]["name"] == "Soft" and sites[1]["missing_status"] == 200
+
+
+def test_a_soft_404_site_must_say_how_absence_looks(tmp_path):
+    """Without a marker, a site that answers 200 for a free handle reports every handle as a
+    profile that exists. That was a real false positive, so it is refused at load time."""
+    body = """\
+settings:
+  person_sites:
+    - url: https://soft.example/u/{username}
+      missing_status: 200
+targets:
+  - name: Jane Doe
+    usernames: [jdoe]
+"""
+    p = tmp_path / "w.yaml"
+    p.write_text(body, encoding="utf-8")
+    with pytest.raises(ValueError, match="absent_markers"):
+        load_watchlist(p)
+
+
+@pytest.mark.parametrize(
+    "entry, message",
+    [
+        ("- url: https://x.example/{username}\n      colour: blue", "unknown keys"),
+        ("- https://x.example/profile", "must contain"),
+        ("- ftp://x.example/{username}", "http"),
+        ("- name: no url here", "no url"),
+        ("- url: https://x.example/{username}\n      missing_status: soon", "not a number"),
+    ],
+)
+def test_bad_person_site_entries_are_refused(tmp_path, entry, message):
+    body = f"settings:\n  person_sites:\n    {entry}\ntargets:\n  - name: Jane Doe\n    usernames: [jdoe]\n"
+    p = tmp_path / "w.yaml"
+    p.write_text(body, encoding="utf-8")
+    with pytest.raises(ValueError, match=message):
+        load_watchlist(p)

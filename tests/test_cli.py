@@ -53,7 +53,9 @@ def invoke(*args):
 
 
 def test_version_and_init(tmp_path):
-    assert "darkwatch 0.2.1" in invoke("version").output
+    from darkwatch import __version__
+
+    assert f"darkwatch {__version__}" in invoke("version").output
     target = tmp_path / "w.yaml"
     r = invoke("init", target)
     assert r.exit_code == 0 and target.exists() and (tmp_path / ".env.example").exists()
@@ -78,7 +80,7 @@ def test_run_report_triage_cycle(watchlist_file):
     reports = w.parent / "reports"
     assert (reports / "latest.html").exists() and (reports / "latest.md").exists()
     md = (reports / "latest.md").read_text(encoding="utf-8")
-    assert "fake feed" in md and "[CRITICAL]" in md and "[HIGH]" in md
+    assert "fake feed" in md and md.count("[CRITICAL]") == 2  # leaksite weight 4 + sale + access
     data = json.loads((reports / "latest.json").read_text(encoding="utf-8"))
     ids = [h["id"] for h in data["hits"]]
     assert len(ids) == 2 and data["run"]["source_stats"]["leaksites"]["new_hits"] == 2
@@ -88,7 +90,7 @@ def test_run_report_triage_cycle(watchlist_file):
 
     assert "2 hit(s)" in invoke("hits", "-w", w).output
     crit = invoke("hits", "-w", w, "--min-severity", "CRITICAL", "--snippets").output
-    assert "1 hit(s)" in crit and "Acme Corp was listed" in crit  # the domain hit only
+    assert "2 hit(s)" in crit and "Acme Corp was listed" in crit
     show = invoke("show", ids[0], "-w", w)
     assert "Recommended actions" in show.output and "CERT-In" in show.output
     assert invoke("show", 999, "-w", w).exit_code == 1
@@ -245,3 +247,75 @@ def test_schedule_commands_use_schtasks(monkeypatch, watchlist_file):
     assert invoke("schedule", "run-now").exit_code == 0
     assert invoke("schedule", "remove").exit_code == 0
     assert [c[0] for c in calls] == ["/Create", "/Query", "/Run", "/Delete"]
+
+
+def test_search_finds_stored_hits_by_keyword(watchlist_file):
+    w = watchlist_file
+    assert invoke("run", "-w", w, "--sources", "leaksites", "--no-notify").exit_code == 0
+
+    found = invoke("search", "lockbit", "-w", w).output
+    assert "hit(s) in" in found and "ms" in found  # the timing is part of the answer
+    assert "No hits match" in invoke("search", "nonsense-token", "-w", w).output
+    # every token must match, across any column
+    assert "No hits match" in invoke("search", "lockbit nonsense-token", "-w", w).output
+    assert "hit(s) in" in invoke("search", '"Acme Corp"', "-w", w).output
+
+    assert "hit(s) in" in invoke("search", "-w", w, "--severity", "CRITICAL").output
+    assert "No hits match" in invoke("search", "-w", w, "--severity", "LOW").output
+    assert "hit(s) in" in invoke("search", "-w", w, "--source", "leaksite").output
+    assert "hit(s) in" in invoke("search", "-w", w, "--target", "Acme Corp").output
+    assert invoke("search", "-w", w, "--order", "sideways").exit_code == 2
+
+    facets = invoke("search", "-w", w, "--facets").output
+    assert "severity:" in facets and "CRITICAL" in facets and "source:" in facets
+
+
+def test_search_on_an_empty_database_says_so(watchlist_file):
+    assert "No hits stored yet." in invoke("search", "-w", watchlist_file).output
+
+
+def test_investigate_reports_findings_without_storing_them(watchlist_file, monkeypatch):
+    from darkwatch.search import Finding, Investigation
+
+    captured = {}
+
+    def fake(wl, query, *, term_type="", sources=None, use_tor=True, progress=lambda m: None):
+        captured.update(query=query, term_type=term_type, sources=sources, use_tor=use_tor)
+        progress("looking")
+        return Investigation(
+            query=query, term_type=term_type or "email", sources=["leaksites"], documents=4,
+            seconds=1.2,
+            findings=[Finding("x@y.example", "email", "leaksite", "http://a.onion/x", "Leak",
+                              "x@y.example for sale", ["sale"], 7, "CRITICAL")],
+        )
+
+    monkeypatch.setattr("darkwatch.search.investigate", fake)
+    r = invoke("investigate", "x@y.example", "-w", watchlist_file, "--no-tor")
+    assert r.exit_code == 0, r.output
+    assert "read as email" in r.output and "4 document(s)" in r.output
+    assert "not stored" in r.output and "CRITICAL" in r.output
+    assert captured["use_tor"] is False
+
+    # and nothing reached the database
+    from darkwatch.config import load_watchlist
+    from darkwatch.storage import Store
+
+    with Store(load_watchlist(watchlist_file).settings.db_path) as store:
+        assert store.hits() == []
+
+
+def test_investigate_says_nothing_found_plainly(watchlist_file, monkeypatch):
+    from darkwatch.search import Investigation
+
+    monkeypatch.setattr(
+        "darkwatch.search.investigate",
+        lambda wl, query, **kw: Investigation(query=query, term_type="keyword", sources=["leaksites"]),
+    )
+    out = invoke("investigate", "acme", "-w", watchlist_file).output
+    assert "Nothing found." in out and "not a silent failure" in out
+
+
+def test_investigate_validates_its_options(watchlist_file):
+    assert invoke("investigate", "x", "-w", watchlist_file, "--type", "bogus").exit_code == 2
+    r = invoke("investigate", "x", "-w", watchlist_file, "--sources", "leaksites,nope")
+    assert r.exit_code == 2 and "unknown sources" in r.output

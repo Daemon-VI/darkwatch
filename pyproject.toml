@@ -1,6 +1,6 @@
 [project]
 name = "darkwatch"
-version = "0.2.1"
+version = "0.3.0"
 description = "Darkwatch: watchlist-driven dark web exposure monitor. Finds a person's or company's identifiers on ransomware leak sites, onion pages (over a managed Tor), breach and paste data; scores, dedupes, reports with next actions and alerts."
 readme = "README.md"
 authors = [
@@ -13,10 +13,12 @@ dependencies = [
     "pyyaml>=6.0",
     "typer>=0.12",
     "rich>=13",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.5", "aiosmtpd>=1.4"]
+dev = ["pytest>=8", "ruff>=0.5", "aiosmtpd>=1.4", "httpx>=0.27"]  # httpx: fastapi.testclient
 
 [project.scripts]
 darkwatch = "darkwatch.cli:main"
@@ -27,6 +29,9 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/darkwatch"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/darkwatch/web/static" = "darkwatch/web/static"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

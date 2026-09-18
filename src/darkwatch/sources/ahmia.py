@@ -71,6 +71,11 @@ def parse_ahmia_results(html: str) -> list[dict]:
         url = url.strip()
         if not url or url in seen:
             return
+        # Ahmia's own pages (its time filters and pagination link back to itself, and on the
+        # onion service those links are onion URLs) are never results. Checked on both parse
+        # paths, not just the fallback.
+        if urlparse(url).hostname in AHMIA_HOSTS:
+            return
         seen.add(url)
         results.append(
             {
@@ -106,10 +111,10 @@ def parse_ahmia_results(html: str) -> list[dict]:
             (seen_at.get("data-timestamp", "") or seen_at.get_text(strip=True)) if seen_at else "",
         )
 
-    if not results:  # fallback for changed markup: onion links that are not Ahmia's own pages
+    if not results:  # fallback for changed markup: onion links (add() drops Ahmia's own hosts)
         for a in soup.find_all("a", href=True):
             url = resolve(a["href"])
-            if is_onion(url) and urlparse(url).hostname not in AHMIA_HOSTS:
+            if is_onion(url):
                 add(url, a.get_text(" ", strip=True), "")
     return results
 

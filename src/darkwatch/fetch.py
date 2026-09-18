@@ -82,13 +82,26 @@ def decode_body(raw: bytes, content_type: str, *, truncated: bool = False) -> st
     return raw.decode("cp1252", errors="replace")
 
 
+# Tags that end a run of text. Everything else (b, strong, em, span, a, mark, wbr, ...) is
+# inline: putting a space at its boundary split "<strong>jane.doe</strong>@example.com" into
+# "jane.doe @example.com" and lost the address. Search-result highlighting makes that the
+# normal case on leak sites, not an edge case.
+BLOCK_TAGS = ["address", "article", "aside", "blockquote", "br", "caption", "dd", "div", "dl", "dt", "fieldset", "figcaption", "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hr", "legend", "li", "main", "nav", "ol", "option", "p", "pre", "section", "table", "tbody", "td", "textarea", "tfoot", "th", "thead", "title", "tr", "ul"]
+
+
 def html_to_text(html: str) -> tuple[str, str]:
+    """(title, text). Text runs are joined without a separator inside a block and with a newline
+    between blocks, so inline markup never breaks an identifier in half."""
     soup = BeautifulSoup(html, "html.parser")
     for tag in soup(["script", "style", "noscript", "svg", "img", "video", "audio", "iframe"]):
         tag.decompose()
     title = soup.title.get_text(" ", strip=True) if soup.title else ""
-    text = soup.get_text(" ", strip=True)
-    return title, " ".join(text.split())
+    for tag in soup.find_all(BLOCK_TAGS):
+        tag.insert_before("\n")
+        tag.insert_after("\n")
+    text = soup.get_text("")
+    lines = [" ".join(line.split()) for line in text.split("\n")]
+    return title, "\n".join(line for line in lines if line)
 
 
 def _abort(resp: requests.Response) -> None:

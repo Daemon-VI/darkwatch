@@ -18,7 +18,7 @@ from __future__ import annotations
 import json
 import logging
 from collections.abc import Iterator
-from urllib.parse import quote
+from urllib.parse import quote, urljoin
 
 from ..cache import FeedCache
 from ..config import Settings, Term, normalise
@@ -61,6 +61,10 @@ def normalise_ransomware_live(rec: dict) -> dict:
 
 def normalise_ransomlook(rec: dict) -> dict:
     group = _s(rec.get("group_name"))
+    link = _s(rec.get("link"))
+    # `link` is a path on ransomlook.io when it is set (checked live 2026-09-18), so it resolves
+    # to the post itself. The group page is only the fallback.
+    post_url = urljoin("https://www.ransomlook.io", link) if link.startswith("/") else link
     return {
         "tracker": "RansomLook",
         "victim": _s(rec.get("post_title")),
@@ -71,8 +75,7 @@ def normalise_ransomlook(rec: dict) -> dict:
         "country": "",
         "sector": "",
         "description": _s(rec.get("description")),
-        # RansomLook's `link` is a path on the gang's site, not a full URL
-        "post_url": f"https://www.ransomlook.io/group/{group}" if group else "",
+        "post_url": post_url or (f"https://www.ransomlook.io/group/{group}" if group else ""),
     }
 
 
@@ -132,7 +135,10 @@ def to_documents(records: list[dict], terms: list[Term]) -> Iterator[Document]:
             title=f"{r['group']} leak site: {r['victim']}",
             text=text,
             source="leaksite",
-            signal_text=text,  # a post is short; read all of it, not 160 chars around the name
+            # Signals come from what the tracker recorded, never from our own framing sentence:
+            # scoring "was listed on the leak site of the ransomware group" made every post fire
+            # the sale and access signals, so every leak-site hit came out HIGH or CRITICAL.
+            signal_text=" ".join((r["description"], r["website"], r["sector"], r["country"])),
             evidence_date=r["published"] or r["discovered"],
             meta={
                 "tracker": r["tracker"],

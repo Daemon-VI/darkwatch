@@ -39,7 +39,13 @@ def test_domain_matches_subdomains_only():
 def test_name_tolerates_separators_and_case():
     m = _m("Jane Doe", "name")
     assert len(m.find("JANE  DOE, jane_doe, jane-doe")) == 3
-    assert m.find("janedoe") == []
+    assert len(m.find("Jane, Doe / JANE&DOE / jane'doe")) == 3
+    # The separator is optional between parts this long: a leak-site title writes the run-together
+    # form, and the pre-filter already passes the document, so dropping it here was a silent miss.
+    assert len(m.find("janedoe")) == 1
+    # ...but not when gluing could swallow an unrelated word.
+    assert _m("Al Ice", "name").find("Alice went home") == []
+    assert m.find("Jane. Doe is a separate sentence") == []
 
 
 def test_window_signals_raise_severity():
@@ -76,8 +82,12 @@ def test_leaksite_scores():
     company = Matcher([Term("acme.example", "domain", "Acme"), Term("Acme Corp", "name", "Acme")])
     text = "Acme Corp was listed on the leak site of the ransomware group x. Website: acme.example."
     found = {h.term.type: h for h in company.find(text, source="leaksite")}
-    assert found["domain"].severity == "CRITICAL"  # 2 + 3 + sale + access
-    assert found["name"].severity == "HIGH"  # 1 + 3 + sale + access
+    # leaksite weight is 4: being posted by a gang is the incident, with or without signal words
+    assert found["domain"].severity == "CRITICAL"  # 2 + 4 + sale + access
+    assert found["name"].severity == "CRITICAL"  # 1 + 4 + sale + access
+    # with no signal words at all, being posted by a gang is still HIGH on its own (1or2 + 4)
+    bare = company.find("Acme Corp of acme.example", source="leaksite")
+    assert {h.term.type: h.severity for h in bare} == {"domain": "HIGH", "name": "HIGH"}
 
 
 def test_max_per_term():
@@ -154,7 +164,8 @@ def test_domain_pattern_is_linear_on_dotted_runs():
 
 
 def test_words_accept_any_separator_both_ways():
-    assert len(_m("Acme-Corp", "name").find("Acme Corp, ACME_CORP, acme.corp, acmecorp")) == 3
+    assert len(_m("Acme-Corp", "name").find("Acme Corp, ACME_CORP, acme.corp, acmecorp")) == 4
+    assert len(_m("Acme Inc", "name").find("Acme, Inc. was listed today")) == 1
     assert len(_m("example_person", "username").find("example person")) == 1
 
 

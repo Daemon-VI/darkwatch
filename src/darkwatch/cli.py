@@ -15,8 +15,9 @@ from rich.table import Table
 from rich.text import Text
 
 from . import __version__
-from .config import ENV_EXAMPLE, EXAMPLE_WATCHLIST, load_watchlist
+from .config import ALL_SOURCES, ENV_EXAMPLE, EXAMPLE_WATCHLIST, TERM_TYPES, load_watchlist
 from .matcher import SEVERITIES, Matcher
+from .search import ORDERS
 from .storage import OPEN_STATUSES, STATUSES, Hit, Store
 
 app = typer.Typer(
@@ -96,7 +97,10 @@ def _hits_table(hits: list[Hit], title: str) -> Table:
     t = Table(title=title, show_lines=False, expand=True)
     for col, kw in (
         ("id", {"justify": "right"}), ("sev", {}), ("target", {}), ("term", {}), ("type", {}),
-        ("source", {}), ("signals", {}), ("status", {}), ("title / url", {"overflow": "fold", "ratio": 3}),
+        ("source", {}), ("signals", {}), ("status", {}),
+        # ellipsis, not fold: folding the last column in an 80-column terminal printed the URL one
+        # character per line and made the table unreadable. `show <id>` prints the whole URL.
+        ("title / url", {"overflow": "ellipsis", "no_wrap": True, "ratio": 3}),
     ):
         t.add_column(col, **kw)
     for h in hits:
@@ -259,6 +263,12 @@ def run(
         lock.release()
 
 
+def _csv_opt(value: str, *, upper: bool = False) -> tuple[str, ...] | None:
+    """A comma-separated option as a tuple, or None when it was not given."""
+    parts = [p.strip().upper() if upper else p.strip() for p in value.split(",") if p.strip()]
+    return tuple(parts) or None
+
+
 def _current_target_hits(rows: list[Hit], wl) -> tuple[list[Hit], int]:
     """Hits for targets still in the watchlist, and how many were left out."""
     names = {t.name for t in wl.targets}
@@ -295,6 +305,109 @@ def hits(
     if show_snippets:
         for h in rows:
             console.print(Text(f"#{h.id} ", style="bold") + Text(h.snippet), "\n")
+
+
+@app.command("search")
+def search_cmd(
+    query: Annotated[str, typer.Argument(help='Words to look for. Quote a phrase: "for sale".')] = "",
+    watchlist: WatchlistOpt = DEFAULT_WATCHLIST,
+    severity: Annotated[str, typer.Option("--severity", help="Comma-separated severities.")] = "",
+    source: Annotated[str, typer.Option("--source", help="Comma-separated document sources.")] = "",
+    target: Annotated[str, typer.Option("--target", help="Comma-separated target names.")] = "",
+    term_type: Annotated[str, typer.Option("--type", help=f"Comma-separated: {', '.join(TERM_TYPES)}.")] = "",
+    show_all: Annotated[bool, typer.Option("--all", help="Include resolved and false-positive hits.")] = False,
+    order: Annotated[str, typer.Option("--order", help=f"One of {', '.join(ORDERS)}.")] = "score",
+    limit: Annotated[int, typer.Option("--limit", "-n")] = 50,
+    facets_only: Annotated[bool, typer.Option("--facets", help="Show the counts per filter instead of the hits.")] = False,
+) -> None:
+    """Search stored findings by keyword, across every column the report shows."""
+    from .search import facets as facet_counts
+    from .search import search_hits
+
+    wl = _load(watchlist)
+    if order not in ORDERS:
+        err.print(f"[red]--order must be one of {', '.join(ORDERS)}[/red]")
+        raise typer.Exit(2)
+    statuses = None if show_all else OPEN_STATUSES
+    with Store(wl.settings.db_path) as store:
+        if facets_only:
+            counts = facet_counts(store, statuses)
+            for name, items in counts.items():
+                if items:
+                    line = "  ".join(f"{i['value']} ({i['count']})" for i in items)
+                    console.print(Text(f"{name}: ", style="bold") + Text(line), highlight=False)
+            return
+        page = search_hits(
+            store, query, statuses=statuses, severities=_csv_opt(severity, upper=True),
+            sources=_csv_opt(source), targets=_csv_opt(target), term_types=_csv_opt(term_type),
+            order=order, limit=limit,
+        )
+    if not page.hits:
+        # "nothing stored" and "nothing matched your filter" are different answers
+        if query:
+            console.print(f"No hits match {query!r}.")
+        elif any((severity, source, target, term_type)):
+            console.print("No hits match those filters.")
+        else:
+            console.print("No hits stored yet. Run `darkwatch run` first.")
+        return
+    shown = f"{len(page.hits)} of {page.total}" if page.total > len(page.hits) else f"{page.total}"
+    console.print(_hits_table(page.hits, f"{shown} hit(s) in {page.took_ms} ms"))
+
+
+@app.command()
+def investigate(
+    query: Annotated[str, typer.Argument(help="An email, domain, phone, handle, name or keyword.")],
+    watchlist: WatchlistOpt = DEFAULT_WATCHLIST,
+    term_type: Annotated[str, typer.Option("--type", help=f"Force one of {', '.join(TERM_TYPES)}.")] = "",
+    sources: Annotated[str, typer.Option("--sources", help="Comma-separated subset of sources.")] = "",
+    no_tor: Annotated[bool, typer.Option("--no-tor", help="Skip onion fetches.")] = False,
+    json_out: Annotated[bool, typer.Option("--json", help="Print the result as JSON.")] = False,
+) -> None:
+    """Search the live sources for one value without adding it to the watchlist.
+
+    Nothing is stored: this answers "what is out there about this?" for a value you are only
+    asking about once, such as an address someone just gave you.
+    """
+    import json as _json
+
+    from .search import investigate as run_investigation
+
+    wl = _load(watchlist)
+    if term_type and term_type not in TERM_TYPES:
+        err.print(f"[red]--type must be one of {', '.join(TERM_TYPES)}[/red]")
+        raise typer.Exit(2)
+    picked = list(_csv_opt(sources) or ())
+    unknown = [s for s in picked if s not in ALL_SOURCES]
+    if unknown:
+        err.print(f"[red]unknown sources {unknown}; available: {list(ALL_SOURCES)}[/red]")
+        raise typer.Exit(2)
+    result = run_investigation(
+        wl, query, term_type=term_type, sources=picked or None,
+        use_tor=not no_tor, progress=_progress,
+    )
+    if json_out:
+        console.print_json(_json.dumps(result.as_dict()))
+        return
+    console.print(
+        f"[bold]{query}[/bold] read as {result.term_type}; "
+        f"{result.documents} document(s) from {', '.join(result.sources)} in {result.seconds:.1f}s"
+    )
+    for e in result.errors:
+        err.print(f"[yellow]{e}[/yellow]")
+    if not result.findings:
+        console.print("[green]Nothing found.[/green] That is a real negative, not a silent failure.")
+        return
+    table = Table(title=f"{len(result.findings)} finding(s) — not stored")
+    for column in ("severity", "source", "title", "url", "signals"):
+        table.add_column(column)
+    for f in result.findings:
+        table.add_row(
+            Text(f.severity, style=SEV_STYLE.get(f.severity, "")), f.source,
+            (f.title or "")[:60], f.url[:70], ", ".join(f.signals),
+        )
+    console.print(table)
+    console.print("[dim]Add the value to your watchlist to track it over time.[/dim]")
 
 
 @app.command()
@@ -398,11 +511,39 @@ def report(
 
 
 @app.command()
+def web(
+    watchlist: WatchlistOpt = DEFAULT_WATCHLIST,
+    port: Annotated[int, typer.Option("--port", "-p", help="Port on 127.0.0.1.")] = 8787,
+    host: Annotated[str, typer.Option("--host", help="Bind address; loopback only.")] = "127.0.0.1",
+    no_open: Annotated[bool, typer.Option("--no-open", help="Do not open a browser.")] = False,
+) -> None:
+    """Open the Darkwatch dashboard: search, triage, charts, scans and deep search."""
+    try:
+        from .web import WebConfig, serve
+    except ImportError as exc:  # pragma: no cover - only when the extra is missing
+        err.print(f"[red]the dashboard needs fastapi and uvicorn:[/red] uv sync --all-extras ({exc})")
+        raise typer.Exit(2) from exc
+
+    wl = _load(watchlist)
+    if host not in ("127.0.0.1", "localhost", "::1"):
+        err.print("[red]--host must stay on loopback: the dashboard shows personal data[/red]")
+        raise typer.Exit(2)
+    config = WebConfig(watchlist=wl.path, host=host, port=port)
+    console.print(f"Darkwatch dashboard: {config.url}")
+    console.print("[dim]That link carries a one-time token for this session. Ctrl+C to stop.[/dim]")
+    try:
+        serve(config, open_browser=not no_open)
+    except OSError as exc:
+        err.print(f"[red]could not start the dashboard on {host}:{port}:[/red] {exc}")
+        raise typer.Exit(1) from exc
+
+
+@app.command()
 def shortcut(
     watchlist: WatchlistOpt = DEFAULT_WATCHLIST,
     remove: Annotated[bool, typer.Option("--remove", help="Delete the shortcuts instead of creating them.")] = False,
 ) -> None:
-    """Put Darkwatch shortcuts on the Desktop (Windows): 'Scan now' and 'Report'."""
+    """Put Darkwatch shortcuts on the Desktop (Windows): the dashboard, 'Scan now' and 'Report'."""
     from . import desktop
 
     if sys.platform != "win32":
@@ -420,7 +561,7 @@ def shortcut(
         raise typer.Exit(1) from exc
     for lnk in made:
         console.print(f"shortcut: {lnk}")
-    console.print("Double-click 'Darkwatch - Scan now' on your Desktop to run a scan.")
+    console.print("Double-click 'Darkwatch' on your Desktop to open the dashboard.")
 
 
 @app.command("open")
