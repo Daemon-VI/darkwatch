@@ -187,7 +187,7 @@ credited at most one point, so they surface without shouting.
 Where signals come from depends on the evidence:
 
 - **Onion and seed pages:** the page title plus 160 characters on either side of the match.
-- **Leak-site posts:** the whole post.
+- **Leak-site posts:** the tracker's whole record for that victim — the description, website, sector and country — not the sentence Darkwatch writes around it.
 - **Breaches:** the data classes the breach exposed, such as "Passwords" or "Dates of birth", rather than the prose describing it.
 - **Infostealer infections:** the fact of the infection. A stealer takes saved passwords and session cookies by definition, so that is not something to look for in prose; corporate services on the same machine add the access signal.
 - **Public profiles:** none. A profile a person put up is expected, so it scores LOW; the page's own wording never manufactures a breach signal. It rises only if another source finds the same identifier somewhere worse.

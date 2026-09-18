@@ -81,7 +81,7 @@ CORPUS: list[tuple[str, str, str]] = [
     ("username", USER, "github.com/night_owl"),
     ("username", USER, "NIGHT_OWL"),
     ("username", USER, "night-owl"),
-    ("username", USER, "night.vi"),
+    ("username", USER, "night.owl"),
     ("username", USER, "posted by night_owl on 2026-01-02"),
     ("username", USER, "handle night_owl sells access"),
     ("username", USER, "nick: night_owl"),
@@ -148,9 +148,15 @@ def _match(kind: str, value: str, text: str) -> bool:
 
 
 def test_recall_on_realistic_renderings():
+    """Full recall, and the docs say so.
+
+    The threshold was 0.96 while the docs claimed 100%, which let a corpus case with a typo in it
+    sit undetected: the number in PROJECT_STATE was no longer guarded by anything. A miss here is
+    either a real regression or a corpus case that needs fixing; both deserve a failing test.
+    """
     misses = [(k, t) for k, v, t in CORPUS if not _match(k, v, t)]
     recall = (len(CORPUS) - len(misses)) / len(CORPUS)
-    assert recall >= 0.96, f"recall {recall:.0%} ({len(misses)} misses): {misses}"
+    assert not misses, f"recall {recall:.1%} ({len(misses)} of {len(CORPUS)} missed): {misses}"
 
 
 @pytest.mark.parametrize(("kind", "value", "text"), FALSE_POSITIVES)
@@ -178,6 +184,7 @@ def test_per_type_recall_is_reported():
     by_type: dict[str, list[bool]] = {}
     for kind, value, text in CORPUS:
         by_type.setdefault(kind, []).append(_match(kind, value, text))
+    assert sorted(by_type) == ["domain", "email", "keyword", "name", "phone", "username"]
     for kind, results in by_type.items():
         hit = sum(results)
-        assert hit >= len(results) - 1, f"{kind}: only {hit}/{len(results)} matched"
+        assert hit == len(results), f"{kind}: only {hit}/{len(results)} matched"

@@ -56,7 +56,8 @@ darkwatch web ─ web.server.build_app ─ uvicorn on 127.0.0.1
 | `search.py` | Keyword search over stored hits (`search_hits`, `facets`, `timeline`, `summary`) and `investigate`: an ad-hoc run of the live sources for one value that is never persisted. |
 | `web/server.py` | The FastAPI app: the token and Host guard as a router dependency, the read, triage, job and export endpoints, and an SSE event stream. |
 | `web/jobs.py` | `Job` (an event log with a cursor) and `JobManager` (one job at a time in a worker thread; a second request is refused with 409). |
-| `web/static/` | The dashboard itself: one HTML page, one stylesheet, `app.js`, and `shader.js` (a WebGL2 contour field). No build step and no framework. |
+| `web/__init__.py` | Re-exports `build_app`, `serve` and `WebConfig`, so the CLI imports the dashboard through one name. |
+| `web/static/` | The dashboard itself: one HTML page, one stylesheet, `app.js`, `shader.js` (a WebGL2 contour field), and `vendor/` with five GSAP bundles served locally. No build step and no framework. |
 | `sources/__init__.py` | `Document` (with `signal_text`, `evidence_date`), `SourceStats`, `SourceContext` (sessions, throttle, the shared onion budget, errors), `terms_present` pre-filter, and `registry()`. |
 | `sources/leaksites.py` | Tracker normalisation, the merge across the two trackers, per-post evidence URLs, and documents that carry whole-post `signal_text`. |
 | `sources/stealers.py` | Hudson Rock Cavalier lookups; one Document per infected machine, carrying the masked passwords, logins and IP the free tier returns. |
@@ -73,6 +74,7 @@ darkwatch web ─ web.server.build_app ─ uvicorn on 127.0.0.1
 | `schedule.py` | Task Scheduler XML, `schtasks` wrappers, and `RunLock` (an OS byte-range lock on `data/run.lock`). |
 | `desktop.py` | Windows `.lnk` shortcuts ("Darkwatch" → the dashboard, "Scan now", "Report") built through WScript.Shell, with a read-back for verification. |
 | `cli.py`, `__main__.py` | Typer commands. `--log-file` sends all output to a file for the pythonw task. |
+| `__init__.py` | `__version__`, which the CLI, the report and the dashboard all report. |
 
 ## Decisions and why
 
@@ -102,8 +104,10 @@ darkwatch web ─ web.server.build_app ─ uvicorn on 127.0.0.1
 - **Signals come from the right context.**
   - Onion pages: the title plus the match window. A page titled "Leaks" that lists
     `Canva.Com 60,390,129` is sale evidence, even though the window is just a table row.
-  - Leak-site posts: the whole post, because a victim name at the start is 1,000 characters
-    away from "passport scans … bank accounts".
+  - Leak-site posts: the tracker's whole record for that victim — description, website, sector
+    and country — because a victim name at the start of a post is 1,000 characters away from
+    "passport scans … bank accounts". Deliberately *not* the rendered document, whose first
+    sentence is Darkwatch's own framing; scoring that was the bug fixed in v0.3.0.
   - Breaches: their data classes, because prose such as "was breached" says nothing about
     what was exposed.
 - **A username's public footprint is a source, not an alarm.** For each `username`, the `sites`
@@ -116,9 +120,10 @@ darkwatch web ─ web.server.build_app ─ uvicorn on 127.0.0.1
   default site list was chosen by testing live which sites give a clean 404 for a free handle:
   the list grew from 7 to 24 on 2026-09-18, when 19 of 36 further candidates passed and 17 of
   those were new. GitLab, Letterboxd, Product Hunt and Codeforces answer a block or an error
-  rather than a verdict; Steam, Telegram, Twitch, Last.fm, ArtStation, Ko-fi and PyPI soft-404
-  with no stable marker, which would report every handle as a profile; about.me, Bandcamp, Vimeo,
-  Buy Me a Coffee and Goodreads 404 even for a handle that exists. All 17 are left out, and a site
+  rather than a verdict, and Behance returns no text at all; Steam, Telegram, Twitch, Last.fm,
+  ArtStation, Ko-fi and PyPI soft-404 with no stable marker, which would report every handle as a
+  profile; about.me, Bandcamp, Vimeo, Buy Me a Coffee and Goodreads 404 even for a handle that
+  exists. All 17 are left out, and a site
   the operator adds through `person_sites` can declare its own `missing_status` and
   `absent_markers` rather than being trusted to 404.
 - **An infostealer infection is scored like a leak-site post, because it is worse.** A breach

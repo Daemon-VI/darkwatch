@@ -112,7 +112,9 @@ hand, and both said "not found", so the "no exposure" result is corroborated rat
 | `xposedornot` | no match, 0.7 s |
 | `sites` | 5 of 48 checks matched across 24 sites in 7.5 s, 4 new hits |
 | `ahmia` | 2,168 listings checked over the onion service; 14 of 17 onion pages fetched; 0 hits; 219.5 s |
-| Dashboard against the real database | `/api/summary` served 9 open hits, 18 total, 90 documents, version 0.3.0, all 8 sources listed as enabled |
+| `darkwatch investigate canva.com --no-tor` | 2 findings in 1.8 s, both MEDIUM and marked `dated`: HIBP's Canva breach and XposedOrNot's, the latter through the new domain endpoint. Nothing was written to the database. |
+| Dashboard against the real database | `/api/summary` served 9 open hits, 18 total, 90 documents, version 0.3.0, all 8 sources listed as enabled; keyword search over `/api/hits` returned 5 hits for `github`, 2 for `huggingface`, 1 for `docker hub` and 0 for `nonsense`, in 0.66 to 2.85 ms |
+| Desktop shortcuts | all three created and verified by reading each `.lnk` back: `Darkwatch` -> `python.exe -m darkwatch web`, `Scan now` -> `run --open`, `Report` -> `pythonw.exe -m darkwatch open` |
 
 **The four new findings were verified by hand, and all four are real:**
 
