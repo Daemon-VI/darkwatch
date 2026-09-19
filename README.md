@@ -18,15 +18,17 @@ around the match, and a hash of the page so a changed page can be recognised —
 
 ## What it searches
 
-Eight sources. Seven of them need no key at all.
+Ten sources. Nine of them need no key at all.
 
 | Source | Needs | What it gives |
 |---|---|---|
 | `leaksites` | nothing | Every post that ransomware gangs have made on their leak sites, as crawled by ransomware.live (the full history since 2013, one bulk file cached for 12 hours) and RansomLook (last 30 days). Claim pages are never fetched. |
+| `recentattacks` | nothing | Recently reported cyber-attacks and breaches — gang-claimed or not — from ransomware.live's incident feed, so an incident a victim discloses or the press covers is caught before any leak-site post exists. |
 | `stealers` | nothing | Machines infected by credential-stealing malware that had a watched email, username or domain saved in the browser, via Hudson Rock's Cavalier OSINT API. This is the one source that says *your own machine*, rather than a service you used. The free tier masks the stolen values (`P********3`), which is all Darkwatch wants: enough to recognise the machine, never the credential. |
 | `leakcheck` | nothing | Which breaches hold each email **or username**, and which data classes they exposed (`ssn`, `dob`, `password`, `address`). The only source that answers for a handle, so a person whose strongest identifier is a username is not invisible. |
 | `xposedornot` | nothing | Breaches and pastes that included each email, plus breaches of the service at each watched domain, with the data classes exposed. The free tier allows 25 lookups per hour. |
 | `hibp` | nothing / `DARKWATCH_HIBP_KEY` | Whether a watched domain's own service was breached (free). With a paid key, per-email breaches and pastes too. |
+| `telegram` | nothing | Public Telegram threat-actor and infostealer channels (from the community-maintained deepdarkCTI index, ~940 channels), searched through Telegram's no-login web preview. This is where much leak and stealer-log trading now happens. |
 | `sites` | nothing | Which of 24 public sites carry each watched username — GitHub, X, YouTube, Mastodon, npm, Docker Hub, Hugging Face, Substack, Tumblr and more. A found profile is then read for the person's other identifiers, so a handle leads to the real name or email printed on that page. The checks run in parallel, since each site is a different host. |
 | `ahmia` | Tor for pages | Ahmia's onion search index. With Tor verified, the search itself goes over Tor to Ahmia's onion service, and never over the clearnet (`ahmia_route`). Every listing is checked locally for the exact term, then matching pages are fetched over Tor as text, plus the top 5 per query. |
 | `seeds` | Tor for onion URLs | Pages you choose, re-read every run, with same-host links followed one level deep. |
@@ -34,6 +36,31 @@ Eight sources. Seven of them need no key at all.
 Every site in `sites` was verified against live responses with a handle known to exist and one
 known to be free; a site that answers 200 for a free handle without a marker that proves absence
 is left out, because it would report every handle as a profile. Add your own with `person_sites`.
+
+## Deep scan
+
+```powershell
+uv run darkwatch run --deep --open
+```
+
+The ordinary run is tuned to finish in a few minutes. `--deep` trades time for reach and can run
+an hour or more:
+
+- **every source**, whatever the watchlist enables;
+- **all ~940 Telegram channels** instead of the first 40;
+- **onion depth raised** — up to 50 pages fetched per query instead of 5, a 2,000-page budget
+  instead of 150;
+- **links followed one level** out of any onion page that already mentions a watched identifier,
+  so Darkwatch reads the actual dark-web site, not just the search listing.
+
+Two things `--deep` still will not do, by design:
+
+- **It never logs in, joins, pays, or solves a CAPTCHA**, so forums and markets that wall their
+  content behind an account (BreachForums successors, XSS, carding markets) are not reached —
+  there is no read-only way in, and creating an account is out of scope.
+- **It never blind-crawls.** Links are followed only *out of pages that already match a watched
+  identifier*, and onion discovery still goes through Ahmia's abuse filter. Darkwatch does not
+  wander an unfiltered index, which is what keeps illegal material off the machine.
 
 ## The dashboard
 
@@ -168,8 +195,8 @@ A hit's score adds up four parts:
 1. **The identifier's weight:** phone 3, email 2, domain 2, name 1, username 1, keyword 1.
 2. **One point per signal group.** There are six: credentials, financial, government ID, sale,
    doxxing, and access (which covers RDP, VPN, initial access and ransomware wording).
-3. **The evidence's weight:** leak site 4, infostealer infection 4, onion page 2, seed page 2,
-   breach 2, paste 2, Ahmia listing 1, public profile 0.
+3. **The evidence's weight:** leak site 4, infostealer infection 4, reported attack 3, onion
+   page 2, seed page 2, breach 2, paste 2, Telegram channel 2, Ahmia listing 1, public profile 0.
 4. **Minus one point if the evidence is at least 3 years old.** The hit is then marked `dated`.
 
 Two things are scored down rather than up, because they were the false positives that mattered:

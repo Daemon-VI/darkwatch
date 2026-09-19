@@ -194,16 +194,23 @@ def run(
     sources: Annotated[str, typer.Option("--sources", "-s", help="Comma-separated subset, e.g. leaksites,ahmia.")] = "",
     no_tor: Annotated[bool, typer.Option("--no-tor", help="No Tor at all: no onion page fetches.")] = False,
     no_notify: Annotated[bool, typer.Option("--no-notify", help="Do not send alerts.")] = False,
+    deep: Annotated[bool, typer.Option("--deep", help="Deep scan: every source, all Telegram channels, far more onion pages, links followed one level. Takes an hour or more.")] = False,
     formats: FormatsOpt = "md,html,json",
     open_report: Annotated[bool, typer.Option("--open", help="Open the HTML report when done.")] = False,
 ) -> None:
     """Search every enabled source for every watchlist term, store new hits, write a report, alert."""
     from .notify import notify
     from .report import write_reports
-    from .scanner import run_scan
+    from .scanner import deepen, run_scan
     from .schedule import RunLock
 
     wl = _load(watchlist)
+    if deep:
+        wl.settings = deepen(wl.settings)
+        console.print(
+            "[yellow]deep scan:[/yellow] every source, all Telegram channels, onion depth raised "
+            "and links followed one level. This can take an hour or more; Ctrl+C to stop."
+        )
     fmts = _formats(formats)
     wanted = [x.strip() for x in sources.split(",") if x.strip()] or None
     lock = RunLock(Path(wl.settings.db_path).parent / "run.lock")

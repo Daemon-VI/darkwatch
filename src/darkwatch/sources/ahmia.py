@@ -35,6 +35,7 @@ from ..config import Settings, Term, is_onion
 from ..fetch import Page, fetch_text
 from ..matcher import compile_term
 from . import Document, SourceContext, terms_present
+from .seeds import same_host_links
 
 log = logging.getLogger(__name__)
 
@@ -186,7 +187,10 @@ class AhmiaSource:
         assert ctx.tor is not None
         s = ctx.settings
         try:
-            page = fetch_text(ctx.tor, url, timeout=s.timeout, max_bytes=s.max_page_bytes)
+            page = fetch_text(
+                ctx.tor, url, timeout=s.timeout, max_bytes=s.max_page_bytes,
+                keep_html=s.onion_link_depth > 0,  # deep scan needs the links, not only the text
+            )
         except Exception as exc:  # noqa: BLE001 - one hostile page must not end the source
             log.warning("onion fetch crashed for %s: %s", url, type(exc).__name__)
             return None
@@ -194,6 +198,51 @@ class AhmiaSource:
             with ctx._lock:
                 ctx.stats.onion_ok += 1
         return page
+
+    def _follow(
+        self, ctx: SourceContext, roots: dict[str, str], patterns: dict, fetched: set[str],
+    ) -> Iterator[Document]:
+        """Deep scan: walk same-host onion links out from pages that already matched a term.
+
+        Only pages that mention a watched identifier are ever expanded, so Darkwatch follows links
+        *into* the sites that concern the target and never blind-crawls an unfiltered index. Bounded
+        by `onion_link_depth`, the shared onion budget, and `max_seed_pages` links per matched page.
+        """
+        depth_limit = ctx.settings.onion_link_depth
+        # seed the queue with the same-host links of each matched page
+        queue: list[tuple[str, int]] = []
+        for src_url, html in roots.items():
+            hrefs = [a["href"] for a in BeautifulSoup(html, "html.parser").find_all("a", href=True)]
+            for link in same_host_links(src_url, hrefs)[: ctx.settings.max_seed_pages]:
+                if is_onion(link) and link not in fetched:
+                    queue.append((link, 1))
+        followed = 0
+        while queue:
+            url, depth = queue.pop(0)
+            if url in fetched:
+                continue
+            if not ctx.take_onion_budget():
+                ctx.error("deep scan: onion budget reached while following links")
+                break
+            fetched.add(url)
+            ctx.throttle("tor-follow")
+            ctx.progress(f"ahmia: following onion link (depth {depth}) {url}")
+            page = self._fetch(ctx, url)
+            if page is None or not page.text:
+                continue
+            followed += 1
+            present = {t.value for t, rx in patterns.items() if rx.search(page.text)}
+            yield Document(
+                url=url, title=page.title or url, text=page.text, source="onion",
+                meta={"followed_depth": depth, "listing_matched": False},
+            )
+            if present and depth < depth_limit and page.html:
+                hrefs = [a["href"] for a in BeautifulSoup(page.html, "html.parser").find_all("a", href=True)]
+                for link in same_host_links(page.final_url, hrefs)[: ctx.settings.max_seed_pages]:
+                    if is_onion(link) and link not in fetched:
+                        queue.append((link, depth + 1))
+        if followed:
+            ctx.stats.note = (ctx.stats.note + "; " if ctx.stats.note else "") + f"{followed} linked onion page(s) followed"
 
     def discover(self, terms: list[Term], ctx: SourceContext) -> Iterator[Document]:
         s = ctx.settings
@@ -209,6 +258,7 @@ class AhmiaSource:
         page_wait = s.timeout * 4 + 15  # fetch_text bounds a page at ~3x timeout plus connect time
         fetched: set[str] = set()
         page_terms: dict[str, set[str]] = {}  # url -> term values the matcher finds on the page
+        roots: dict[str, str] = {}  # deep scan: matched onion page url -> its HTML, to follow links from
         route_idx = 0
         token: dict[str, str] | None = None
         listings_checked = 0
@@ -268,6 +318,8 @@ class AhmiaSource:
                         if page is not None and page.text:
                             # remember which terms the matcher finds, not the page (memory is tight)
                             page_terms[url] = {t.value for t, rx in patterns.items() if rx.search(page.text)}
+                            if s.onion_link_depth > 0 and page.html and page_terms[url]:
+                                roots[url] = page.html  # a matched page: deep scan follows its links
                             yield Document(
                                 url=url,
                                 title=page.title or res["title"],
@@ -284,6 +336,9 @@ class AhmiaSource:
                             source="ahmia-index",
                             meta={"query": q, "last_seen": res.get("last_seen", "")},
                         )
+            if roots and tor_ready:
+                ctx.progress(f"ahmia: deep scan following links from {len(roots)} matched onion page(s)")
+                yield from self._follow(ctx, roots, patterns, fetched)
         finally:
             pool.shutdown(wait=False, cancel_futures=True)
         note = [f"{listings_checked} listings checked via {routes[min(route_idx, len(routes) - 1)][0]}"]

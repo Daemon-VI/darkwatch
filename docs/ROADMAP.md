@@ -1,9 +1,8 @@
 # Darkwatch — roadmap
 
-v0.3.0 is complete end to end on this laptop: eight sources, managed Tor, the report, triage,
-alerts, the daily task, and a local dashboard with keyword search, charts, live scans and
-one-off investigations. `PROJECT_STATE.md` has the evidence. The items below extend it; none of
-them is needed for it to work.
+v0.3.0 is complete end to end on this laptop: ten sources, managed Tor, the report, triage,
+alerts, the daily task, a local dashboard, and a `--deep` scan mode. `PROJECT_STATE.md` has the
+evidence. The items below extend it; none of them is needed for it to work.
 
 ## Needs Rithik
 
@@ -27,14 +26,16 @@ them is needed for it to work.
 - **First-class `ip` and `wallet` term types.** Both can be watched today as `keyword`, which
   works but is matched as plain text, so `10.0.0.1` also matches inside `110.0.0.15`. They
   deserve their own patterns and weights.
-- **`ransomware.live /v2/recentcyberattacks`.** Press-reported incidents, which reach a victim
-  that no gang has posted about yet.
 - **Paste coverage beyond XposedOrNot.** The onion paste services found on 2026-09-16 are
   either encrypted by design (PrivateBin and similar) or were not reliably reachable.
   `PROJECT_STATE.md` has the details. A Pastebin scraping-API subscription would be the
   reliable clearnet option.
 - **A second onion search engine behind Tor.** Ahmia misses forums that block crawlers.
-  Candidates must have an abuse filter, the same rule Ahmia was chosen for.
+  Candidates must have an abuse filter, the same rule Ahmia was chosen for. deepdarkCTI lists ~30
+  onion search engines, but most do not filter abuse material, so each would need vetting first.
+- **Account-walled forums and markets.** BreachForums successors, XSS, Exploit, carding markets:
+  no read-only way in. Covering them would mean holding accounts — a different tool, and a
+  deliberate non-goal here.
 - **Lookalike domains for company targets.** Add a dnstwist-style permutation check with DNS
   resolution, on the clearnet.
 - **A second identity source for names.** Every current source keys on an identifier. A person
@@ -46,6 +47,11 @@ them is needed for it to work.
   at the end of the run. When Tor Browser supplies Tor instead, that second bound is gone.
 
 ## Done since v0.2.1
+
+- **Deep scan** (`run --deep`): every source, all ~940 Telegram channels, onion depth 5→50 and
+  budget 150→2000, and same-host onion links followed one level out of matched pages.
+- **`recentattacks`** (ransomware.live recent-incidents feed) and **`telegram`** (public
+  threat-actor and infostealer channels via the no-login web preview).
 
 - **Dashboard** (`darkwatch web`, and the "Darkwatch" Desktop shortcut): search, filters with
   live counts, charts, triage, export, live scans over SSE, and deep search.

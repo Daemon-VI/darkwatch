@@ -18,6 +18,8 @@ log = logging.getLogger(__name__)
 # Document.source values and what they mean. matcher.SOURCE_WEIGHT is keyed by these.
 DOC_SOURCES = {
     "leaksite": "a ransomware / extortion group's leak site listing (via ransomware.live, RansomLook)",
+    "attack": "a recently reported cyber-attack, gang-claimed or not (ransomware.live)",
+    "telegram": "a public Telegram threat-actor or infostealer channel",
     "onion": "an onion page fetched over Tor",
     "ahmia-index": "Ahmia's stored title and description for an onion page",
     "stealer": "an infostealer-infected machine that had the identifier saved (Hudson Rock)",
@@ -137,18 +139,22 @@ def registry() -> dict[str, Source]:
     from .hibp import HibpSource
     from .leakcheck import LeakCheckSource
     from .leaksites import LeakSiteSource
+    from .recentattacks import RecentAttacksSource
     from .seeds import SeedSource
     from .sites import SiteSource
     from .stealers import StealerSource
+    from .telegram import TelegramSource
     from .xposedornot import XposedOrNotSource
 
     sources: tuple[Source, ...] = (
         LeakSiteSource(),
+        RecentAttacksSource(),
         StealerSource(),
         LeakCheckSource(),
         XposedOrNotSource(),
         HibpSource(),
         SiteSource(),
+        TelegramSource(),
         AhmiaSource(),
         SeedSource(),
     )

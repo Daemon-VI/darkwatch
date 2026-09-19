@@ -19,7 +19,8 @@ import yaml
 
 TERM_TYPES = ("email", "domain", "phone", "username", "name", "keyword")
 ALL_SOURCES = (
-    "leaksites", "stealers", "leakcheck", "xposedornot", "hibp", "sites", "ahmia", "seeds",
+    "leaksites", "recentattacks", "stealers", "leakcheck", "xposedornot", "hibp",
+    "sites", "telegram", "ahmia", "seeds",
 )
 
 
@@ -135,6 +136,7 @@ class Settings:
     max_results_per_term: int = 5000  # Ahmia listings checked per query (local, cheap); excess is reported
     ahmia_route: str = "auto"  # auto: over Tor when verified, else clearnet; tor: Tor only; clearnet
     onion_fetch_top: int = 5  # top-ranked Ahmia results fetched per query even without a listing match
+    onion_link_depth: int = 0  # deep scan: follow same-host onion links this many levels from a matched page
     max_onion_fetches: int = 150  # hard cap on onion page fetches per run
     max_seed_pages: int = 50
     person_site_builtins: bool = True  # check the built-in profile sites (GitHub, Dev.to, ...)
@@ -142,6 +144,7 @@ class Settings:
     # Extra profile sites. Each entry is either a "{username}" URL template, or a mapping that
     # also says how the site reports a free handle (see _person_sites).
     person_sites: list = field(default_factory=list)
+    telegram_max_channels: int = 40  # public Telegram channels checked; 0 = all (deep scan sets this)
     leak_feed_max_age_hours: float = 12.0  # re-download leak-site feeds at most this often
     ransomlook_days: int = 30
     # what to run
@@ -470,7 +473,7 @@ settings:
   tor_manage: auto                      # start tor.exe for the run when nothing is listening on that port
   tor_exe: ""                           # path to tor.exe; empty = auto-detect (PATH, ../tools/tor-*/tor/tor.exe)
   require_tor: true                     # never fetch .onion pages unless the proxy is verified to be Tor
-  sources: [leaksites, stealers, leakcheck, xposedornot, hibp, sites, ahmia, seeds]
+  sources: [leaksites, recentattacks, stealers, leakcheck, xposedornot, hibp, sites, telegram, ahmia, seeds]
   ahmia_route: auto                     # auto: search Ahmia over Tor when Tor is verified; tor; clearnet
   onion_fetch_top: 5                    # Ahmia results fetched per query even when the listing lacks the term
   max_onion_fetches: 150

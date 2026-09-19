@@ -12,9 +12,9 @@ import contextlib
 import logging
 import time
 from collections.abc import Callable, Iterable
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 
-from .config import Watchlist
+from .config import Settings, Watchlist
 from .matcher import Match, Matcher
 from .sources import Document, SourceContext, SourceStats, registry
 from .storage import Hit, Store
@@ -112,6 +112,22 @@ def scan_documents(
                     h = store.get(up.id)
                     if h is not None:
                         result.escalated_hits.append(h)
+
+
+def deepen(settings: Settings) -> Settings:
+    """A copy of `settings` tuned for a deep scan: every source, no channel cap, far more onion
+    pages, and links followed one level from a matched onion page. It only raises limits, so a
+    watchlist that already sets something higher is left alone."""
+    from .config import ALL_SOURCES
+
+    return replace(
+        settings,
+        sources=list(ALL_SOURCES),
+        telegram_max_channels=0,
+        onion_fetch_top=max(50, settings.onion_fetch_top),
+        max_onion_fetches=max(2000, settings.max_onion_fetches),
+        onion_link_depth=max(1, settings.onion_link_depth),
+    )
 
 
 def run_scan(

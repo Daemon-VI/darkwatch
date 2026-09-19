@@ -119,6 +119,12 @@ SOURCE_WEIGHT = {
     "seed": 2,
     "breach": 2,
     "paste": 2,
+    # a reported incident naming a watched company; the same standing as a leak-site listing
+    # once the matcher confirms the victim, but sourced from disclosure rather than a gang.
+    "attack": 3,
+    # a post in a public leak/infostealer channel: not the incident itself, but a live trading
+    # venue naming the identifier. Scored like a breach; infostealer channels add credential signals.
+    "telegram": 2,
     "ahmia-index": 1,
     "site": 0,  # a public profile the person put up is expected; only its contents raise it
     "file": 0,

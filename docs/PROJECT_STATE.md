@@ -1,7 +1,8 @@
 # Darkwatch — project state
 
-Last updated: 2026-09-18 (v0.3.0: dashboard, keyword search, infostealer and username-breach
-sources, 24 profile sites, and a measured accuracy pass).
+Last updated: 2026-09-19 (v0.4.0: deep-scan mode, Telegram and recent-attacks sources).
+v0.3.0 (dashboard, keyword search, infostealer and username-breach sources, 24 profile sites,
+measured accuracy pass) is below it.
 
 ## What it is
 
@@ -17,6 +18,52 @@ it protects, with their names, emails, phones, domains and usernames. It then:
 5. Runs daily from Task Scheduler, or on demand from three Desktop shortcuts.
 6. Serves a local dashboard (`darkwatch web`) for search, charts, triage, live scans and
    one-off investigations.
+
+## v0.4.0 additions (2026-09-19)
+
+Prompted by "I need a deep scan that searches everything, it may take 1-2 hours". The deep scan
+trades time for reach while holding two hard lines: it never logs in, joins, pays, or solves a
+CAPTCHA, and it never blind-crawls — links are followed only out of pages that already match a
+watched identifier, and onion discovery still goes through Ahmia's abuse filter.
+
+### New
+
+- **`darkwatch run --deep`** (`scanner.deepen`): every source regardless of the watchlist; the
+  Telegram channel cap dropped (all ~940); onion fetch depth 5->50 and budget 150->2000; and
+  same-host onion links followed one level out of any onion page that matched a term
+  (`ahmia._follow`). Only raises limits, so a watchlist that already sets something higher is left.
+- **`telegram` source** — public Telegram threat-actor and infostealer channels, read through the
+  `t.me/s/<channel>?q=<term>` web preview with no login. 936 channels shipped in
+  `data/telegram_channels.json`, built from the community-maintained deepdarkCTI index,
+  infostealer channels first so a capped run still covers the credential channels. Telegram's own
+  search is fuzzy, so every returned message is re-checked locally for the exact term.
+- **`recentattacks` source** — ransomware.live's recent-incidents feed: reported cyber-attacks,
+  gang-claimed or not, so an incident disclosed before any leak-site post is still caught.
+- Ten sources now; `attack` weight 3, `telegram` weight 2.
+
+### Deliberately still out of scope
+
+- **Account-walled forums and markets** (BreachForums successors, XSS, Exploit, carding markets):
+  no read-only way in without creating accounts or paying. Not attempted.
+- **The other ~30 onion search engines** deepdarkCTI lists: most do not filter abuse material, so
+  each would need vetting before use. Ahmia stays the only discovery engine for now.
+
+### Verified on 2026-09-19
+
+| Check | Result |
+|---|---|
+| `uv run pytest -q` | 227 passed |
+| `uv run ruff check src tests` | clean |
+| `recentattacks` against the live feed | 100 incidents parsed into Documents in 1.0 s |
+| `telegram` parse + live path | against `t.me/s/durov` searching "Telegram": 8 messages parsed, filtered to the term, and emitted with real message URLs |
+| `telegram` dead-channel handling | 8 alphabetically-first infostealer channels: 1 live, 7 correctly detected gone/private (one request each) |
+| `telegram` channel list | 936 public channels shipped (97 infostealer, 839 threat-actor), infostealer-first |
+| `deepen()` | raises onion depth/budget, drops the channel cap, enables every source, follows links 1 level; leaves already-higher settings alone |
+
+**Not yet run at full scale.** A complete `run --deep` against the real watchlist (all ~940
+Telegram channels x the terms, plus deep onion following) is an estimated 1-2 hours and has not
+been run end to end yet, partly because this laptop was memory-constrained during the session
+(~0.5 GB free). Each component above is verified live; the full-scale timing and yield are not.
 
 ## v0.3.0 additions (2026-09-18)
 

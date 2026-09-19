@@ -101,7 +101,8 @@ class FakeSession:
 def test_registry_order_and_protocol():
     reg = registry()
     assert list(reg) == [
-        "leaksites", "stealers", "leakcheck", "xposedornot", "hibp", "sites", "ahmia", "seeds",
+        "leaksites", "recentattacks", "stealers", "leakcheck", "xposedornot", "hibp",
+        "sites", "telegram", "ahmia", "seeds",
     ]
     assert list(reg) == list(ALL_SOURCES)  # the registry and the config list cannot drift apart
     for src in reg.values():
@@ -884,3 +885,150 @@ def test_sites_with_nothing_to_check_is_a_noop():
     # no sites configured and eight workers: no pool larger than the work, no crash
     ctx = ctx_for(Settings(delay_seconds=0, person_site_builtins=False, person_sites=[], site_workers=8))
     assert list(SiteSource().discover(Target(name="J", usernames=["jdoe"]).terms(), ctx)) == []
+
+# --------------------------------------------------------------------------- recentattacks
+RA_FEED = [
+    {"victim": "Acme Corp", "domain": "acme.example", "country": "IN", "date": "2026-08-01",
+     "claim_gang": "lockbit", "summary": "Acme Corp disclosed unauthorised access exposing employee records.",
+     "link": "https://www.ransomware.live/id/abc", "has_infostealer_info": True},
+    {"victim": "", "domain": "", "summary": "no victim, should be skipped"},
+]
+
+
+def test_recentattacks_builds_one_document_per_incident():
+    from darkwatch.sources.recentattacks import to_document
+
+    doc = to_document(RA_FEED[0])
+    assert doc is not None
+    assert doc.source == "attack"
+    assert doc.evidence_date == "2026-08-01"
+    assert doc.url == "https://www.ransomware.live/id/abc"
+    assert "Acme Corp" in doc.text and "lockbit" in doc.text
+    # signals come from the disclosure, not from Darkwatch's own sentence
+    assert "acme.example" in doc.signal_text and "employee records" in doc.signal_text
+    assert doc.meta["has_infostealer"] is True
+    assert to_document(RA_FEED[1]) is None
+
+
+def test_recentattacks_matches_a_watched_company():
+    from darkwatch.sources.recentattacks import to_document
+
+    doc = to_document(RA_FEED[0])
+    hit = Matcher([Term("acme.example", "domain", "A")]).find(
+        doc.text, source=doc.source, signal_text=doc.signal_text, evidence_date=doc.evidence_date
+    )[0]
+    assert hit.severity in ("HIGH", "CRITICAL")  # base 2 + weight 3 + signals
+
+
+def test_recentattacks_survives_a_broken_feed():
+    from darkwatch.sources.recentattacks import FEED, RecentAttacksSource
+
+    ctx = ctx_for(Settings(delay_seconds=0), clear=FakeSession({FEED: FakeResponse(500, "boom")}))
+    assert list(RecentAttacksSource().discover([Term("acme.example", "domain", "A")], ctx)) == []
+    assert any("feed download failed" in e for e in ctx.errors)
+
+
+def test_recentattacks_emits_and_counts():
+    from darkwatch.sources.recentattacks import FEED, RecentAttacksSource
+
+    ctx = ctx_for(Settings(delay_seconds=0), clear=FakeSession({FEED: FakeResponse(json_body=RA_FEED)}))
+    docs = list(RecentAttacksSource().discover([Term("acme.example", "domain", "A")], ctx))
+    assert [d.source for d in docs] == ["attack"]  # the empty one is dropped
+    assert "1 recent incident(s) checked" in ctx.stats.note
+
+
+# --------------------------------------------------------------------------- telegram
+TG_PAGE = """
+<div class="tgme_widget_message" data-post="leakchan/42">
+  <div class="tgme_widget_message_text">Fresh dump: jane.doe@example.com:hunter2 and 500 more lines</div>
+</div>
+<div class="tgme_widget_message" data-post="leakchan/43">
+  <div class="tgme_widget_message_text">unrelated crypto advertisement</div>
+</div>
+"""
+
+
+def test_telegram_parses_and_filters_to_the_term():
+    from darkwatch.sources.telegram import messages_with_term, parse_messages
+
+    assert len(parse_messages(TG_PAGE)) == 2
+    hits = messages_with_term(TG_PAGE, Term("jane.doe@example.com", "email", "J"))
+    assert len(hits) == 1
+    url, text = hits[0]
+    assert url == "https://t.me/leakchan/42"
+    assert "jane.doe@example.com" in text
+    # a term not on the page returns nothing (Telegram's fuzzy search is re-checked locally)
+    assert messages_with_term(TG_PAGE, Term("someone.else@example.com", "email", "J")) == []
+
+
+def test_telegram_channels_list_ships_and_is_ordered():
+    from darkwatch.sources.telegram import load_channels
+
+    channels = load_channels()
+    assert len(channels) > 100
+    kinds = [c["kind"] for c in channels]
+    # infostealer channels (which carry credentials) are checked first under a cap
+    assert kinds.index("infostealer") < kinds.index("threat-actor")
+    assert all(c["handle"] and " " not in c["handle"] for c in channels)
+
+
+def test_telegram_source_searches_live_channels_only(monkeypatch):
+    from darkwatch.sources import telegram as tg
+
+    monkeypatch.setattr(tg, "load_channels", lambda: [
+        {"handle": "leakchan", "kind": "infostealer"},
+        {"handle": "deadchan", "kind": "threat-actor"},
+    ])
+    routes = {
+        "https://t.me/s/leakchan": FakeResponse(200, TG_PAGE),
+        "https://t.me/s/deadchan": FakeResponse(200, "<html>join this channel</html>"),  # no messages
+    }
+    ctx = ctx_for(Settings(delay_seconds=0, telegram_max_channels=0), clear=FakeSession(routes))
+    docs = list(tg.TelegramSource().discover([Term("jane.doe@example.com", "email", "J")], ctx))
+    assert len(docs) == 1
+    assert docs[0].source == "telegram"
+    assert docs[0].meta["channel"] == "leakchan"
+    # infostealer channel contributes credential signals; the matcher then scores them
+    assert "credentials" in docs[0].signal_text
+    assert "1 message(s) across 1/2 live channel(s), 1 gone or private" in ctx.stats.note
+
+
+def test_telegram_respects_the_channel_cap(monkeypatch):
+    from darkwatch.sources import telegram as tg
+
+    monkeypatch.setattr(tg, "load_channels", lambda: [
+        {"handle": f"c{i}", "kind": "threat-actor"} for i in range(10)
+    ])
+    calls = []
+
+    class Rec(FakeSession):
+        def get(self, url, params=None, **kw):
+            calls.append(url)
+            return FakeResponse(200, "<html>nothing</html>")
+
+    ctx = ctx_for(Settings(delay_seconds=0, telegram_max_channels=3), clear=Rec({}))
+    list(tg.TelegramSource().discover([Term("jane.doe@example.com", "email", "J")], ctx))
+    assert len(calls) == 3  # only the first three channels, and each dies after one request
+
+
+def test_telegram_skips_when_no_query_terms():
+    from darkwatch.sources.telegram import TelegramSource
+
+    ctx = ctx_for(Settings(delay_seconds=0))
+    # only a phone term, which telegram deliberately does not search
+    assert list(TelegramSource().discover([Term("+91 98765 43210", "phone", "J")], ctx)) == []
+
+
+# --------------------------------------------------------------------------- deep mode
+def test_deepen_only_raises_limits_and_enables_every_source():
+    from darkwatch.config import ALL_SOURCES
+    from darkwatch.scanner import deepen
+
+    base = Settings(onion_fetch_top=80, telegram_max_channels=5)
+    d = deepen(base)
+    assert d.sources == list(ALL_SOURCES)
+    assert d.telegram_max_channels == 0  # 0 means all
+    assert d.onion_fetch_top == 80  # already higher than the deep floor of 50: left alone
+    assert d.max_onion_fetches == 2000
+    assert d.onion_link_depth == 1
+    assert Settings().onion_fetch_top == 5  # the original is untouched

@@ -1,6 +1,6 @@
 [project]
 name = "darkwatch"
-version = "0.3.0"
+version = "0.4.0"
 description = "Darkwatch: watchlist-driven dark web exposure monitor. Finds a person's or company's identifiers on ransomware leak sites, onion pages (over a managed Tor), breach and paste data; scores, dedupes, reports with next actions and alerts."
 readme = "README.md"
 authors = [
@@ -32,6 +32,7 @@ packages = ["src/darkwatch"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "src/darkwatch/web/static" = "darkwatch/web/static"
+"src/darkwatch/data" = "darkwatch/data"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

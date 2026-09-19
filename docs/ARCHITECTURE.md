@@ -11,13 +11,16 @@ darkwatch run ─ RunLock ─ scanner.run_scan ───────────
                             ├─ sources (in order), each yields Documents(url, title, text, source,
                             │   signal_text, evidence_date):
                             │     leaksites   ransomware.live victims.json + RansomLook last/30 (FeedCache)
+                            │     recentattacks ransomware.live recentcyberattacks feed (clearnet)
                             │     stealers    Hudson Rock Cavalier by email/username/domain (clearnet)
                             │     leakcheck   LeakCheck public API by email/username (clearnet)
                             │     xposedornot breach-analytics per email + breaches?domain= (clearnet)
                             │     hibp        breaches?domain= (free); breachedaccount/pasteaccount (key)
                             │     sites       each username on 24 profile sites, checked in parallel
+                            │     telegram    ~940 public t.me/s channels searched per term (clearnet)
                             │     ahmia       token → search (over Tor: onion service, then ahmia.fi)
                             │                 → local term check → onion pages over Tor
+                            │                 → deep scan: follow same-host onion links 1 level from matches
                             │     seeds       operator URLs, same-host links depth 1
                             │
                             ├─ scan_documents: Matcher.find (every occurrence) → best match per term
@@ -60,14 +63,16 @@ darkwatch web ─ web.server.build_app ─ uvicorn on 127.0.0.1
 | `web/static/` | The dashboard itself: one HTML page, one stylesheet, `app.js`, `shader.js` (a WebGL2 contour field), and `vendor/` with five GSAP bundles served locally. No build step and no framework. |
 | `sources/__init__.py` | `Document` (with `signal_text`, `evidence_date`), `SourceStats`, `SourceContext` (sessions, throttle, the shared onion budget, errors), `terms_present` pre-filter, and `registry()`. |
 | `sources/leaksites.py` | Tracker normalisation, the merge across the two trackers, per-post evidence URLs, and documents that carry whole-post `signal_text`. |
+| `sources/recentattacks.py` | ransomware.live's recent-incidents feed; one Document per reported attack, matched on the victim, domain and disclosure summary. |
+| `sources/telegram.py` | Public Telegram channels read through `t.me/s/<channel>?q=<term>`; the shipped `data/telegram_channels.json` list, term-in-message re-check, one Document per matching post. |
 | `sources/stealers.py` | Hudson Rock Cavalier lookups; one Document per infected machine, carrying the masked passwords, logins and IP the free tier returns. |
 | `sources/leakcheck.py` | LeakCheck public-API lookups by email and username; one Document per breach, with the exposed field names mapped onto the words the signal groups know. |
 | `sources/xposedornot.py` | Parses breach analytics into breach and paste documents that use data-class `signal_text`, and the keyless domain endpoint for company targets. |
 | `sources/hibp.py` | Domain-breach documents (keyless) and per-account documents (keyed). |
-| `sources/ahmia.py` | `search_routes` (onion service, then ahmia.fi over Tor, or clearnet only without Tor), search-form token, results parser that skips Ahmia's own hosts, `plan_fetches`, bounded parallel onion fetches, and suppression of listings that fetched pages make redundant. |
+| `sources/ahmia.py` | `search_routes` (onion service, then ahmia.fi over Tor, or clearnet only without Tor), search-form token, results parser that skips Ahmia's own hosts, `plan_fetches`, bounded parallel onion fetches, suppression of listings that fetched pages make redundant, and (deep scan) `_follow`, which walks same-host onion links out of matched pages. |
 | `sources/seeds.py` | Operator seed crawl. |
 | `sources/sites.py` | Person footprint: 24 verified `DEFAULT_SITES`, `classify` (present/absent/unknown), a bounded thread pool with a session per thread, and profile Documents whose page text feeds the matcher the person's other identifiers. |
-| `scanner.py` | `RunResult`, `scan_documents`, and `run_scan`. A source that crashes is recorded against that source and the run continues. |
+| `scanner.py` | `RunResult`, `scan_documents`, `run_scan`, and `deepen` (the `--deep` settings profile). A source that crashes is recorded against that source and the run continues. |
 | `storage.py` | SQLite `runs`, `pages` keyed on (url, source), and `hits`. Schema v3 migrations and triage statuses live here. |
 | `report.py` | `actions_for(hit)` keyed by evidence, identifier and signals. Markdown, HTML and JSON renderers, `latest.*`, and pruning. |
 | `notify.py` | Windows toast via PowerShell (with a notification-history read for verification), ntfy, webhook, SMTP, and redacted versus full summaries. |
@@ -160,6 +165,18 @@ darkwatch web ─ web.server.build_app ─ uvicorn on 127.0.0.1
   is a phone number, and a single dictionary word repeated as a username with no `@handle`
   context, are marked `uncorroborated` and credited at most one point. Before that, a common
   handle in ordinary prose could reach CRITICAL.
+- **The deep scan widens reach, not risk.** `darkwatch run --deep` (scanner.deepen) raises the
+  onion fetch depth and budget, drops the Telegram channel cap, and follows same-host onion links
+  one level — but only *out of a page that already matched a watched identifier*, never from an
+  arbitrary listing, and onion discovery still goes through Ahmia's abuse filter. It never logs
+  in, joins, pays, or solves a CAPTCHA, so account-walled forums and markets are out of reach on
+  purpose: there is no read-only way in, and blind-crawling an unfiltered index is exactly what
+  would pull illegal material onto the machine.
+- **Telegram is read logged-out.** A public channel's `t.me/s/<channel>` preview honours `?q=`,
+  which searches its history; that is used per identifier, the returned messages are re-checked
+  locally for the exact term (Telegram's own search is fuzzy), and nothing is ever joined. Dead or
+  private channels return no message widget and cost one request. Only strong identifiers (email,
+  domain, username, name, keyword) are searched.
 - **Old evidence costs a point.** Without it, a 2012 breach scored the same as a 2026 one.
   Evidence at least 3 years old is marked `dated`.
 - **Tor is started per run and owned.** The `__OwningControllerProcess` option makes tor.exe exit
