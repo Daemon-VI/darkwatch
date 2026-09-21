@@ -29,7 +29,7 @@ watched identifier, and onion discovery still goes through Ahmia's abuse filter.
 ### New
 
 - **`darkwatch run --deep`** (`scanner.deepen`): every source regardless of the watchlist; the
-  Telegram channel cap dropped (all ~940); onion fetch depth 5->50 and budget 150->2000; and
+  Telegram channel cap dropped (all ~940); the blind onion sweep 5->15 per query and budget 150->2000; and
   same-host onion links followed one level out of any onion page that matched a term
   (`ahmia._follow`). Only raises limits, so a watchlist that already sets something higher is left.
 - **`telegram` source** — public Telegram threat-actor and infostealer channels, read through the

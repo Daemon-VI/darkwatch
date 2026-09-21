@@ -48,7 +48,7 @@ an hour or more:
 
 - **every source**, whatever the watchlist enables;
 - **all ~940 Telegram channels** instead of the first 40;
-- **onion depth raised** — up to 50 pages fetched per query instead of 5, a 2,000-page budget
+- **onion depth raised** — the blind top-N sweep goes 5 → 15 pages per query, on a 2,000-page budget
   instead of 150;
 - **links followed one level** out of any onion page that already mentions a watched identifier,
   so Darkwatch reads the actual dark-web site, not just the search listing.

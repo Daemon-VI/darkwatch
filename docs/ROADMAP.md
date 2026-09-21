@@ -48,7 +48,7 @@ evidence. The items below extend it; none of them is needed for it to work.
 
 ## Done since v0.2.1
 
-- **Deep scan** (`run --deep`): every source, all ~940 Telegram channels, onion depth 5→50 and
+- **Deep scan** (`run --deep`): every source, all ~940 Telegram channels, blind onion sweep 5→15 and
   budget 150→2000, and same-host onion links followed one level out of matched pages.
 - **`recentattacks`** (ransomware.live recent-incidents feed) and **`telegram`** (public
   threat-actor and infostealer channels via the no-login web preview).

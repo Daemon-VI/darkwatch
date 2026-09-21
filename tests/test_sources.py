@@ -1028,7 +1028,10 @@ def test_deepen_only_raises_limits_and_enables_every_source():
     d = deepen(base)
     assert d.sources == list(ALL_SOURCES)
     assert d.telegram_max_channels == 0  # 0 means all
-    assert d.onion_fetch_top == 80  # already higher than the deep floor of 50: left alone
+    assert d.onion_fetch_top == 80  # already higher than the deep floor: left alone
     assert d.max_onion_fetches == 2000
     assert d.onion_link_depth == 1
+    # from the default 5, the blind onion sweep is raised only to 15 — high enough to broaden
+    # coverage, low enough that a run is not swamped by ~195 s onion timeouts
+    assert deepen(Settings()).onion_fetch_top == 15
     assert Settings().onion_fetch_top == 5  # the original is untouched

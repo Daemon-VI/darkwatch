@@ -124,7 +124,13 @@ def deepen(settings: Settings) -> Settings:
         settings,
         sources=list(ALL_SOURCES),
         telegram_max_channels=0,
-        onion_fetch_top=max(50, settings.onion_fetch_top),
+        # Every listing that *contains* a term is fetched regardless (bounded only by the budget
+        # below), and matched pages are then followed one level. The blind top-N is only a
+        # secondary sweep for a term that appears in a page body but not its Ahmia listing, so it
+        # is raised modestly: onion fetches hang ~20-35% of the time and each hang costs up to the
+        # ~195 s page deadline, so a top of 50 spent the whole run timing out on pages nothing
+        # matched. 15 broadens the sweep without turning the run into a wall of timeouts.
+        onion_fetch_top=max(15, settings.onion_fetch_top),
         max_onion_fetches=max(2000, settings.max_onion_fetches),
         onion_link_depth=max(1, settings.onion_link_depth),
     )
