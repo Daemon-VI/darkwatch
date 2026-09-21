@@ -1,0 +1,5 @@
+{
+  "// darkwatch": "Run the CLI from this checkout via uv, so the extension works when this folder is open.",
+  "darkwatch.command": ["uv", "run", "darkwatch"],
+  "darkwatch.watchlist": "watchlist.yaml"
+}
