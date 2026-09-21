@@ -990,7 +990,7 @@ def test_telegram_source_searches_live_channels_only(monkeypatch):
     assert docs[0].meta["channel"] == "leakchan"
     # infostealer channel contributes credential signals; the matcher then scores them
     assert "credentials" in docs[0].signal_text
-    assert "1 message(s) across 1/2 live channel(s), 1 gone or private" in ctx.stats.note
+    assert "1 message(s) across 1 live channel(s) of 2 checked; 1 gone or private" in ctx.stats.note
 
 
 def test_telegram_respects_the_channel_cap(monkeypatch):

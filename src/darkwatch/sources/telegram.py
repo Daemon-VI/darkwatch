@@ -102,11 +102,12 @@ class TelegramSource:
             ctx.error("telegram: no channel list shipped")
             return
 
-        checked = dead = found = 0
+        live = found = 0  # channels with a readable public preview; messages that matched
         for c in channels:
             handle = c["handle"]
             base = PREVIEW.format(channel=handle)
             alive = True
+            channel_live = False
             for term in wanted:
                 if not alive:
                     break
@@ -118,12 +119,13 @@ class TelegramSource:
                     ctx.error(f"telegram: {handle}: {type(exc).__name__}")
                     alive = False
                     continue
-                checked += 1
                 # a private/removed channel redirects to its join page or a generic t.me shell
                 if r.status_code != 200 or "tgme_widget_message" not in r.text:
-                    dead += 1
                     alive = False  # no public history: the other terms would fail the same way
                     continue
+                if not channel_live:
+                    channel_live = True
+                    live += 1
                 for url, text in messages_with_term(r.text, term)[:MAX_MESSAGES_PER_HIT]:
                     found += 1
                     kind = c.get("kind", "channel")
@@ -138,6 +140,6 @@ class TelegramSource:
                         meta={"channel": handle, "kind": kind, "query": term.value},
                     )
         ctx.stats.note = (
-            f"{found} message(s) across {checked - dead}/{len(channels)} live channel(s), "
-            f"{dead} gone or private"
+            f"{found} message(s) across {live} live channel(s) of {len(channels)} checked; "
+            f"{len(channels) - live} gone or private"
         )
