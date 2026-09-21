@@ -52,6 +52,9 @@ evidence. The items below extend it; none of them is needed for it to work.
   budget 150→2000, and same-host onion links followed one level out of matched pages.
 - **`recentattacks`** (ransomware.live recent-incidents feed) and **`telegram`** (public
   threat-actor and infostealer channels via the no-login web preview).
+- **VS Code extension** (`vscode-extension/`): Findings view, scan/dashboard/search/investigate/
+  triage over the CLI, evidence URLs shown but never opened. `darkwatch hits --json` and
+  `darkwatch search --json` back it. Marketplace/Open VSX publish wired in CI.
 
 - **Dashboard** (`darkwatch web`, and the "Darkwatch" Desktop shortcut): search, filters with
   live counts, charts, triage, export, live scans over SSE, and deep search.

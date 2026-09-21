@@ -78,7 +78,8 @@ darkwatch web ─ web.server.build_app ─ uvicorn on 127.0.0.1
 | `notify.py` | Windows toast via PowerShell (with a notification-history read for verification), ntfy, webhook, SMTP, and redacted versus full summaries. |
 | `schedule.py` | Task Scheduler XML, `schtasks` wrappers, and `RunLock` (an OS byte-range lock on `data/run.lock`). |
 | `desktop.py` | Windows `.lnk` shortcuts ("Darkwatch" → the dashboard, "Scan now", "Report") built through WScript.Shell, with a read-back for verification. |
-| `cli.py`, `__main__.py` | Typer commands. `--log-file` sends all output to a file for the pythonw task. |
+| `cli.py`, `__main__.py` | Typer commands. `--log-file` sends all output to a file for the pythonw task; `hits --json` and `search --json` feed tooling such as the VS Code extension. |
+| `vscode-extension/` | A VS Code extension (TypeScript): a Findings tree by severity, scan/dashboard/search/investigate/triage over the CLI, evidence URLs shown but never opened. Not part of the Python package. |
 | `__init__.py` | `__version__`, which the CLI, the report and the dashboard all report. |
 
 ## Decisions and why

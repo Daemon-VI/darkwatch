@@ -41,6 +41,34 @@ watched identifier, and onion discovery still goes through Ahmia's abuse filter.
   gang-claimed or not, so an incident disclosed before any leak-site post is still caught.
 - Ten sources now; `attack` weight 3, `telegram` weight 2.
 
+### VS Code extension (2026-09-21)
+
+`vscode-extension/` — a TypeScript extension, a thin safe front end over the CLI:
+
+- a **Findings** tree grouped by severity with a status-bar count;
+- **Run Scan**, **Deep Scan**, **Open Dashboard** in an integrated terminal;
+- **Search** stored findings, **Investigate** a one-off value;
+- **triage** (acknowledge / resolve / false positive) from a finding's menu.
+
+It reads data through two new CLI flags, `darkwatch hits --json` and `darkwatch search --json`
+(both tested). Like the dashboard it **never opens an evidence URL** — those point at leak sites
+and onion services — it shows the URL as text and copies it on request, and it spawns the CLI
+with `shell:false` and an argv array so a search value can never be shell-interpreted.
+
+Verified 2026-09-21: `npm install`, `npm run compile` and `npm run lint` clean; `npx vsce package`
+produced `darkwatch-0.1.0.vsix` (9 files, 16 KB). Publishing to the Marketplace (publisher
+`daemon-vi`) and Open VSX is wired in `.github/workflows/publish-vscode.yml`, gated on the
+`VSCE_PAT` / `OVSX_PAT` secrets — **not yet published**; that step is Rithik's, needing his tokens.
+
+### Deep onion run (2026-09-19 to -21)
+
+The full `--deep` run launched 2026-09-19 finished every source through `telegram` clean (a full
+936-channel Telegram sweep: 0 messages), then was killed mid-Ahmia when the machine went down. A
+follow-up `run --deep --sources ahmia` on 2026-09-21 **completed** (Run #15, 399 s) but Ahmia was
+unreachable on every route that run (6 errors, 0 listings) — an intermittent Ahmia/Tor outage, not
+a clean sweep. Earlier full runs did reach Ahmia (2,168 listings, 0 hits), so the no-exposure
+result stands; the deep onion leg is proven to run but depends on Ahmia being up on the day.
+
 ### Deliberately still out of scope
 
 - **Account-walled forums and markets** (BreachForums successors, XSS, Exploit, carding markets):
@@ -52,7 +80,7 @@ watched identifier, and onion discovery still goes through Ahmia's abuse filter.
 
 | Check | Result |
 |---|---|
-| `uv run pytest -q` | 227 passed |
+| `uv run pytest -q` | 229 passed (227 + 2 for the CLI `--json` flags) |
 | `uv run ruff check src tests` | clean |
 | `recentattacks` against the live feed | 100 incidents parsed into Documents in 1.0 s |
 | `telegram` parse + live path | against `t.me/s/durov` searching "Telegram": 8 messages parsed, filtered to the term, and emitted with real message URLs |

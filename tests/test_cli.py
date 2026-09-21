@@ -319,3 +319,36 @@ def test_investigate_validates_its_options(watchlist_file):
     assert invoke("investigate", "x", "-w", watchlist_file, "--type", "bogus").exit_code == 2
     r = invoke("investigate", "x", "-w", watchlist_file, "--sources", "leaksites,nope")
     assert r.exit_code == 2 and "unknown sources" in r.output
+
+
+def _json_from(output: str):
+    """The JSON blob a --json command prints, tolerating any leading log lines."""
+    s = output.strip()
+    starts = [p for p in (s.find("["), s.find("{")) if p != -1]
+    assert starts, f"no JSON in output: {output!r}"
+    return json.loads(s[min(starts):])
+
+
+def test_hits_json_is_machine_readable(watchlist_file):
+    w = watchlist_file
+    assert invoke("run", "-w", w, "--sources", "leaksites", "--no-notify").exit_code == 0
+    data = _json_from(invoke("hits", "-w", w, "--json").output)
+    assert isinstance(data, list) and data
+    assert {"id", "severity", "source", "term", "url", "snippet", "signals"} <= set(data[0])
+    # every field the VS Code extension groups and shows is present and typed
+    assert data[0]["severity"] in ("LOW", "MEDIUM", "HIGH", "CRITICAL")
+    assert isinstance(data[0]["signals"], list)
+    # an empty database is an empty array, not an error or a message
+    assert _json_from(invoke("hits", "-w", w, "--status", "resolved", "--json").output) == []
+
+
+def test_search_json_carries_page_and_facets(watchlist_file):
+    w = watchlist_file
+    assert invoke("run", "-w", w, "--sources", "leaksites", "--no-notify").exit_code == 0
+    page = _json_from(invoke("search", "acme", "-w", w, "--json").output)
+    assert page["total"] >= 1 and page["query"] == "acme"
+    assert isinstance(page["took_ms"], (int, float))
+    assert {"severity", "source", "status", "target", "term_type"} <= set(page["facets"])
+    # a miss is a clean empty page, still valid JSON
+    miss = _json_from(invoke("search", "no-such-token-xyz", "-w", w, "--json").output)
+    assert miss["total"] == 0 and miss["hits"] == []

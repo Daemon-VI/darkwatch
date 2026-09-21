@@ -1,0 +1,46 @@
+name: Publish VS Code extension
+
+# Publishes the extension in vscode-extension/ to the VS Code Marketplace and Open VSX.
+# Trigger by pushing a tag like `vscode-v0.1.0`, or run it by hand from the Actions tab.
+#
+# Set two repository secrets first (Settings -> Secrets and variables -> Actions):
+#   VSCE_PAT  - a Marketplace personal access token for the `daemon-vi` publisher
+#   OVSX_PAT  - an Open VSX access token for the same namespace
+# Each publish step is skipped when its token is absent, so a run with no secrets just
+# packages and uploads the .vsix as a build artifact.
+
+on:
+  push:
+    tags:
+      - "vscode-v*"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      OVSX_PAT: ${{ secrets.OVSX_PAT }}
+    defaults:
+      run:
+        working-directory: vscode-extension
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npm run compile
+      - run: npm run lint
+      - run: npx vsce package
+      - name: Upload the .vsix as a build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: darkwatch-vsix
+          path: vscode-extension/*.vsix
+      - name: Publish to the VS Code Marketplace
+        if: ${{ env.VSCE_PAT != '' }}
+        run: npx vsce publish --pat "$VSCE_PAT"
+      - name: Publish to Open VSX
+        if: ${{ env.OVSX_PAT != '' }}
+        run: npx ovsx publish -p "$OVSX_PAT"

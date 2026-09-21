@@ -124,6 +124,8 @@ uv run darkwatch run --open                 # everything; opens the HTML report 
 uv run darkwatch run --sources leaksites    # one source
 uv run darkwatch run --no-tor               # no onion page fetches
 uv run darkwatch search "for sale"          # keyword search over stored findings
+uv run darkwatch hits --json                # stored hits as JSON (for tooling)
+uv run darkwatch search acme --json         # search results + facets as JSON
 uv run darkwatch search --severity CRITICAL,HIGH --source leaksite
 uv run darkwatch search --facets            # counts per severity, source, status, target, type
 uv run darkwatch investigate jane@mail.com  # one value, live sources, nothing stored
@@ -223,6 +225,32 @@ A plaintext combolist is also recognised structurally: two or more `user:pass` l
 credentials even when the page never uses the word.
 
 Every hit lists its signals, so each score can be explained.
+
+## VS Code extension
+
+A VS Code extension lives in `vscode-extension/`. It is a thin, safe front end over this CLI:
+
+- a **Findings** view in the Activity Bar, your hits grouped by severity with a status-bar count;
+- **Run Scan**, **Deep Scan**, and **Open Dashboard** in an integrated terminal;
+- **Search** stored findings and **Investigate** a one-off value;
+- **triage** (acknowledge / resolve / false positive) from a finding's menu.
+
+Like the dashboard, it never opens an evidence URL — those point at leak sites and onion
+services — it shows the URL as text and copies it on request. It reads data through
+`darkwatch hits --json` and `darkwatch search --json`.
+
+Build and install it locally:
+
+```powershell
+cd vscode-extension
+npm install
+npm run package            # produces darkwatch-<version>.vsix
+code --install-extension darkwatch-0.1.0.vsix
+```
+
+On this machine set `darkwatch.command` to `["uv","run","darkwatch"]` (Settings) so it runs the
+CLI from the checkout. Publishing to the Marketplace and Open VSX is wired in
+`.github/workflows/publish-vscode.yml`, gated on the `VSCE_PAT` / `OVSX_PAT` repository secrets.
 
 ## Responsible use
 

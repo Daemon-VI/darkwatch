@@ -291,6 +291,7 @@ def hits(
     target: Annotated[str, typer.Option("--target")] = "",
     min_severity: Annotated[str, typer.Option("--min-severity", help=f"One of {', '.join(SEVERITIES)}.")] = "",
     show_snippets: Annotated[bool, typer.Option("--snippets", help="Print each snippet.")] = False,
+    as_json: Annotated[bool, typer.Option("--json", help="Print the hits as JSON (for tooling, e.g. the VS Code extension).")] = False,
 ) -> None:
     """List stored hits (open ones by default)."""
     wl = _load(watchlist)
@@ -305,6 +306,12 @@ def hits(
     with Store(wl.settings.db_path) as store:
         rows = store.hits(status=status or None, statuses=statuses, target=target or None,
                           min_severity=min_severity or None)
+    if as_json:
+        import json as _json
+
+        from .search import as_dict
+        print(_json.dumps([as_dict(h) for h in rows]))  # raw stdout: parsed by tooling
+        return
     if not rows:
         console.print("No hits match.")
         return
@@ -326,10 +333,11 @@ def search_cmd(
     order: Annotated[str, typer.Option("--order", help=f"One of {', '.join(ORDERS)}.")] = "score",
     limit: Annotated[int, typer.Option("--limit", "-n")] = 50,
     facets_only: Annotated[bool, typer.Option("--facets", help="Show the counts per filter instead of the hits.")] = False,
+    as_json: Annotated[bool, typer.Option("--json", help="Print the results as JSON (for tooling, e.g. the VS Code extension).")] = False,
 ) -> None:
     """Search stored findings by keyword, across every column the report shows."""
+    from .search import as_dict, search_hits
     from .search import facets as facet_counts
-    from .search import search_hits
 
     wl = _load(watchlist)
     if order not in ORDERS:
@@ -337,6 +345,20 @@ def search_cmd(
         raise typer.Exit(2)
     statuses = None if show_all else OPEN_STATUSES
     with Store(wl.settings.db_path) as store:
+        if as_json:
+            import json as _json
+
+            page = search_hits(
+                store, query, statuses=statuses, severities=_csv_opt(severity, upper=True),
+                sources=_csv_opt(source), targets=_csv_opt(target), term_types=_csv_opt(term_type),
+                order=order, limit=limit,
+            )
+            print(_json.dumps({
+                "hits": [as_dict(h) for h in page.hits], "total": page.total,
+                "took_ms": page.took_ms, "query": page.query,
+                "facets": facet_counts(store, statuses),
+            }))
+            return
         if facets_only:
             counts = facet_counts(store, statuses)
             for name, items in counts.items():

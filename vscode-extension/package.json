@@ -1,0 +1,175 @@
+{
+  "name": "darkwatch",
+  "displayName": "Darkwatch — Dark Web Exposure Monitor",
+  "description": "Run Darkwatch scans, browse findings by severity, and search your exposure — from inside VS Code.",
+  "version": "0.1.0",
+  "publisher": "daemon-vi",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "security",
+    "osint",
+    "dark web",
+    "threat intelligence",
+    "breach"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Daemon-VI/darkwatch.git",
+    "directory": "vscode-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/Daemon-VI/darkwatch/issues"
+  },
+  "homepage": "https://github.com/Daemon-VI/darkwatch#readme",
+  "galleryBanner": {
+    "color": "#0B1220",
+    "theme": "dark"
+  },
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "Darkwatch",
+      "properties": {
+        "darkwatch.command": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": ["darkwatch"],
+          "markdownDescription": "How to invoke the Darkwatch CLI, as a command plus fixed arguments. Use `[\"darkwatch\"]` when it is on your PATH (e.g. after `uv tool install darkwatch`), or `[\"uv\", \"run\", \"darkwatch\"]` to run it from a checkout."
+        },
+        "darkwatch.watchlist": {
+          "type": "string",
+          "default": "watchlist.yaml",
+          "description": "Path to the watchlist file, relative to the working directory."
+        },
+        "darkwatch.cwd": {
+          "type": "string",
+          "default": "",
+          "description": "Working directory for the CLI. Empty means the first workspace folder."
+        },
+        "darkwatch.refreshOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Load stored findings into the Darkwatch view when a window opens."
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "darkwatch",
+          "title": "Darkwatch",
+          "icon": "media/sidebar.svg"
+        }
+      ]
+    },
+    "views": {
+      "darkwatch": [
+        {
+          "id": "darkwatch.hits",
+          "name": "Findings",
+          "icon": "media/sidebar.svg",
+          "contextualTitle": "Darkwatch Findings"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "darkwatch.hits",
+        "contents": "No findings loaded yet.\n[Refresh](command:darkwatch.refresh)\n[Run a scan](command:darkwatch.runScan)\nDarkwatch reads a local watchlist and reports exposure. Set how the CLI is invoked in [settings](command:workbench.action.openSettings?%5B%22darkwatch.command%22%5D)."
+      }
+    ],
+    "commands": [
+      {
+        "command": "darkwatch.refresh",
+        "title": "Darkwatch: Refresh Findings",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "darkwatch.runScan",
+        "title": "Darkwatch: Run Scan",
+        "icon": "$(play)"
+      },
+      {
+        "command": "darkwatch.deepScan",
+        "title": "Darkwatch: Deep Scan (slow)"
+      },
+      {
+        "command": "darkwatch.openDashboard",
+        "title": "Darkwatch: Open Dashboard",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "darkwatch.search",
+        "title": "Darkwatch: Search Findings",
+        "icon": "$(search)"
+      },
+      {
+        "command": "darkwatch.investigate",
+        "title": "Darkwatch: Investigate a Value"
+      },
+      {
+        "command": "darkwatch.showHit",
+        "title": "Darkwatch: Show Finding Details"
+      },
+      {
+        "command": "darkwatch.copyUrl",
+        "title": "Darkwatch: Copy Evidence URL"
+      },
+      {
+        "command": "darkwatch.acknowledge",
+        "title": "Darkwatch: Acknowledge"
+      },
+      {
+        "command": "darkwatch.resolve",
+        "title": "Darkwatch: Resolve"
+      },
+      {
+        "command": "darkwatch.falsePositive",
+        "title": "Darkwatch: Mark False Positive"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        { "command": "darkwatch.search", "when": "view == darkwatch.hits", "group": "navigation@1" },
+        { "command": "darkwatch.runScan", "when": "view == darkwatch.hits", "group": "navigation@2" },
+        { "command": "darkwatch.openDashboard", "when": "view == darkwatch.hits", "group": "navigation@3" },
+        { "command": "darkwatch.refresh", "when": "view == darkwatch.hits", "group": "navigation@4" },
+        { "command": "darkwatch.deepScan", "when": "view == darkwatch.hits", "group": "1_run" }
+      ],
+      "view/item/context": [
+        { "command": "darkwatch.copyUrl", "when": "view == darkwatch.hits && viewItem == hit", "group": "inline" },
+        { "command": "darkwatch.acknowledge", "when": "view == darkwatch.hits && viewItem == hit", "group": "1_triage@1" },
+        { "command": "darkwatch.resolve", "when": "view == darkwatch.hits && viewItem == hit", "group": "1_triage@2" },
+        { "command": "darkwatch.falsePositive", "when": "view == darkwatch.hits && viewItem == hit", "group": "1_triage@3" }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vscode/vsce": "^2.24.0",
+    "eslint": "^8.57.0",
+    "ovsx": "^0.9.0",
+    "typescript": "^5.4.0"
+  }
+}
