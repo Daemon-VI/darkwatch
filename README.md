@@ -40,7 +40,7 @@ is left out, because it would report every handle as a profile. Add your own wit
 ## Deep scan
 
 ```powershell
-uv run darkwatch run --deep --open
+darkwatch run --deep --open
 ```
 
 The ordinary run is tuned to finish in a few minutes. `--deep` trades time for reach and can run
@@ -65,7 +65,7 @@ Two things `--deep` still will not do, by design:
 ## The dashboard
 
 ```powershell
-uv run darkwatch web            # opens http://127.0.0.1:8787/?t=<token>
+darkwatch web            # opens http://127.0.0.1:8787/?t=<token>
 ```
 
 - **Search** every finding by keyword, across the term, title, URL, snippet, signals, target and
@@ -85,14 +85,44 @@ no CORS header is ever sent, and changes are POST-only. Untrusted values — a l
 onion page's text — are inserted as text nodes, never as HTML, and evidence URLs are shown but
 never made clickable.
 
-## Setup
+## Install
 
-This targets Windows with Python 3.12+ and [uv](https://docs.astral.sh/uv/).
+**Windows** — paste into PowerShell (no administrator rights needed):
 
 ```powershell
-cd C:\Users\Rishi\darkwatch
+irm https://raw.githubusercontent.com/Daemon-VI/darkwatch/main/install.ps1 | iex
+```
+
+**macOS / Linux:**
+
+```sh
+curl -LsSf https://raw.githubusercontent.com/Daemon-VI/darkwatch/main/install.sh | sh
+```
+
+The installer sets up [uv](https://docs.astral.sh/uv/) if you don't have it (uv fetches a
+suitable Python itself), installs the latest release as the `darkwatch` command, asks who to
+watch, offers Desktop shortcuts, and installs the VS Code extension if VS Code is present. Run it
+again at any time to upgrade; your watchlist and findings are kept.
+
+Already have uv? `uv tool install <wheel URL from the latest release>` does the same install.
+
+**Setup.** `darkwatch setup` creates your Darkwatch folder (`~/Darkwatch`, or `DARKWATCH_HOME`)
+with a watchlist for one person or company, asking for their name, emails, domains, usernames
+and phone numbers. It can also run with no prompts:
+`darkwatch setup --name "Asha Rao" --email asha@example.com --username asharao --no-prompt`.
+Every command then finds that watchlist from any folder. A `watchlist.yaml` in the current folder,
+or `--watchlist <file>`, takes precedence. Add more targets by editing the file.
+
+`darkwatch doctor` checks the install and says what is missing.
+
+**From a source checkout** (development):
+
+```powershell
+git clone https://github.com/Daemon-VI/darkwatch.git
+cd darkwatch
 uv sync --all-extras
-uv run darkwatch init          # only for a fresh checkout: writes watchlist.yaml and .env.example
+uv run darkwatch setup
+uv run pytest -q
 ```
 
 **Tor.** Darkwatch starts `tor.exe` for each run when nothing is already listening on the
@@ -101,16 +131,19 @@ proxy port, and stops it afterwards. It finds `tor.exe` in these places, in orde
 1. The `tor_exe` setting.
 2. The `DARKWATCH_TOR_EXE` environment variable.
 3. `PATH`.
-4. `..\tools\tor-*\tor\tor.exe`.
+4. `tools\tor-*\tor\tor.exe` beside the watchlist (or up to two folders above it), or in the
+   Darkwatch folder — where an unpacked [Tor Expert Bundle](https://www.torproject.org/download/tor/) goes.
+5. A Tor Browser install (Desktop, `%LOCALAPPDATA%` or Program Files), e.g. after
+   `winget install TorProject.TorBrowser`.
 
-This machine uses the Tor Expert Bundle 15.0.23 at `C:\Users\Rishi\tools\tor-15.0.23`. Its
-signature was verified against the Tor Browser Developers key
-`EF6E 286D DA85 EA2A 4BA7 DE68 4E2C 6E87 9329 8290`. If Tor Browser is already running, point
-`tor_proxy` at `socks5h://127.0.0.1:9150` and Darkwatch will use it without starting its own.
+Without Tor, every source except the onion page fetches still runs. If Tor Browser is already
+running, point `tor_proxy` at `socks5h://127.0.0.1:9150` and Darkwatch will use it without
+starting its own. Verify a downloaded Tor bundle's signature against the Tor Browser Developers
+key `EF6E 286D DA85 EA2A 4BA7 DE68 4E2C 6E87 9329 8290`.
 
 ```powershell
-uv run darkwatch check-tor     # starts Tor if needed, then asks check.torproject.org
-uv run darkwatch sources       # what each source searches and what limits it
+darkwatch check-tor     # starts Tor if needed, then asks check.torproject.org
+darkwatch sources       # what each source searches and what limits it
 ```
 
 **Secrets** live in `.env` beside the watchlist and never in the YAML. See `.env.example`:
@@ -119,29 +152,33 @@ uv run darkwatch sources       # what each source searches and what limits it
 ## Use
 
 ```powershell
-uv run darkwatch web                        # the dashboard: search, charts, triage, live scans
-uv run darkwatch run --open                 # everything; opens the HTML report at the end
-uv run darkwatch run --sources leaksites    # one source
-uv run darkwatch run --no-tor               # no onion page fetches
-uv run darkwatch search "for sale"          # keyword search over stored findings
-uv run darkwatch hits --json                # stored hits as JSON (for tooling)
-uv run darkwatch search acme --json         # search results + facets as JSON
-uv run darkwatch search --severity CRITICAL,HIGH --source leaksite
-uv run darkwatch search --facets            # counts per severity, source, status, target, type
-uv run darkwatch investigate jane@mail.com  # one value, live sources, nothing stored
-uv run darkwatch hits                       # open hits (new and acknowledged)
-uv run darkwatch hits --min-severity HIGH --snippets
-uv run darkwatch show 12                    # one hit with its recommended actions
-uv run darkwatch ack 12 --note "rotated password"
-uv run darkwatch resolve 12
-uv run darkwatch false-positive 7 --note "different person"
-uv run darkwatch reopen 7
-uv run darkwatch report --open              # rebuild the report from stored hits
-uv run darkwatch runs                       # history: duration, documents, hits, Tor
-uv run darkwatch scan-text dump.txt --save  # check a file you already hold
-uv run darkwatch notify-test                # synthetic alert through every configured channel
-uv run darkwatch shortcut                   # put the Desktop shortcuts in place
+darkwatch setup                         # first run: who to watch
+darkwatch doctor                        # check the install
+darkwatch web                        # the dashboard: search, charts, triage, live scans
+darkwatch run --open                 # everything; opens the HTML report at the end
+darkwatch run --sources leaksites    # one source
+darkwatch run --no-tor               # no onion page fetches
+darkwatch search "for sale"          # keyword search over stored findings
+darkwatch hits --json                # stored hits as JSON (for tooling)
+darkwatch search acme --json         # search results + facets as JSON
+darkwatch search --severity CRITICAL,HIGH --source leaksite
+darkwatch search --facets            # counts per severity, source, status, target, type
+darkwatch investigate jane@mail.com  # one value, live sources, nothing stored
+darkwatch hits                       # open hits (new and acknowledged)
+darkwatch hits --min-severity HIGH --snippets
+darkwatch show 12                    # one hit with its recommended actions
+darkwatch ack 12 --note "rotated password"
+darkwatch resolve 12
+darkwatch false-positive 7 --note "different person"
+darkwatch reopen 7
+darkwatch report --open              # rebuild the report from stored hits
+darkwatch runs                       # history: duration, documents, hits, Tor
+darkwatch scan-text dump.txt --save  # check a file you already hold
+darkwatch notify-test                # synthetic alert through every configured channel
+darkwatch shortcut                   # put the Desktop shortcuts in place
 ```
+
+From a source checkout, prefix each command with `uv run`.
 
 ## Desktop shortcuts
 
@@ -167,10 +204,10 @@ Reports show only targets that are still in the watchlist.
 ## Daily runs
 
 ```powershell
-uv run darkwatch schedule install --at 09:00   # Task Scheduler: "Darkwatch daily scan"
-uv run darkwatch schedule status
-uv run darkwatch schedule run-now
-uv run darkwatch schedule remove
+darkwatch schedule install --at 09:00   # Task Scheduler: "Darkwatch daily scan"
+darkwatch schedule status
+darkwatch schedule run-now
+darkwatch schedule remove
 ```
 
 The task runs the project's `pythonw.exe`, so no console window appears. It runs as you, only
@@ -228,29 +265,37 @@ Every hit lists its signals, so each score can be explained.
 
 ## VS Code extension
 
-A VS Code extension lives in `vscode-extension/`. It is a thin, safe front end over this CLI:
+Install **Darkwatch** (`daemon-vi.darkwatch`) from the VS Code Marketplace or Open VSX — the
+installer above does it for you. It is a thin, safe front end over this CLI, and it walks you
+through the rest: if the CLI is missing, the Darkwatch view offers **Install Darkwatch**; if there
+is no watchlist, **Set Up Darkwatch** asks who to watch; then **Run First Scan**.
 
-- a **Findings** view in the Activity Bar, your hits grouped by severity with a status-bar count;
-- **Run Scan**, **Deep Scan**, and **Open Dashboard** in an integrated terminal;
-- **Search** stored findings and **Investigate** a one-off value;
-- **triage** (acknowledge / resolve / false positive) from a finding's menu.
+- a **Findings** view in the Activity Bar, grouped by severity, with a status-bar count;
+- **Run Scan**, **Deep Scan**, **Open Dashboard**, **Investigate** in a terminal that shows
+  progress live, refreshing the view when the scan ends;
+- **Search** stored findings; **triage** (acknowledge / resolve / false positive) from a
+  finding's menu or the Command Palette;
+- **Open Watchlist**, **Open Latest Report**, **Check Tor**, **Check the Install**.
 
-Like the dashboard, it never opens an evidence URL — those point at leak sites and onion
-services — it shows the URL as text and copies it on request. It reads data through
-`darkwatch hits --json` and `darkwatch search --json`.
+It finds the CLI by itself (on `PATH`, in `~/.local/bin`, or `uv run` in an open checkout); set
+`darkwatch.command` only to override that. Like the dashboard, it never opens an evidence URL —
+those point at leak sites and onion services — it shows the URL as text and copies it on request.
+Every CLI call is a direct process spawn with no shell. It reads data through
+`darkwatch doctor --json`, `darkwatch hits --json` and `darkwatch search --json`.
 
-Build and install it locally:
+Build, test and install it from source:
 
 ```powershell
 cd vscode-extension
 npm install
+npm test                   # launches VS Code and drives every view state against the real CLI
 npm run package            # produces darkwatch-<version>.vsix
-code --install-extension darkwatch-0.1.0.vsix
+code --install-extension darkwatch-0.2.0.vsix
 ```
 
-On this machine set `darkwatch.command` to `["uv","run","darkwatch"]` (Settings) so it runs the
-CLI from the checkout. Publishing to the Marketplace and Open VSX is wired in
-`.github/workflows/publish-vscode.yml`, gated on the `VSCE_PAT` / `OVSX_PAT` repository secrets.
+Releases: `.github/workflows/release.yml` builds the wheel and the `.vsix` and makes a GitHub
+Release on a `v*` tag; `.github/workflows/publish-vscode.yml` publishes the extension to the
+Marketplace and Open VSX on a `vscode-v*` tag (see `vscode-extension/PUBLISHING.md`).
 
 ## Responsible use
 

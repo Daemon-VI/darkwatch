@@ -1,0 +1,5400 @@
+{
+ "source": "https://github.com/fastfire/deepdarkCTI",
+ "built": "2026-09-22",
+ "channels": [
+  {
+   "handle": "banklogplug2",
+   "name": "Bank Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "berserklogs",
+   "name": "Redline Stealer",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "BorwitaFreeLogs",
+   "name": "Redline Data Leaks",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "bradmax_cloud",
+   "name": "Redline and Raccoon Data Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cbanke_logs",
+   "name": "Log Leaks Channel",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CloudLogsPrivate",
+   "name": "UnixSeller89 Redline Stealer",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cloudlogs",
+   "name": "Redline LogZone",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cloudmika",
+   "name": "Redline Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Creditunionbanksstore",
+   "name": "Bank Logs",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "database_leak",
+   "name": "Leaked Database & Fresh Log",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "eliteband",
+   "name": "Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "fatecloud",
+   "name": "Fatecloud Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "frilogs",
+   "name": "Frilogs Redline Stealer - Usually logs pillaged from other sites",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "HUBLOGS",
+   "name": "Redline Malware Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leaklogs_official",
+   "name": "LeakLogs Official",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Log_Market_Place",
+   "name": "Data Leaks",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "logsgang2",
+   "name": "Logs Market",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "LuxuryLogsCloud",
+   "name": "Luxury Logs Redline Stealer",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "MalwareLogs",
+   "name": "Logs",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "MarkLogsBot",
+   "name": "Logs Market",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "marvelcloudRB",
+   "name": "Marvel Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Moon_Log",
+   "name": "Moon Cloud - Free Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "OneLogs",
+   "name": "Redline Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Privatedata77new",
+   "name": "Logs Market",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "raincloudlogs",
+   "name": "Logs Market",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "redlogscloud",
+   "name": "Redline Leaks",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Sl1ddifree",
+   "name": "Sl1ddi CLOUD FREE LOGS",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "snatch_cloud",
+   "name": "Redline Malware Logs",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Stealers_Logs_Group",
+   "name": "Stealer Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "WillieCloudFreeLogs",
+   "name": "Willie Cloud Redline Leaks",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "worldwidelogs",
+   "name": "Data Leaks",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "StarLinkCloud",
+   "name": "STARLINK[CLOUD] Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ArenaCloudFree",
+   "name": "Arena Cloud Free Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "OBSERVERINFO",
+   "name": "Logs aggregator",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "typicaltemshchik",
+   "name": "WLFR Project",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "dnftm_cloud",
+   "name": "DNFTM Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CloudLeaksBR",
+   "name": "Cloud Leaks BR",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "clouddvd",
+   "name": "DVD Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "segacloud",
+   "name": "Sega Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "realcloud0",
+   "name": "RealCloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DarkSideCloud",
+   "name": "DarkSide Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "chrono_logs",
+   "name": "Chrono Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "logs_cloud_free_true",
+   "name": "БЕСПЛАТНЫЕ ЛОГИ",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "stormcloudlogs",
+   "name": "Storm Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "tichancloud",
+   "name": "Tichan Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "BHF_CLOUD",
+   "name": "BHF Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "HelloKittyCloud",
+   "name": "HelloKitty Log Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Skyl1neCloud",
+   "name": "Skyline Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "solariscloud",
+   "name": "Solaris Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "dragoncloud1",
+   "name": "Dragon Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "OCTOPUSCLOUDLOGS",
+   "name": "Octopus Logs (Combo Lists)",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "TinyLogs",
+   "name": "Tiny Cloud Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "powercloudlogs",
+   "name": "Power Cloud Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "darknescloud",
+   "name": "Darkness Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "gameslogscloud",
+   "name": "Game Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Mariarticloud",
+   "name": "Mariatri Cloud (Repackaged Stealer Logs)",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "wlfrcloud",
+   "name": "WLFR Project Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LulzsecCloudLogs",
+   "name": "Lulzsec Cloud Logs (Filtered Stealer Logs/Cookies)",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "werd1kcloud",
+   "name": "Werd Cloud Logs (Repackaged Stealer Logs)",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BurnCloudLogs",
+   "name": "Burn Cloud Logs",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "mercedesbenzcloud",
+   "name": "Arcane Logs",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "PegasusCloud",
+   "name": "Pegasus Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "SamuraiCloud",
+   "name": "Samurai Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "EuropeCloud",
+   "name": "Europe Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "free_logs_cloud_ArtHouse",
+   "name": "Arthouse Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ganjacloud",
+   "name": "Ganja Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "enigmaLogS",
+   "name": "Enigma Reborn",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Redscritp",
+   "name": "Redscript Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "stonecloudtg",
+   "name": "StoneCloud Logs",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CLOUDCASPERLINK",
+   "name": "Casper Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "mooncloudfree",
+   "name": "Moon Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ManticoreCloud",
+   "name": "Manticore",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Trident_Cloud",
+   "name": "Trident Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ATM_LOGS",
+   "name": "ATM Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Logs_Tizix",
+   "name": "Tizix Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "MaisonMarjelaCloud",
+   "name": "M.M Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cvv190_cloud",
+   "name": "CVV190 Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "miragelogscloud",
+   "name": "Mirage Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "FehuCloud",
+   "name": "Fehu Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "wingsdailyurl",
+   "name": "Wings",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "godeless_cloud",
+   "name": "Godeless Cloud Reborn",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "txtlogtop",
+   "name": "https://t.me/txtlogtop",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "txtlogcloudd",
+   "name": "TXTLOG url:login:pass CLOUD BASE",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "txtbaseslog",
+   "name": "lexaurl",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "anuriacloud",
+   "name": "anuria cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "txtloggg",
+   "name": "TXT LOG CLOUD URL:LOGIN:PASS",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DataLeaks24",
+   "name": "DataLeaks2025",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "richasscloud",
+   "name": "Richass Combo Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "MagicCloudLogs",
+   "name": "Magic Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "chatcloudcasper",
+   "name": "Casper Cloud",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "universecloudtxt",
+   "name": "Universe Cloud",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "infocloudurl",
+   "name": "INFO CLOUD",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "lOGSMARKET_PRIVATEDATA77",
+   "name": "LOGS MARKET",
+   "kind": "infostealer",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cloudxlog",
+   "name": "LOGS",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "anonymous_algeria_chat",
+   "name": "Anonymous Algeria Group",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Developer_Astra",
+   "name": "Anonymous Algeria Channel",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "darkside_hubb",
+   "name": "Darkside Hub",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Redline_Cl0ud4",
+   "name": "Redline_Cl0ud4",
+   "kind": "infostealer",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "aaron_bushneII",
+   "name": "Aaron Bushnell hackers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AC3HCYBER",
+   "name": "ACEH",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AccountSquadChat",
+   "name": "Illicit Service Group",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ACCOUNTSQUAD",
+   "name": "Illicit Service Channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "agencyInt",
+   "name": "AgencyInt Marketplace",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "aidlock",
+   "name": "AiDLocker group channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AisData",
+   "name": "AisData",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AlAhadSecurity",
+   "name": "Al Ahad",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Alien_UFO_LEAKS",
+   "name": "UFO LEAK MARKET",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "alixsecenglish",
+   "name": "Alixsec",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Allhak_mv",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "anarchy_squad",
+   "name": "[ Cyber.Anarchy.Squad ]",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "anon_by",
+   "name": "Anonymous Russia channel",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "anon_sec_Official",
+   "name": "Anon Sec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AnonCollective",
+   "name": "Anonymous Collective",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AnonimLegion",
+   "name": "KaliHunt/Russia",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ANONM0S_RU",
+   "name": "Anonymous Russia",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ANONMOUS_KASHMIR",
+   "name": "ANONYMOUS KASHMIR",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "AnonPioneers",
+   "name": "AnonPioneers",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "AnonSecItaChat",
+   "name": "Anonymous Italia Chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AnonSecITA",
+   "name": "Anonymous Italia Channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Anonymous_Guys_313",
+   "name": "Anonymous Guys",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Anonymous_revengers",
+   "name": "UnderWorld Hacking Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "anonymous_south_africa",
+   "name": "Anonymous South Africa",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Anonymous_VNLBN",
+   "name": "Electronic_Army_Special_Forces",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AnonymousEgypt",
+   "name": "Anonymous Egypt",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AnonymousJordan",
+   "name": "Anonymous Jordan",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AnonymousSudan",
+   "name": "Anonymous Sudan",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AnonymousVNLBN9",
+   "name": "VNLBN9",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "antiextchatt",
+   "name": "AE Chat",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "anzu_team",
+   "name": "Anzu Team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "APIddosMirai",
+   "name": "Killnet API DDoS Mirai",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "apt404team",
+   "name": "ApT 404 Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "APTANALYSIS",
+   "name": "Exploits",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "APTIRAN",
+   "name": "APT Iran",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Arab_Hackers_Union",
+   "name": "Arab Hackers Union",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ArabGhostHackers",
+   "name": "ArabGhost",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "arabghostschat",
+   "name": "ArabGhost",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ARABIAN_GHOSTS",
+   "name": "ARABIAN GHOSTS",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "aresmainchannel",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Arvin_club2",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "arvinclub1",
+   "name": "Arvin",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "asdcloud",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "atlantiscyberarmy",
+   "name": "Atlantis - CyberArmy - A.I.G",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "atw2022",
+   "name": "Against The West",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "AutoLookup",
+   "name": "AutoLookup",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "awsleaks",
+   "name": "AWS Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "azzasec_back",
+   "name": "AzzaSec",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "AzzaSec_Off",
+   "name": "AzzaSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "azzasecurity",
+   "name": "Azzasec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "azzasec",
+   "name": "AzzaSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BangladeshAnonymous",
+   "name": "BD Anonymous",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "baphchat",
+   "name": "The Jacuzzi",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "base_brutesu",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "baseleak",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "baseleeak",
+   "name": "BaseLeak",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "BAZU_BD",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "bazubd",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BEARITARMY",
+   "name": "BearITArmy",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "BEARSPAW_RESERVS",
+   "name": "BearSpaw (now they are Digital Revolt)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "best_cracking_soft",
+   "name": "Illicit Service",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "bidencashfreecvv",
+   "name": "BidenCash CVV [ANTIPUBLIC]",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "bl00dy_Ransomware_Gang",
+   "name": "Bl00dy ransomware gang",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Bl4ck_Room",
+   "name": "Checkers, Hacking Tools",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "blackforumsarchive",
+   "name": "BlacksForums archive",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "blackforumsbf",
+   "name": "Blackforum",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "blackopmrhamza2",
+   "name": "Mr Hamza",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "blackopmrhamza",
+   "name": "Mr Hamxa",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "blackshadowhackers",
+   "name": "Blackshadow Hackers",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "blackvaultcc",
+   "name": "Blackvault",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "bloodforgex",
+   "name": "BloodForge",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BLOODNET_RUS",
+   "name": "Bloodnet",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "boosty66brvte",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "bratvacorp",
+   "name": "Bratva",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "breachchat",
+   "name": "Jacuzzi 5.0",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "breachdetector",
+   "name": "Data Leak Monitor",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "breachedannouncements",
+   "name": "Breach Forum Announcements",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BreachedData",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BreachedDB",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BreachedDiscussion",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "breachforumsirc",
+   "name": "BreachForums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BreachforumsOfficialV1",
+   "name": "Breachforums Official V1",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "breachwatchers",
+   "name": "Breach Watchers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "bugatti_cloud",
+   "name": "Bugatti Cloud Redline Stealer",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Bust3d",
+   "name": "волчья свалка",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "c0xCee",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "canyoupwnme",
+   "name": "News",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "cas_files",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "cbanke_market",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cbanke",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CHO1CHO1",
+   "name": "CH01 group",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "cityofleaker",
+   "name": "Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cIub1337",
+   "name": "club1337",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "civiliandarkcode404",
+   "name": "Civilan dark code",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "clean_tools_net",
+   "name": "Clean Tools",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cloudata_free_databases",
+   "name": "Free Data Breaches Provider",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cloudata_news",
+   "name": "Cloudata News",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "club1337",
+   "name": "club1337",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "combo2021",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "combo_listt",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "combo_offensive",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "COMBO_SOURCE",
+   "name": "COMBO PRIVATE",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "combodatabasee",
+   "name": "COMBO DATABASE",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Combolistfresh",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "combosgrupoplex",
+   "name": "Combos grupo plex",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Comments_RHA_Russia_chat",
+   "name": "Red Hackers Alliance Chat Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "config_combos",
+   "name": "Configs, Combos",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Configsandcombos",
+   "name": "Configs, Combos",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ConfigsServices",
+   "name": "Configs, Combos",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "CoupTeam",
+   "name": "Coup Team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "cpartisans",
+   "name": "Кибер-Партизаны (Cyber Partisans)",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "crackcodes",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "CrackerConfigs",
+   "name": "Configs, Combos",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Crackers_Club",
+   "name": "Configs, Combos",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Crackingcombolist",
+   "name": "Cracking Combo",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Craxpro_Channel",
+   "name": "Cracking, spamming, carding",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CrazyHuntersTeam",
+   "name": "Crazy Hunters Team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "crewcomboteams",
+   "name": "Crew Combo Teams",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "crewcomboteam",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cristallineforum",
+   "name": "Cristalline Forum",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "CryptoGinzo",
+   "name": "Crypt_0x00",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ctifeeds",
+   "name": "Cyber Threat Intelligence Feeds",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "cveNotify",
+   "name": "CVE Feed",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "cybdetective",
+   "name": "News & Info Sharing",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "cyber_anarchy_squad",
+   "name": "[ Cyber.Anarchy.Squad ]",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "cyberactiveXXII",
+   "name": "CA XXII Hacktivist Gang",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "CyberArmyofRussia_Reborn",
+   "name": "Sandworm",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyberAv3ngers",
+   "name": "Cyber Av3ngers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyberAveng3rs",
+   "name": "Cyber Aveng3rs",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyberCatChat",
+   "name": "Cyber Cat chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyberCatHack",
+   "name": "Cyber Cat channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cybercourt_io",
+   "name": "CyberCourt Group (pro Palestine) - https://cybercourt.io",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "CyberDragonRussia",
+   "name": "Cyber Dragon Russia",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "CyberJihadMovement",
+   "name": "Cyber Jihad Movement",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "CyberToufanBackup",
+   "name": "CyberToufan",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyberToufan",
+   "name": "CyberToufan",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyberVolk_K",
+   "name": "CyberVolk",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyperBattle",
+   "name": "Cyber Battle",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "D1rkSec",
+   "name": "D1rkSec",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "D3atr0y3d",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "D3v1LZoNe",
+   "name": "Devilzone 1 - configs, combos",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "D7BBUK",
+   "name": "D7BBUK",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DAEKLIKS",
+   "name": "Dark_leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DailyCombos1",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DailyCombos",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "dailydarkweb",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DangerZoneForum",
+   "name": "Danger Zone Forum",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DarkBitChannel",
+   "name": "Darkbit Channel",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "darkclubpw",
+   "name": "Dark Club Market",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DarkfeedNews",
+   "name": "News",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DarkForumsME",
+   "name": "Dark Forums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "darkforumsofficial",
+   "name": "DarkForums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DarkForums",
+   "name": "Dark Forums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DarknetNewsEng",
+   "name": "Darknet News(English Version)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DarkSeek_rus",
+   "name": "DarkSeek Hacking Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DARKST0RM1",
+   "name": "Dark Storm Team Backup",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Darkstormbackup2",
+   "name": "Dark Storm Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "darkstormteam21",
+   "name": "Dark Storm Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "darkstormteambackup2",
+   "name": "Dark Storm Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "darkstormteambackup3",
+   "name": "Dark Storm Team Backup",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DarkStormTeamd",
+   "name": "Dark Storm Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DarkStormTeams",
+   "name": "Dark Storm Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Darkstormre",
+   "name": "Dark Storm Team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "darkvaultransom",
+   "name": "Dark Vault ransom",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "darkwebdarknetmarketplace",
+   "name": "Illicit Service",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "darxe_base",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Database_breached",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "databasemarkett",
+   "name": "Database Market",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "datacloudspace",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "dataflows",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "dataleakbreach",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DataLeakHome",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "dataleaksua",
+   "name": "Data Dumps; ESP Russian",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DB_MARKEETS",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "db_rf_rb",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DBleak",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ddos_separ",
+   "name": "DDoS Services",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ddosiamonitor",
+   "name": "DDoSia Target Monitor",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ddossatmak",
+   "name": "DDoS Services",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ddostm1",
+   "name": "BlackObServers Channel (ddos team)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "dedsecc_official",
+   "name": "DedSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "dforumscdn",
+   "name": "DarkForums Threads Updates",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "dienet2",
+   "name": "DieNet Backup/News",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DIeNlt",
+   "name": "DieNet",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Digital_Revolt_hack",
+   "name": "Digital Revolt",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "diplomatet",
+   "name": "Diplomat",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "divergent_group",
+   "name": "Divergent Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DMMMMMM",
+   "name": "BigDmtrydata",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "dontleakmydata",
+   "name": "DontLeakMyData",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "dragonforceio",
+   "name": "DragonForce Malaysia",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DragonRansom",
+   "name": "Dragone RaaS",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DumpedOfficial",
+   "name": "Dumped forum",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "dumpforums",
+   "name": "Dump Forums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "eaglecyberwashere",
+   "name": "Eaglecyber",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "easycloudlogsback0",
+   "name": "Easy Cloud Logs Free",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ehdanstock",
+   "name": "Selling Accounts",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "eightbase",
+   "name": "8BASE",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "emailistsdatabase",
+   "name": "Database Email Lists and Numbers Lists",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "emp_name",
+   "name": "EMP Group (EMailPass)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "esteemrestorationeagle",
+   "name": "Esteem Restoration Eagle",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "EternityMalwareTeam",
+   "name": "Eternity Malware",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "EVILEAKSU",
+   "name": "UNLISTEDLEAKS",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "evilzoneforum",
+   "name": "Evil Zone",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "exodusmarketchannel",
+   "name": "Exodus Logs Market",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "exploit_db_com",
+   "name": "Exploits",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ExploitService",
+   "name": "Exploit Service",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "exposedannouncements",
+   "name": "Exposed Forum",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "filehaus",
+   "name": "Filehaus",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "FileInclusion",
+   "name": "Osint Lovers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "FiveFamilies",
+   "name": "FiveFamilies",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "flannels",
+   "name": "Market",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "foxwmapt",
+   "name": "Fox William Mulder",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "fr33d4t4",
+   "name": "Fr33 d4t4 - stolen redline from other channels",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "fredensofsecurity1",
+   "name": "Fredens of Security",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "freecombosmails",
+   "name": "FREE COMBOS MAILS",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "freeDEFAULFcloud",
+   "name": "Defaulf Cloud (Redline Stealer)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "FreeLogPassForAll",
+   "name": "FreeLog:PassForAll",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "freepalestine_PPHM",
+   "name": "Pro-Palestine Hackers Movement",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "FreshAccess",
+   "name": "Venom Access Token",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "freshcombomails",
+   "name": "Fresh Combo mails",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "freshtoolsnet",
+   "name": "Freshtools Market",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "friendastrokal",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "funclubnoname05716",
+   "name": "NoName057(16)🇷🇺 - april 2025",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "GarudaHacktivis",
+   "name": "Garuda Hacktivis",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "garudasec4",
+   "name": "Garuda Security",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "GGBestCombo",
+   "name": "GGBestCombo",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "GhostSecc",
+   "name": "Data Leaks & Hacktivism group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "GhostSecS",
+   "name": "GhostSec Service",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "gladdos69_official",
+   "name": "DDoS",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "GLORIAMISTS",
+   "name": "GLORIAMIST",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "glorysec",
+   "name": "GlorySec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "goblins_gang",
+   "name": "chat",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "goblins_hub",
+   "name": "hub links",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "GoneTeam410",
+   "name": "GoneTeam",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "GonjeshkeDarand",
+   "name": "Gonjeshke Darande",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "goripoolcodes",
+   "name": "Goripool Codes",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "groupcracked",
+   "name": "Group Cracked",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "GroupLapsus",
+   "name": "Group Lapsus",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "gulfdocs",
+   "name": "Data Leaks (Gulf Region), Middle East Document Dumps",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "h0lyleague",
+   "name": "Holy League",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hack_0xTam",
+   "name": "0X_Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hack_n3t",
+   "name": "HackNeT",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hackberegini",
+   "name": "Beregini",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "hacker_trick",
+   "name": "Hack Tricks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "hackercouncil",
+   "name": "Hacker Council Global",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hackerforse",
+   "name": "7 October Union",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "HackForceAll",
+   "name": "HackForce",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hackgit",
+   "name": "Offensive Security",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "hackingtoolsprvi8",
+   "name": "Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hackrsk70",
+   "name": "Team K70",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Handala_backup",
+   "name": "Handala Backup",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Handala_hack",
+   "name": "Handala Hack",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hanzzchannel",
+   "name": "GALAXY NETWORK",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hellokittyleaks",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hgn01_ru",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hidden_links",
+   "name": "Hidden Links",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "highs0c1ety",
+   "name": "High Society",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "HiveNETT",
+   "name": "HiveNET",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Holy_League",
+   "name": "Holy League",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hooshyarane",
+   "name": "Hooshyaran-e Vatan group",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "horus_reservs",
+   "name": "Horus Evolution reserve",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "HorusForumRus",
+   "name": "Horus Forum",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "horusteam_officiall",
+   "name": "Horus Evolution",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "horusteam_official",
+   "name": "Horus Evolution",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "HQ_COMBO",
+   "name": "Data Breaches Provider",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "HQCracking",
+   "name": "Data Breaches Provider",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "HQPROX",
+   "name": "Proxy service",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "hudyhstock",
+   "name": "Selling Accounts",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Hunt3rkill3rs1",
+   "name": "Hunt3r Kill3rs",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hydramarketrebuild",
+   "name": "Hydra Market Rebuild",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "illsvcchat",
+   "name": "Illicit Service chat",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "illsvcleaksupload",
+   "name": "Illicit Service Upload",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "illsvcleaks",
+   "name": "Illicit Service Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "illsvc",
+   "name": "Illicit Service",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "INDOHAXSEC",
+   "name": "INDOHAXSEC",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Industrial_Spy",
+   "name": "Industrial Spy",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "infinity_hackers_group",
+   "name": "Infinity Hackers By",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "INFINITY_HACKERSS",
+   "name": "Infinity Forum",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "informZarya",
+   "name": "Zarya",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "InfraShutdown",
+   "name": "InfraShutdown - DDoS",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "inj3ct0rs",
+   "name": "Exploits Market and 0day Exploits Database",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "inteid",
+   "name": "Inteid",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "intelrepo",
+   "name": "Spectre's Intel Repository",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "intelx_io",
+   "name": "intelx - infosec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ircodebreakers",
+   "name": "Codebreakers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "islamic_hacker_army0",
+   "name": "Islamic Hacker Army Channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "islamic_Hacker_Army",
+   "name": "Islamic Hacker Army Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "itsecalert",
+   "name": "News",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "jambicyberteam",
+   "name": "Jambi Cyber Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "jester_stealer_channel",
+   "name": "Jester Stealer Channel",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "joker_reborn",
+   "name": "Joker Reborn Redline Stealer",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "jokersworlds",
+   "name": "Joker's world of Free Database",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "jokmajd",
+   "name": "TEAM1910",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "jsonc2",
+   "name": "jsonC2",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "JustAn0x",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "justice_homeland_original",
+   "name": "HomeLand Justice",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "justice_homeland",
+   "name": "Homeland Justice",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "JusticeHomeland1",
+   "name": "HomeLand Justice",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "karakurt_news",
+   "name": "Karakurt",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "kedirisecteam",
+   "name": "KEDIRISECTEAM",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "kelvinsecuritydarkmarket",
+   "name": "Kelvin Security Dark Market",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "KeymousTeam",
+   "name": "keymous+",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Keymous",
+   "name": "keymous+",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "kiborg_leak",
+   "name": "Kiborg Leak (Alphabank)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "killmilk_rus",
+   "name": "DARKNET",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "KillMillk",
+   "name": "KillMilk",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "killnet_mirror",
+   "name": "Killnet mirror",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Killnet_Palestine",
+   "name": "Killnet Palestina",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "killnet_reservs",
+   "name": "Killnet reservs",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "KillnetChatLATAM",
+   "name": "KillnetLATAM chat",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "KILLNETddos",
+   "name": "Killnet DDoS",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "KillnetLATAM",
+   "name": "KillneLATAM channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Killneto",
+   "name": "Killnet Officiale (with invites for closed channel)",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "king_0f_cracking",
+   "name": "Free Data Breaches, cracking tools and proxy lists Provider",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "kittensec",
+   "name": "KittenSec",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "KozSec1",
+   "name": "KozSec backup",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "KozSecChat",
+   "name": "KozSec chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "KozSec",
+   "name": "KozSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Kristina_Pass_RF",
+   "name": "Data Leaks, Passport Scans",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "KryptonNetworks",
+   "name": "Krypton",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "KryptonSolutions",
+   "name": "Krypton",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Laneh_dark",
+   "name": "Laneh Dark",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Laneh_news",
+   "name": "Laneh News",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "lapsusfr",
+   "name": "LAPSUS$ France",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Lapsussaudechat",
+   "name": "Lapsus$ channel (new)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "latest_leaks",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "latestbin",
+   "name": "Hacking Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "lazarus_apt18",
+   "name": "Lazarus channel",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "LCdatabase",
+   "name": "Low-Cost-Database",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Leak_23andme",
+   "name": "23andme Leak Database",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "leak_db1",
+   "name": "d3ltaboys group 1 (DB Leaks) - Backup",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leak_db2",
+   "name": "d3ltaboys group 2 (DB Leaks)",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "leak_db3",
+   "name": "d3ltaboys group 3 (DB Leaks) - Backup",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Leak_DBMS",
+   "name": "Leak DBMS",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leakbase_official",
+   "name": "LeakBase Official",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leakbaseforum",
+   "name": "LeakBaseForum",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leakdataprivate",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Leaked_BreachDBS",
+   "name": "Leaks & Breaches",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Leaked_Breached_Hacked_Database",
+   "name": "Database of Data Breaches",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Leaked_DataBase_Breached",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leaked_databases",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "leaked_detabase",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LeakedSource",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leakes4",
+   "name": "Data Leaks, Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leakinformation",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leaklicks",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leaksdatabase",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LeaksData",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leaksdirectory",
+   "name": "Leaks Directory",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leaksmarts",
+   "name": "Leaks Marts",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leaksploit",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LearnExploit",
+   "name": "General hacking, Tutorials",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "lefousamples",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Legion_Russia",
+   "name": "Legion Russia",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LEGIONLEAKER",
+   "name": "Legion Leaker",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LegionServiceNewsGroup",
+   "name": "Legion Service News Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LegionServiceNews",
+   "name": "Legion Service News",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LionheartHACK",
+   "name": "Lionheart",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Liquid_Blood",
+   "name": "Liquid Blood",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "LockBit_APT",
+   "name": "LockBit APT",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "lockbit_offical",
+   "name": "LockBit 3.0",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LockBitSuppRaaS",
+   "name": "LockBitSupp",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "logs_databases",
+   "name": "R.E.D. H.A.S.H.",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "lulzchat",
+   "name": "LulzSec chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LulzSec_Off",
+   "name": "PhantomGroup",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "lulzsecmuslimsworld",
+   "name": "SH7 G4NG",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "LulzSecOff",
+   "name": "LulzSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LummaC2Stealer",
+   "name": "LummaC2 Stealer",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LummaC2Team",
+   "name": "LummaC2 Stealer Chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LummaReborn",
+   "name": "LummaC2 Stealer Channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "LummaTeam_Reborn",
+   "name": "LummaC2 Stealer Chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "M0roccan_Black_CyberArmy",
+   "name": "Moroccan Black Cyber Army",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "MadCapZone",
+   "name": "MadCap",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "MAilAccessCracker",
+   "name": "Free Data Breaches Provider",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "mailaccesscrack",
+   "name": "Combo Lists",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "mailaccessmegacloud",
+   "name": "MailAccess Mega Cloud",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "MaillAccessTop",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "mailpasschanel",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "MailPassPrivates",
+   "name": "Mail Pass Privates",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "mailpass",
+   "name": "MAIL:PASS HQ Combos & Bases",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "malek_team1",
+   "name": "MalekTeam",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "MalwareForums",
+   "name": "Malware Forums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "marketo_leaks",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Matryoshka424",
+   "name": "Matryoshka424",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "MBCRANSOMWARE",
+   "name": "Ransomware Gang",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "meris_botnet",
+   "name": "Meris botnet",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "metastealer_official",
+   "name": "Metastealer Officiale",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "MexicanMafiaTheShit",
+   "name": "MexicanMafia Announcement",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "MiladLeaks",
+   "name": "Milad Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "milkdude",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "minsaudebr",
+   "name": "Lapsus$ channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "mlcloud_hosting_news",
+   "name": "mlcloud_hosting_news",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "mrhamzaofficiel",
+   "name": "Mr Hamza",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "MysteriousTeam0",
+   "name": "Mysterious team bangladesh",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "naosbase",
+   "name": "DB / Data Leak Search Engine",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "NekoOsintUpdates",
+   "name": "NoSINT - Updates",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "net_worker_alliance",
+   "name": "Net Worker Alliance",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "NetGhostSecurity",
+   "name": "DDoS & Data Breach",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "NetHunt3r",
+   "name": "NetHunt3r Group (pro Palestine)",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "NetSurvivalist",
+   "name": "General Hacking, Privacy",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "NewBlood_Project",
+   "name": "New Blood Project",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "nightmare_hacker",
+   "name": "NIGHTMARE",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "NinjaByte",
+   "name": "Ninja Byte Combos (Combo Lists)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "NNM05716_en_vers",
+   "name": "NoName057(16) Eng",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "NNM05716_En_ver",
+   "name": "NoName057(16) Eng_vers🌎 - april 2025",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "NNM05716_Es_ver",
+   "name": "NoName057(16) Spain",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "NNM05716_fr_vers",
+   "name": "NoName057(16) France",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "NNM05716_it_ver",
+   "name": "NoName057(16) ITA",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "nohidespace",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "NoName05716_16",
+   "name": "NoName057(16) Eng_vers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "nnm05716engvers",
+   "name": "NoName057(16) Eng_vers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "nnm05716english",
+   "name": "NoName057(16) Eng_vers",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "TwoNetchannel",
+   "name": "TwoNet",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "NullLeak",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "O1chat",
+   "name": "Market",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "OBSERVERCLOUDCOMBO",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ObserverCloud",
+   "name": "Observer Cloud Redline Stealer (Harvests other channels)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "OfficialBaphomet",
+   "name": "BaphometOfficial",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "opendataleaks",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "openleak",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "OPRATIONSALIGATOR",
+   "name": "Aligator Black Hat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Osintcorp_chat",
+   "name": "OsintCorp Group Chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Patriot_Black_Matrix",
+   "name": "Patriot Black Matrix",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Patriot_Black_x",
+   "name": "Patriot Black Matrix",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "phantom_tg",
+   "name": "PHANTOM DEV",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "PhantomAtlasOfficial",
+   "name": "Phantom Atlas",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "phoenix_inform",
+   "name": "PHOENIX",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "phoenixinform",
+   "name": "Phoenix group",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Phorcy",
+   "name": "Phorcy Stealer",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "plumdatabases",
+   "name": "Plum data bases",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "poenamarket",
+   "name": "Poena Market",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "postexploitation",
+   "name": "Osint Lovers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "private_ratlogs",
+   "name": "Free CLouds",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "privatecombos",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "PrivateCompanyPirates",
+   "name": "PrivateCompanyPirates",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "privetOTof222",
+   "name": "OverFlame",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "privetOTof223",
+   "name": "Overflame",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "procoder_base",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "proxy_bar",
+   "name": "Exploits, Hacking and Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "pryntsktmarket",
+   "name": "Prynt Stealer Official",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "qayzerowns",
+   "name": "Al Ahad",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "QuartzSec",
+   "name": "QuartzSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "qZann",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "R00TK1TDB",
+   "name": "R00tk1t DB",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "R00TK1TOFF",
+   "name": "R00tk1t Cyber Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "R3An0nymous",
+   "name": "R3An0nymous Canal",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "R3dd1sh_34_E4gl3_D4t4l34ks",
+   "name": "Ŕ€đďįşħ €ąğℓę ďάťάŁэάķş",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "radnetbak",
+   "name": "RADNET64",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "raidsecretforums",
+   "name": "Claims to be the backup channel of RaidForums",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "RalfHackerChannel",
+   "name": "Ralf Hacker Channel",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ransom_house",
+   "name": "RansomHouse official channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ransomblackbit30",
+   "name": "Lockbit 3.0 Main.js",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "RansomHunter",
+   "name": "GangExposed",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "RansomTeam",
+   "name": "RansomTeam  Chat",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "RansomwareTeam",
+   "name": "Ransomware Team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ransomwatcher",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "rdpstealer",
+   "name": "Rdp Stealer",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "realLulzSec",
+   "name": "VSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "RedEagleCrew",
+   "name": "Red Eagle Crew",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "redstresserorg",
+   "name": "Meris botnet main channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "reveng3rs",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "revolusigbanon17",
+   "name": "GB Anon 17",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "RHA_Red_Hackers_Alliance_Russia",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ridgedforums",
+   "name": "BlackForums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "RipperSecOfficial",
+   "name": "RipperSec Official",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "RipperSec",
+   "name": "RipperSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "russiagoodbuy_rgb_team",
+   "name": "RGB Team (https://rgb-team.com)",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "sanaski",
+   "name": "Configs, combos",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Satanlock",
+   "name": "Satanlock",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Sector08",
+   "name": "SECT0R16",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "SECTOR16S16",
+   "name": "SECTOR16(S16)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ServerKillers",
+   "name": "Server Killers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "shadowleakss",
+   "name": "ShadowHacker Leaks",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "shadowseekers5",
+   "name": "Shadow Seekers",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ShizoPrivacy",
+   "name": "0% Privacy",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "SiegedSecc",
+   "name": "SiegedSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "SiegedSecurity",
+   "name": "SiegedSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "SiegedSec",
+   "name": "Sieged Sec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "silentplug666",
+   "name": "Market",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "sixtysixdata",
+   "name": "66SLAVS Datagroup",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "SkidbinSITE",
+   "name": "Skidbin",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "slivaidlocker",
+   "name": "AiDLocker Group Data Leaks Channel",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "slivnoviy123",
+   "name": "Erernity Team Redline Stealer",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Sn_blackmeta",
+   "name": "SN_ Blackmeta",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "SN_Darkmeta",
+   "name": "SN_ Blackmeta",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "SNAKEDBS",
+   "name": "Nuttela Combo's (Repackaged Combo Lists)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "snatch_info",
+   "name": "Snatch ransomware gang",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "snatch_news",
+   "name": "Snatch Team (Ransomware Gang)",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "solntsepekZ",
+   "name": "Sandworm",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "SolomonUpdates",
+   "name": "Solomon market place updates",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "spamsmtpcombo",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "SparrowCorp",
+   "name": "SparrowCorp",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "SpidrXXX",
+   "name": "Spider-X",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "SSSO_Official",
+   "name": "KILLNET # РЕЗЕРВ",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "StealerStore",
+   "name": "Stealer Store",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "stkdatabase",
+   "name": "Mapper (former STK Database)",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "StormFreeConfig",
+   "name": "Configs, Combos",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "StressedForums",
+   "name": "Stressed Forum",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "sultengblackhat",
+   "name": "INDONESIAN CYBER OF SULAWESI TENGAH BLACKHAT",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "SumatraUtaraCyberTeam",
+   "name": "SumatraUtara",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "SylhetGangSgOfficial",
+   "name": "Sylhet Gang-SG",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "sysadminbd",
+   "name": "Sysadmin",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "t_darknet",
+   "name": "Illicit Service",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "tbotlist",
+   "name": "Bots",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "TE1915",
+   "name": "1915 team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Team1722",
+   "name": "Team1722",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "team1916",
+   "name": "TEAM1916",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Team_r70YEMEN",
+   "name": "DDoS Hactivitsts",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "TeamAnonSec",
+   "name": "AnonSec",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "TeamARXU",
+   "name": "Team Arxu",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "TeamDemon",
+   "name": "Illicit Service",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "teamimm0rtal",
+   "name": "Team Imm0rtal channel",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "TeamIndianCyberForce",
+   "name": "Indian Cyber Force",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "teaminsanepk",
+   "name": "Team insane pk",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "techpwnews",
+   "name": "News",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "tengkorakcybercrewz",
+   "name": "TengkorakCyberCrew Official",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "TEST123ND",
+   "name": "TEST",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "TG_SECurityTr8Ker",
+   "name": "SECurityTr8Ker",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "tgcnnatgvctfenqwf",
+   "name": "Combo List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "the_archivists_domain",
+   "name": "Source Code Dumps",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "thebrotherhoodcorp",
+   "name": "The Brotherhood",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "TheMoskovskiTimes",
+   "name": "The Moskovski Times",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ThreatSec",
+   "name": "ThreatSec",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "TigerElectronicUnit",
+   "name": "Electronic Tigers Unit",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Turbotelproxy",
+   "name": "The fastest Telegram proxies",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "turkhckteam",
+   "name": "Turk Hack Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "udacha123yes",
+   "name": "Ransomware Gang",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "UnsafeInternet",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "UPENBULLET",
+   "name": "Configs, checkers, combos",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "URLPASSCLOUD",
+   "name": "URL:USER:PASS CLOUD",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "user1_pycc",
+   "name": "user1",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "user_secc",
+   "name": "UserSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "user_sec",
+   "name": "UserSec Killnet Affiliated",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "usersec_chat",
+   "name": "UserSec Chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "usersec_collective",
+   "name": "UserSec Collective",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "usersec_reservs",
+   "name": "UserSec Reserve",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "V3TerN",
+   "name": "Devilzone (2) - configs, combos, etc",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "varundb",
+   "name": "VARUN",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "voltspammer",
+   "name": "VOLT CRACKS",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "vulture_001",
+   "name": "Vulture",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "weareaig",
+   "name": "Atlas Intelligence Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "WeAreKillnet_Channel",
+   "name": "WE ARE KILLNET",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "WeAreKillnet_Official",
+   "name": "WE ARE KILLNET +",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "webpwn",
+   "name": "Hacking, Privacy",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "weedforumslol",
+   "name": "WeedSec",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "WeJustEvil",
+   "name": "Just Evil",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "weleakdatabase",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "whoisAlixan",
+   "name": "AlixSec",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "win_def",
+   "name": "Windef",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "windmarketo",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "WLDBackup",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "wwhsmi",
+   "name": "WWH Forum",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "www_paypal",
+   "name": "Pro Team Channe",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "x7seller",
+   "name": "X7Root Seller",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "xaknet_team",
+   "name": "xaknet",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "xAnonymousSudan",
+   "name": "Anonymous Sudan",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "xGodzillAxChat",
+   "name": "Godzilla Botnet chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "xinject_official",
+   "name": "(Dead)XInject Information Channel",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "xxShad0dexx",
+   "name": "Shad0de",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Yad2Leaks",
+   "name": "Data Leaks",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Z_Pentest_Beograd",
+   "name": "Z-PENTEST Alliance",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "z_pentest_reborn",
+   "name": "Z-PENTEST Alliance",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "zendatamarket",
+   "name": "ZenData Database Market",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "zer0daylab",
+   "name": "Hacking, Leaks and News",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ZeroDay_TM",
+   "name": "Original  ZeroDay  Community",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "zerodayforums",
+   "name": "ZeroDay Forums",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "zerodaymarkets",
+   "name": "Zeroday Market",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "zolfcombo",
+   "name": "ZOLF Combos",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ZulikGroupChat",
+   "name": "ZulikGroup Chat",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ZulikGroupTG",
+   "name": "ZulikGroup",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "xX313XxTeam",
+   "name": "313TEAM",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "R3V0XAn0nymou",
+   "name": "Sons of Anarchy",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyberforceTn",
+   "name": "Tunisian Maskers Cyber Force",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Z_alliance_ru",
+   "name": "Z-ALLIANCE",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Official_EvilBYTE",
+   "name": "Evil Byte",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DarkfireDragon7",
+   "name": "DarkNess7",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "HiddenEyesTeam",
+   "name": "HiddenEyesTeam",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "garunaops",
+   "name": "Garuna Ops",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "PredatorySparrowIL",
+   "name": "Predatory Sparrow",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Mhwear96",
+   "name": "Holy League",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ru_62IX",
+   "name": "62IX Group",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Assasins_Official",
+   "name": "Assassins",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "revolusihime666",
+   "name": "HIME666",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "fredenscombos",
+   "name": "Fredens of Security",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ckeArsenal",
+   "name": "ckeArsenal",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "tapandegan_official",
+   "name": "Tapandegan",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "X8ZZX",
+   "name": "National Security - To Destroy Israel",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "kittyforums",
+   "name": "KittyForums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Team1956Official",
+   "name": "TEAM1956",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "APTIRGC",
+   "name": "APT IRGC",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "CyberBabayoEror",
+   "name": "Babayo eror system",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Atlas_Flood",
+   "name": "Atlas Flood",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "T34M_F34RL3SS",
+   "name": "team fearless 🇵🇸",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Golden_falcon_team",
+   "name": "Golden Falcon",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "AnonymousVNLBN99",
+   "name": "Lực Lượng Đặc Biệt Quân Đội Điện Tử",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "AnonymousGuys0",
+   "name": "Anonymous Guys",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "bl4ck_cyb3r",
+   "name": "BL4CK CYB3R",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "nxbbsec",
+   "name": "NXBB SEC",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "D3X73RMa",
+   "name": "D3X73R",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "unitninee",
+   "name": "UNIT NINE",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "blankc2",
+   "name": "BlankC2",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "mrhamza_antiporn",
+   "name": "Mr Hamza-Anti-Porn",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "xstuxnet",
+   "name": "STUXNET - ستوكسنت",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "OXO_News_HN",
+   "name": "OXO News HN",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "mrtanjirox",
+   "name": "Tanjiro DDoS Botnet Service",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "musicarusaesp",
+   "name": "🐻Desinformador ruso👁‍🗨",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "KillNetSyndicate",
+   "name": "KillNet Syndicate",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "usersecc",
+   "name": "UserSec # KillNet",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "vassal_of_the_Joker",
+   "name": "Вассал Джокера",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "CyberToufan01",
+   "name": "CyberToufan",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "handala_team",
+   "name": "Handala",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "T34M_CYB3R",
+   "name": "𝙏𝙀𝘼𝙈 𝘾𝙔𝘽𝙀𝙍 𝙕𝙐𝙇𝙁𝙄𝙌𝘼𝙍 🇵🇸",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "perunswaroga",
+   "name": "Перун Сварога",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ruskinet",
+   "name": "RuskiNet",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "unknowns_cyberteam",
+   "name": "Unknowns Cyber Team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "WeAreUst",
+   "name": "USTINT",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BabayoScteam",
+   "name": "Babayo Eror System",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "islamic_hacker_army1",
+   "name": "Islamic Hacker Army",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "bl00dy_ransomware_Gang_channel",
+   "name": "bl🩸🩸dy Ransomware Gang ☠️",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "raidf0rumss",
+   "name": "Raidforums Office",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leakslist",
+   "name": "Leak List",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "JokeirR07x",
+   "name": "JoKeiR 07x",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ANONXF34RL3SS",
+   "name": "ANON X FEARLESS",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "xServerKillers",
+   "name": "Server Killers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "threadsbreach",
+   "name": "Threads Breachforum",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "GhilanLegion",
+   "name": "Ghilan Legion",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "darkstormteamoff",
+   "name": "Dark Storm",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "AKATSUKI4492",
+   "name": "AKATSUKY CYBER TEAM",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hezirash",
+   "name": "Hezi Rash",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "cyberlami",
+   "name": "Cyber Lami",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "databasecyberlami",
+   "name": "Database Cyber Lami",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "digitalsghost",
+   "name": "Digital Ghost",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "scatteredlapsusp1d3rhunters",
+   "name": "The Com HQ Scattered Sp1d3r Hunters",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "scatteredsp1d3rhunters",
+   "name": "scattered lapsus$ hunters",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "sp1d3rlapsushunters",
+   "name": "scattered lapsus$ hunters",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leavemealonefbi",
+   "name": "scattered lapsu$ hunters - Chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BQTlock_raas",
+   "name": "BAQIYATLock RaaS",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "nullsechackers",
+   "name": "Nullsec Philippines",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "sctt3rd",
+   "name": "scattered $lapsus hunters 4.0",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "leaksdatabreach",
+   "name": "Data Breach (related to ShinyHunters)",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Ktama_Official",
+   "name": "Ktama Official",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "hazardouscyberteam",
+   "name": "Hazardous Cyber Team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "shinobiraas",
+   "name": "Sinobi RaaS",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyberToufan02",
+   "name": "Cyber Toufan (evidences channel)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyberToufan00",
+   "name": "Cyber Toufan (reference channel)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "dropleak",
+   "name": "Database Catalog",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "noname05716_eng_vers",
+   "name": "NoName057_eng_version",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Keymous_main",
+   "name": "Keymous+",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "FireWireMaroc",
+   "name": "Fire Wire Maroc",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "gangexposed_eng",
+   "name": "Gang Exposed Chat",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Hyder_N3x",
+   "name": "Hyder_N3x",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "T34M_F34RL3SSS",
+   "name": "Team Fearless",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Himenisme666",
+   "name": "Hime666",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "KirovEliteGroupPublic",
+   "name": "Kirov Elite Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "breachstars",
+   "name": "BreachStars",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "TorZireael1",
+   "name": "Tor Zireael",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "scatteredLapsus",
+   "name": "Scattered Lapsus$ Hunter 6.0",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "biorkanisms",
+   "name": "Bjorkanism",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BF_files",
+   "name": "BF Files",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "networker_apt",
+   "name": "NET-WORKER",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Z_ALLIANCE",
+   "name": "Z_ALLIANCE",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "hannibalmaaleaks",
+   "name": "HannibalMAA LE4kS",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Almo7a9e9",
+   "name": "Almo7a9e9",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Darkstormteamnewteam",
+   "name": "Dark Storm Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "bittenforumsofficial",
+   "name": "Bitten Forums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "rubiconh4ckss",
+   "name": "Rubicon Hack",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "thecrimsoncollective",
+   "name": "The Crimson Collective",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "jacuzzidf",
+   "name": "The Jacuzzi",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "specialagentadam",
+   "name": "SLSH 6.0 part 3",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "SLSH_kashpatel",
+   "name": "SLSH BACKUP 2",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "andrewfedman",
+   "name": "SLSH 6.0 part 3 - lapsus$hiny$scatteredwizard",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "smokinmandiant",
+   "name": "scattered LAPSUS$ hunters part 7",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "comefacediswood",
+   "name": "scattered LAPSUS$ hunters part 7 Chat",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "evilcrewteam",
+   "name": "Evil Crew",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "disc_hack",
+   "name": "Discord",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "H3yder_N3ex",
+   "name": "Hyder_Nex",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Cyb3rBlitz",
+   "name": "Cyber Blitz",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "hezi_rash",
+   "name": "Hezi Rash",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "KALOSHA319",
+   "name": "Kal Egy 319",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ripalldaguyz",
+   "name": "scattered LAPSUS$ hunters 7.0",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "lunarisS3C",
+   "name": "LunarisSec",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Darkstormteamback",
+   "name": "Dark Storm Team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "breachfiles",
+   "name": "Breachforum CDN",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "MR_X10_SY",
+   "name": "Data leaks: Merged with HIDER_NIX",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "zagnet1",
+   "name": "ZagNet",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "itarmyofrussianews",
+   "name": "IT Army Of Russia",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "kazu_breach",
+   "name": "Kazu Breach",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "weleaklabs",
+   "name": "WeLeakLabs",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "darkilluhvx",
+   "name": "Darkside beast",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "shseller13",
+   "name": "scattered LAPSUS$ hunters part 7 Chat",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "statesponsored",
+   "name": "scattered LAPSUS$ hunters Impending part 8 backup",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "lapsusgrupo",
+   "name": "$LAPSUS",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ShinyCorporation",
+   "name": "ShinyHunters",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "bfsup",
+   "name": "BreachForums",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "BreachForumsNews",
+   "name": "BreachForums",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "talkaboutclassifieddocuments",
+   "name": "JRIntel Chat",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DarkForums_HN",
+   "name": "Darkforums",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DarkForumsNews",
+   "name": "Darkforums",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Jacuzzihub",
+   "name": "Jacuzzi 2.0",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "handal_a",
+   "name": "Handala",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "dropsumshi",
+   "name": "data catalog",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "dropsleak",
+   "name": "DBCollection",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "group_LAPSUS",
+   "name": "Lapsus$ Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "crewcyber",
+   "name": "404 CREW CYBER TEAM",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "noname05716_esp",
+   "name": "NoName057(16)_Esp vers🇪🇸",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "nnm05716_itvers",
+   "name": "NoName057(16) It vers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "breachdetect",
+   "name": "Data Leak Monitor",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "eightsixroot",
+   "name": "EIGHT-SIX ROOT",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "bjorkanismen",
+   "name": "Bjorkanism",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "httpstmeVl8Cr1np5kxhYjd0",
+   "name": "BD Anonymous",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "dienet3",
+   "name": "DieNet",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "dienet1",
+   "name": "DieNet",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "z_bl4cx_h4t_id",
+   "name": "Z-BL4CX-H4T.ID",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Breach_VIP",
+   "name": "Breach.VIP",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Venari_By_BetterCyber",
+   "name": "VenariX",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "order403",
+   "name": "Order403",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyaberGhost",
+   "name": "AN0M949_GHOST_TRACK",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "maul1337anon",
+   "name": "𝘮𝘢𝘶𝘭𝘯𝘪𝘴𝘮1337",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "HaxChipper",
+   "name": "HaxChipper",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ShadowClawZ404",
+   "name": "Shadow ClawZ 404",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "FsckAroundFindOut",
+   "name": "unc3944 unc5537 unc6040 unc6240 unc6395 unc6661",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Jacuzzidarkforums",
+   "name": "Jacuzzi 2.0",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ThreatMarket",
+   "name": "Threat Market",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "COMBOWORKON",
+   "name": "Mail Access Combos",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Lun4risSec",
+   "name": "LunarisSec",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Hider_Nex_Attacks",
+   "name": "Hider Nex",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "kittykatkrew",
+   "name": "Kittykatkrew",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "EvilNet3",
+   "name": "EvilNet 3.0",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ddoswfree",
+   "name": "Meows alive",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DarkForumsHub",
+   "name": "DarkForums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DedaleOffice",
+   "name": "Dedale Office",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "oplebensraum",
+   "name": "LAPSUS$ Related operations channel for operations against Indra(Alleged Israeli APT) aka: Predatory Sparrow, Indra, MeteorExpress, or Adalat Ali",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "TheBlackMaskers",
+   "name": "BlackMaskers Army",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "HANDALA_HPR2",
+   "name": "HANDALA HACK",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "lapsus_groupo",
+   "name": "Lapsus$ Group",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "EvilHook",
+   "name": "E-Hook Forums",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "BidenCashEU",
+   "name": "BidenCash - News & Updates",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ShinyHuntersOfficial",
+   "name": "ShinyHunters",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "team_pcp",
+   "name": "TeamPCP",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DBHunterX",
+   "name": "DB HunterX",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "SolonikChannels",
+   "name": "Solonik Files",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "HANDALA_INTEL",
+   "name": "Handala",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "nightspire_breach",
+   "name": "Nightspire breach",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "PwnShoutbox",
+   "name": "PwnForums",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "PwnUpdates",
+   "name": "PwnForums",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "INTEL_HANDALA",
+   "name": "HANDALA HACK (backup)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "handala_redwanted",
+   "name": "Handala RedWanted",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "n2LP_wVf79c2YzM0",
+   "name": "Infrastructure Destruction Squad",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "jacuzzi",
+   "name": "life of the party (breached.st forum)",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "breaches",
+   "name": "Breaches (breached.st forum)",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "breached_su",
+   "name": "breached (breached.su forum)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ironatlas_organization",
+   "name": "ɪʀᴏɴ ᴀᴛʟᴀꜱ ɴᴇᴡ ɢᴇɴᴇʀᴀᴛɪᴏɴ",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "r3_6j",
+   "name": "FAD Team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "BabayoErorSytem1",
+   "name": "BABAYO EROR SYSTEM",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "byjax7",
+   "name": "JAX7",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DefacerIndonesia1337",
+   "name": "Defacer Indonesia",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "PhiserXman",
+   "name": "PhiserXman",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "KAR4WANG_ERROR_SYSTEM",
+   "name": "KARAWANG ERROR SYSTEM",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Darkstormteam22",
+   "name": "Dark Storm Team",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "silenterrorsystem",
+   "name": "DEWATA BLACKHAT",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "nyxeravx1",
+   "name": "N y x e r a . v x",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Aero4Sec",
+   "name": "Aero4Sec",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Cyber_Dark_Echo",
+   "name": "CYBER DARK ECHO",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "brotheroodbci",
+   "name": "BROTHEROOD CAPUNG INDONESIA",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "zpentest_fucknato",
+   "name": "Z-Pentest Alliance",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "EarthImpact_hack",
+   "name": "EarthImpact Team",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "AFN_RU",
+   "name": "АльфаНет",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Anonnigeria",
+   "name": "Nullsec Nigeria",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "infernaliis",
+   "name": "𝐼𝑁𝐹𝐸𝑅𝑁𝐴𝐿𝐼𝑆 #INF",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "nullseckh",
+   "name": "Nullsec KH",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Ghostnet_x",
+   "name": "GHOSTNET-X",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "DeepCoreNetwork",
+   "name": "DeepCore Network",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Jax702",
+   "name": "JAX7",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Xyph0rix",
+   "name": "N赛弗里克斯 私密",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "Pharaoh_e",
+   "name": "Pharaohs_Team channel",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "who0is0whoare",
+   "name": "whoare",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ZxS3xx",
+   "name": "ZxS3C🪬",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "zaher_infinity01",
+   "name": "𝐙𝐀𝐇𝐄𝐑 𝐈𝐍𝐅𝐈𝐍𝐈𝐓𝐘",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "blueshadow67",
+   "name": "Blue Shadow",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "infrastructureg",
+   "name": "infrastructure destruction squad",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "instruktori",
+   "name": "byte (DoxByte)",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "infrastructurek",
+   "name": "infrastructure destruction squad",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "HANDALA_SEC",
+   "name": "Handala Hack",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "spider_cybers",
+   "name": "Scattered Spider",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CyberToothless",
+   "name": "Cyber Toothless",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "CRPX0",
+   "name": "CRPx0 Official",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "Hexvior_breach",
+   "name": "Hexvior OSINT",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "RFShoutbox",
+   "name": "Raid Forums",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "TripleXTriple",
+   "name": "TripleX",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "normalhuntercrime",
+   "name": "Normal Hunters",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "DarkLancer_news",
+   "name": "DarkLancer_news",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "neko500",
+   "name": "Nekoneko200",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "MrhexStore",
+   "name": "Mrhex Store",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ServerKillersRussia",
+   "name": "Server Killers",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "ShadowClawz404v2",
+   "name": "Shadow Clawz 404 - v.2",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "jacuzszi",
+   "name": "The Jacuzzi New Era",
+   "kind": "threat-actor",
+   "status": "OFFLINE"
+  },
+  {
+   "handle": "team1914_backup",
+   "name": "Team1914_backup",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "xServerKillersx",
+   "name": "Server Killers",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "raidbinchat",
+   "name": "RaidBin",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "dr4k7h",
+   "name": "DR4K7H CYBER TEAM ( D C T )",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  },
+  {
+   "handle": "ForCloseSystem",
+   "name": "For Close System - F.C.S",
+   "kind": "threat-actor",
+   "status": "ONLINE"
+  }
+ ]
+}

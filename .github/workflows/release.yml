@@ -1,0 +1,53 @@
+name: Release
+
+# Builds and tests Darkwatch, then publishes a GitHub Release carrying the wheel (which install.ps1
+# and install.sh install from), the sdist, the VS Code extension .vsix and the install scripts.
+# Trigger by pushing a tag like `v0.5.0` (the `vscode-v*` tags are publish-vscode.yml's).
+
+on:
+  push:
+    tags:
+      - "v[0-9]*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Test the CLI
+        run: |
+          uv sync --all-extras
+          uv run ruff check src tests scripts
+          uv run pytest -q
+      - name: Check the tag matches the package version
+        run: |
+          version="$(uv run python -c 'import darkwatch; print(darkwatch.__version__)')"
+          test "v$version" = "$GITHUB_REF_NAME" || { echo "tag $GITHUB_REF_NAME != version $version"; exit 1; }
+      - name: Build the wheel and sdist
+        run: uv build
+
+      - name: Build the VS Code extension
+        working-directory: vscode-extension
+        run: |
+          npm ci
+          npm run compile
+          npm run lint
+          npx vsce package
+
+      - name: Publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* vscode-extension/*.vsix install.ps1 install.sh \
+            --title "Darkwatch $GITHUB_REF_NAME" --notes-file docs/release-notes/$GITHUB_REF_NAME.md

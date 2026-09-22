@@ -295,18 +295,52 @@ def _coerce(current, value, what: str = "value"):
     return "" if value is None else str(value)
 
 
+def darkwatch_home() -> Path:
+    """The per-user Darkwatch folder: DARKWATCH_HOME, else ~/Darkwatch."""
+    env = os.environ.get("DARKWATCH_HOME", "").strip()
+    return Path(env).expanduser() if env else Path.home() / "Darkwatch"
+
+
+def find_watchlist(path: str | Path) -> Path:
+    """The watchlist to use for `path`.
+
+    A bare ``watchlist.yaml`` (the default) that is not in the current folder falls back to the
+    one in the Darkwatch home, so `darkwatch hits` works from any folder after `darkwatch setup`.
+    An explicit path is never second-guessed.
+    """
+    path = Path(path)
+    if path == Path("watchlist.yaml") and not path.exists():
+        home = darkwatch_home() / "watchlist.yaml"
+        if home.exists():
+            return home
+    return path
+
+
+def _tor_browser_exes() -> list[Path]:
+    """tor.exe inside a Tor Browser install, in the places its installer puts it."""
+    roots = [Path.home() / "Desktop", Path.home() / "OneDrive" / "Desktop"]
+    for var in ("LOCALAPPDATA", "ProgramFiles", "ProgramFiles(x86)"):
+        if os.environ.get(var):
+            roots.append(Path(os.environ[var]))
+    return [r / "Tor Browser" / "Browser" / "TorBrowser" / "Tor" / "tor.exe" for r in roots]
+
+
 def find_tor_exe(configured: str, project_dir: Path) -> str:
-    """tor.exe location: setting, then DARKWATCH_TOR_EXE, then PATH, then a sibling tools/ folder."""
+    """tor.exe location: setting, then DARKWATCH_TOR_EXE, then PATH, then a tools/ folder beside
+    the project or in the Darkwatch home, then a Tor Browser install."""
     for cand in (configured, os.environ.get("DARKWATCH_TOR_EXE", "")):
         if cand and Path(cand).is_file():
             return str(Path(cand))
     on_path = shutil.which("tor")
     if on_path:
         return on_path
-    for base in (project_dir, *project_dir.parents[:2]):
+    for base in (project_dir, *project_dir.parents[:2], darkwatch_home()):
         hits = sorted((base / "tools").glob("tor-*/tor/tor.exe"), reverse=True)
         if hits:
             return str(hits[0])
+    for exe in _tor_browser_exes():
+        if exe.is_file():
+            return str(exe)
     return ""
 
 
@@ -461,7 +495,7 @@ DARKWATCH_SMTP_PASSWORD=
 DARKWATCH_SMTP_FROM=
 DARKWATCH_SMTP_TO=
 
-# Path to tor.exe, if it is not auto-detected (PATH, or ../tools/tor-*/tor/tor.exe).
+# Path to tor.exe, if it is not auto-detected (PATH, tools/tor-*/tor/tor.exe, or Tor Browser).
 DARKWATCH_TOR_EXE=
 """
 
@@ -471,7 +505,7 @@ EXAMPLE_WATCHLIST = """\
 settings:
   tor_proxy: socks5h://127.0.0.1:9050   # Tor Browser exposes 9150; a tor.exe started by darkwatch uses 9050
   tor_manage: auto                      # start tor.exe for the run when nothing is listening on that port
-  tor_exe: ""                           # path to tor.exe; empty = auto-detect (PATH, ../tools/tor-*/tor/tor.exe)
+  tor_exe: ""                           # path to tor.exe; empty = auto-detect (PATH, tools/, Tor Browser)
   require_tor: true                     # never fetch .onion pages unless the proxy is verified to be Tor
   sources: [leaksites, recentattacks, stealers, leakcheck, xposedornot, hibp, sites, telegram, ahmia, seeds]
   ahmia_route: auto                     # auto: search Ahmia over Tor when Tor is verified; tor; clearnet
@@ -496,6 +530,22 @@ targets:
     aliases: [ExampleCo]
     keywords: []
 """
+
+def watchlist_for(
+    name: str, *, kind: str = "person", emails: list[str] = (), domains: list[str] = (),
+    usernames: list[str] = (), phones: list[str] = (),
+) -> str:
+    """A watchlist with the example's settings and one real target, as YAML text."""
+    target: dict = {"name": name, "kind": kind}
+    for key, values in (("emails", emails), ("domains", domains), ("usernames", usernames),
+                        ("phones", phones)):
+        cleaned = [v.strip() for v in values if v and v.strip()]
+        if cleaned:
+            target[key] = cleaned
+    settings = EXAMPLE_WATCHLIST.split("\ntargets:", 1)[0]
+    body = yaml.safe_dump({"targets": [target]}, sort_keys=False, allow_unicode=True)
+    return f"{settings}\n\n{body}"
+
 
 def is_onion(url: str) -> bool:
     """True when the URL's host is a .onion name. Decided on the parsed hostname, so

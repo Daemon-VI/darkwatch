@@ -15,7 +15,16 @@ from rich.table import Table
 from rich.text import Text
 
 from . import __version__
-from .config import ALL_SOURCES, ENV_EXAMPLE, EXAMPLE_WATCHLIST, TERM_TYPES, load_watchlist
+from .config import (
+    ALL_SOURCES,
+    ENV_EXAMPLE,
+    EXAMPLE_WATCHLIST,
+    TERM_TYPES,
+    darkwatch_home,
+    find_watchlist,
+    load_watchlist,
+    watchlist_for,
+)
 from .matcher import SEVERITIES, Matcher
 from .search import ORDERS
 from .storage import OPEN_STATUSES, STATUSES, Hit, Store
@@ -87,7 +96,7 @@ def _progress(msg: str) -> None:
 
 def _load(watchlist: Path):
     try:
-        return load_watchlist(watchlist)
+        return load_watchlist(find_watchlist(watchlist))
     except (FileNotFoundError, ValueError) as exc:
         err.print(f"[red]{exc}[/red]")
         raise typer.Exit(2) from exc
@@ -150,12 +159,136 @@ def init(path: Annotated[Path, typer.Argument(help="Where to write the example w
     console.print(f"Wrote {path}. Edit the targets, then run: darkwatch run")
 
 
+ListOpt = Annotated[list[str] | None, typer.Option(help="Repeat, or separate with commas.")]
+
+
+def _split(values: list[str] | None) -> list[str]:
+    return [v.strip() for raw in values or () for v in raw.split(",") if v.strip()]
+
+
+@app.command()
+def setup(
+    name: Annotated[str, typer.Option("--name", help="Who to watch: a person's or a company's name.")] = "",
+    email: ListOpt = None,
+    domain: ListOpt = None,
+    username: ListOpt = None,
+    phone: ListOpt = None,
+    company: Annotated[bool, typer.Option("--company", help="The target is an organisation.")] = False,
+    folder: Annotated[Path | None, typer.Option("--dir", help="Where to keep the watchlist, findings and reports.")] = None,
+    force: Annotated[bool, typer.Option("--force", help="Replace an existing watchlist.")] = False,
+    no_prompt: Annotated[bool, typer.Option("--no-prompt", help="Never ask; use only the options given.")] = False,
+) -> None:
+    """First-run setup: create your Darkwatch folder and a watchlist for who you protect.
+
+    With no options it asks for a name and identifiers. The folder defaults to ~/Darkwatch
+    (or DARKWATCH_HOME), and every command finds it from any directory afterwards.
+    """
+    folder = folder or darkwatch_home()
+    path = folder / "watchlist.yaml"
+    folder.mkdir(parents=True, exist_ok=True)
+    env = folder / ".env.example"
+    if not env.exists():
+        env.write_text(ENV_EXAMPLE, encoding="utf-8")
+    if path.exists() and not force:
+        console.print(f"Darkwatch is already set up: {path}")
+        console.print("[dim]Edit that file to change who is watched, or pass --force to start over.[/dim]")
+        return
+    emails, domains, usernames, phones = _split(email), _split(domain), _split(username), _split(phone)
+    interactive = not no_prompt and not name and sys.stdin is not None and sys.stdin.isatty()
+    if interactive:
+        console.print("[bold]Darkwatch setup[/bold] — only watch people and organisations you are authorised to protect.")
+        console.print("[dim]Press Enter to skip any question. Separate several values with commas.[/dim]")
+        name = typer.prompt("Name of the person or company", default="", show_default=False).strip()
+        if name:
+            company = typer.confirm("Is this a company?", default=company)
+            emails = _split([typer.prompt("Email addresses", default="", show_default=False)])
+            domains = _split([typer.prompt("Domains (e.g. example.com)", default="", show_default=False)])
+            usernames = _split([typer.prompt("Usernames / handles", default="", show_default=False)])
+            phones = _split([typer.prompt("Phone numbers", default="", show_default=False)])
+    if name:
+        text = watchlist_for(name, kind="company" if company else "person", emails=emails,
+                             domains=domains, usernames=usernames, phones=phones)
+    else:
+        text = EXAMPLE_WATCHLIST
+    path.write_text(text, encoding="utf-8")
+    try:
+        load_watchlist(path)
+    except ValueError as exc:
+        path.unlink()
+        err.print(f"[red]{exc}[/red]")
+        raise typer.Exit(2) from exc
+    console.print(f"[green]Darkwatch is set up:[/green] {path}")
+    if not name:
+        console.print("[yellow]It holds example targets. Replace them with the people you protect.[/yellow]")
+    console.print("Next: [bold]darkwatch run[/bold] to scan, then [bold]darkwatch web[/bold] for the dashboard.")
+
+
+@app.command()
+def doctor(
+    watchlist: WatchlistOpt = DEFAULT_WATCHLIST,
+    as_json: Annotated[bool, typer.Option("--json", help="Print the checks as JSON (for tooling, e.g. the VS Code extension).")] = False,
+) -> None:
+    """Check the install: the watchlist, the findings database, and Tor."""
+    import json
+    import platform
+
+    from .config import Settings, find_tor_exe
+
+    found = find_watchlist(watchlist)
+    info: dict = {
+        "version": __version__, "python": platform.python_version(), "executable": sys.executable,
+        "home": str(darkwatch_home()), "watchlist": str(found.resolve()),
+        "watchlist_exists": found.exists(), "watchlist_error": "", "targets": 0, "terms": 0,
+        "db": "", "open_hits": 0, "runs": 0, "last_run": "", "tor_exe": "",
+    }
+    settings = Settings()
+    if found.exists():
+        try:
+            wl = load_watchlist(found)
+            settings = wl.settings
+            info["targets"], info["terms"] = len(wl.targets), len(wl.terms())
+        except ValueError as exc:
+            info["watchlist_error"] = str(exc)
+    info["tor_exe"] = settings.tor_exe or find_tor_exe("", found.resolve().parent)
+    if info["targets"]:
+        info["db"] = settings.db_path
+        if Path(settings.db_path).exists():
+            with Store(settings.db_path) as store:
+                info["open_hits"] = len(store.hits(statuses=OPEN_STATUSES))
+                runs = store.runs(1)
+                last = store.last_run()
+            info["runs"] = len(runs)
+            info["last_run"] = (last["started"] or "") if last is not None else ""
+    if as_json:
+        print(json.dumps(info))  # raw stdout: parsed by tooling
+        return
+    ok, bad = "[green]ok[/green]  ", "[red]fix[/red] "
+    console.print(f"darkwatch {__version__} on Python {info['python']}")
+    if not info["watchlist_exists"]:
+        console.print(f"{bad}no watchlist at {info['watchlist']} — run [bold]darkwatch setup[/bold]")
+    elif info["watchlist_error"]:
+        console.print(f"{bad}watchlist {info['watchlist']}: ", Text(info["watchlist_error"]))
+    else:
+        console.print(f"{ok}watchlist {info['watchlist']} ({info['targets']} target(s), {info['terms']} term(s))")
+    if info["db"]:
+        seen = f"{info['open_hits']} open finding(s), last run {info['last_run'][:19] or 'never'}"
+        console.print(f"{ok}findings {seen}")
+    if info["tor_exe"]:
+        console.print(f"{ok}tor.exe {info['tor_exe']}")
+    else:
+        console.print(
+            "[yellow]note[/yellow] tor.exe not found: onion pages are skipped, every other source works. "
+            "Install Tor Browser (winget install TorProject.TorBrowser) or set DARKWATCH_TOR_EXE."
+        )
+
+
 @app.command("check-tor")
 def check_tor_cmd(watchlist: WatchlistOpt = DEFAULT_WATCHLIST) -> None:
     """Start Tor if needed and confirm the proxy really exits through Tor."""
     from .config import Settings
     from .tor import check_tor, ensure_tor, make_session
 
+    watchlist = find_watchlist(watchlist)
     settings = _load(watchlist).settings if watchlist.exists() else Settings()
     console.print(f"tor.exe: {settings.tor_exe or 'not found'}")
     with ensure_tor(settings, _progress) as state:

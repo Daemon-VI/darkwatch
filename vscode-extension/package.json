@@ -1,8 +1,8 @@
 {
   "name": "darkwatch",
   "displayName": "Darkwatch — Dark Web Exposure Monitor",
-  "description": "Run Darkwatch scans, browse findings by severity, and search your exposure — from inside VS Code.",
-  "version": "0.1.0",
+  "description": "Scan for dark web exposure, browse findings by severity, and triage them — from inside VS Code. Installs and sets up the Darkwatch CLI for you.",
+  "version": "0.2.0",
   "publisher": "daemon-vi",
   "license": "MIT",
   "icon": "media/icon.png",
@@ -42,24 +42,31 @@
       "properties": {
         "darkwatch.command": {
           "type": "array",
-          "items": { "type": "string" },
-          "default": ["darkwatch"],
-          "markdownDescription": "How to invoke the Darkwatch CLI, as a command plus fixed arguments. Use `[\"darkwatch\"]` when it is on your PATH (e.g. after `uv tool install darkwatch`), or `[\"uv\", \"run\", \"darkwatch\"]` to run it from a checkout."
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "How to run the Darkwatch CLI, as a command plus fixed arguments. Leave empty to detect it automatically: an installed `darkwatch` (on PATH or in `~/.local/bin`), else `uv run darkwatch` when a Darkwatch checkout is open. Example: `[\"uv\", \"run\", \"darkwatch\"]`."
         },
         "darkwatch.watchlist": {
           "type": "string",
           "default": "watchlist.yaml",
-          "description": "Path to the watchlist file, relative to the working directory."
+          "markdownDescription": "Watchlist file: absolute, or relative to the working directory. When it does not exist there, the one in your Darkwatch folder (`~/Darkwatch`, created by **Darkwatch: Set Up**) is used."
         },
         "darkwatch.cwd": {
           "type": "string",
           "default": "",
-          "description": "Working directory for the CLI. Empty means the first workspace folder."
+          "description": "Working directory for the CLI. Empty means the first workspace folder, or your home folder when none is open."
         },
         "darkwatch.refreshOnStartup": {
           "type": "boolean",
           "default": true,
           "description": "Load stored findings into the Darkwatch view when a window opens."
+        },
+        "darkwatch.openReportAfterScan": {
+          "type": "boolean",
+          "default": false,
+          "description": "Open the HTML report in the browser when a scan from VS Code finishes."
         }
       }
     },
@@ -85,72 +92,262 @@
     "viewsWelcome": [
       {
         "view": "darkwatch.hits",
-        "contents": "No findings loaded yet.\n[Refresh](command:darkwatch.refresh)\n[Run a scan](command:darkwatch.runScan)\nDarkwatch reads a local watchlist and reports exposure. Set how the CLI is invoked in [settings](command:workbench.action.openSettings?%5B%22darkwatch.command%22%5D)."
+        "when": "darkwatch.state == checking || !darkwatch.state",
+        "contents": "Checking Darkwatch…\n[Refresh](command:darkwatch.refresh)"
+      },
+      {
+        "view": "darkwatch.hits",
+        "when": "darkwatch.state == noCli",
+        "contents": "Darkwatch watches the dark web, leak sites and breach data for the people and companies you protect.\nThe Darkwatch CLI is not installed yet. One click installs it (no admin rights needed).\n[Install Darkwatch](command:darkwatch.installCli)\nAlready installed? Point the extension at it in [settings](command:workbench.action.openSettings?%5B%22darkwatch.command%22%5D), then [Refresh](command:darkwatch.refresh). [Show log](command:darkwatch.showLog)"
+      },
+      {
+        "view": "darkwatch.hits",
+        "when": "darkwatch.state == noWatchlist",
+        "contents": "Darkwatch is installed. Next, tell it who to watch: a name, plus any emails, domains or usernames.\n[Set Up Darkwatch](command:darkwatch.setup)\nOnly watch people and organisations you are authorised to protect."
+      },
+      {
+        "view": "darkwatch.hits",
+        "when": "darkwatch.state == badWatchlist",
+        "contents": "The watchlist has a problem (details above).\n[Open Watchlist](command:darkwatch.openWatchlist)\n[Refresh](command:darkwatch.refresh)"
+      },
+      {
+        "view": "darkwatch.hits",
+        "when": "darkwatch.state == empty",
+        "contents": "Ready. No scan has run yet.\n[Run First Scan](command:darkwatch.runScan)\nA normal scan takes a few minutes. You can also [edit who is watched](command:darkwatch.openWatchlist) or [investigate a one-off value](command:darkwatch.investigate)."
+      },
+      {
+        "view": "darkwatch.hits",
+        "when": "darkwatch.state == clean",
+        "contents": "No open findings. That is the good outcome.\n[Run Scan Again](command:darkwatch.runScan)\n[Open Dashboard](command:darkwatch.openDashboard)\n[Open Latest Report](command:darkwatch.openReport)"
+      },
+      {
+        "view": "darkwatch.hits",
+        "when": "darkwatch.state == error",
+        "contents": "Darkwatch could not load findings (details above).\n[Retry](command:darkwatch.refresh)\n[Show Log](command:darkwatch.showLog)\n[Check the Install](command:darkwatch.doctor)"
       }
     ],
     "commands": [
       {
         "command": "darkwatch.refresh",
-        "title": "Darkwatch: Refresh Findings",
+        "title": "Refresh Findings",
+        "category": "Darkwatch",
         "icon": "$(refresh)"
       },
       {
         "command": "darkwatch.runScan",
-        "title": "Darkwatch: Run Scan",
+        "title": "Run Scan",
+        "category": "Darkwatch",
         "icon": "$(play)"
       },
       {
         "command": "darkwatch.deepScan",
-        "title": "Darkwatch: Deep Scan (slow)"
+        "title": "Deep Scan (slow)",
+        "category": "Darkwatch"
       },
       {
         "command": "darkwatch.openDashboard",
-        "title": "Darkwatch: Open Dashboard",
+        "title": "Open Dashboard",
+        "category": "Darkwatch",
         "icon": "$(dashboard)"
       },
       {
+        "command": "darkwatch.openReport",
+        "title": "Open Latest Report",
+        "category": "Darkwatch",
+        "icon": "$(file-text)"
+      },
+      {
         "command": "darkwatch.search",
-        "title": "Darkwatch: Search Findings",
+        "title": "Search Findings",
+        "category": "Darkwatch",
         "icon": "$(search)"
       },
       {
         "command": "darkwatch.investigate",
-        "title": "Darkwatch: Investigate a Value"
+        "title": "Investigate a Value",
+        "category": "Darkwatch",
+        "icon": "$(telescope)"
+      },
+      {
+        "command": "darkwatch.setup",
+        "title": "Set Up (choose who to watch)",
+        "category": "Darkwatch",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "darkwatch.openWatchlist",
+        "title": "Open Watchlist",
+        "category": "Darkwatch",
+        "icon": "$(list-unordered)"
+      },
+      {
+        "command": "darkwatch.installCli",
+        "title": "Install the CLI",
+        "category": "Darkwatch",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "darkwatch.checkTor",
+        "title": "Check Tor",
+        "category": "Darkwatch"
+      },
+      {
+        "command": "darkwatch.doctor",
+        "title": "Check the Install",
+        "category": "Darkwatch"
+      },
+      {
+        "command": "darkwatch.showLog",
+        "title": "Show Log",
+        "category": "Darkwatch",
+        "icon": "$(output)"
       },
       {
         "command": "darkwatch.showHit",
-        "title": "Darkwatch: Show Finding Details"
+        "title": "Show Finding Details",
+        "category": "Darkwatch"
       },
       {
         "command": "darkwatch.copyUrl",
-        "title": "Darkwatch: Copy Evidence URL"
+        "title": "Copy Evidence URL",
+        "category": "Darkwatch",
+        "icon": "$(copy)"
       },
       {
         "command": "darkwatch.acknowledge",
-        "title": "Darkwatch: Acknowledge"
+        "title": "Acknowledge",
+        "category": "Darkwatch",
+        "icon": "$(eye)"
       },
       {
         "command": "darkwatch.resolve",
-        "title": "Darkwatch: Resolve"
+        "title": "Resolve",
+        "category": "Darkwatch",
+        "icon": "$(check)"
       },
       {
         "command": "darkwatch.falsePositive",
-        "title": "Darkwatch: Mark False Positive"
+        "title": "Mark False Positive",
+        "category": "Darkwatch",
+        "icon": "$(circle-slash)"
       }
     ],
     "menus": {
       "view/title": [
-        { "command": "darkwatch.search", "when": "view == darkwatch.hits", "group": "navigation@1" },
-        { "command": "darkwatch.runScan", "when": "view == darkwatch.hits", "group": "navigation@2" },
-        { "command": "darkwatch.openDashboard", "when": "view == darkwatch.hits", "group": "navigation@3" },
-        { "command": "darkwatch.refresh", "when": "view == darkwatch.hits", "group": "navigation@4" },
-        { "command": "darkwatch.deepScan", "when": "view == darkwatch.hits", "group": "1_run" }
+        {
+          "command": "darkwatch.search",
+          "when": "view == darkwatch.hits",
+          "group": "navigation@1"
+        },
+        {
+          "command": "darkwatch.runScan",
+          "when": "view == darkwatch.hits",
+          "group": "navigation@2"
+        },
+        {
+          "command": "darkwatch.openDashboard",
+          "when": "view == darkwatch.hits",
+          "group": "navigation@3"
+        },
+        {
+          "command": "darkwatch.refresh",
+          "when": "view == darkwatch.hits",
+          "group": "navigation@4"
+        },
+        {
+          "command": "darkwatch.deepScan",
+          "when": "view == darkwatch.hits",
+          "group": "1_run@1"
+        },
+        {
+          "command": "darkwatch.investigate",
+          "when": "view == darkwatch.hits",
+          "group": "1_run@2"
+        },
+        {
+          "command": "darkwatch.openReport",
+          "when": "view == darkwatch.hits",
+          "group": "1_run@3"
+        },
+        {
+          "command": "darkwatch.openWatchlist",
+          "when": "view == darkwatch.hits",
+          "group": "2_setup@1"
+        },
+        {
+          "command": "darkwatch.setup",
+          "when": "view == darkwatch.hits",
+          "group": "2_setup@2"
+        },
+        {
+          "command": "darkwatch.checkTor",
+          "when": "view == darkwatch.hits",
+          "group": "2_setup@3"
+        },
+        {
+          "command": "darkwatch.doctor",
+          "when": "view == darkwatch.hits",
+          "group": "2_setup@4"
+        },
+        {
+          "command": "darkwatch.showLog",
+          "when": "view == darkwatch.hits",
+          "group": "2_setup@5"
+        }
       ],
       "view/item/context": [
-        { "command": "darkwatch.copyUrl", "when": "view == darkwatch.hits && viewItem == hit", "group": "inline" },
-        { "command": "darkwatch.acknowledge", "when": "view == darkwatch.hits && viewItem == hit", "group": "1_triage@1" },
-        { "command": "darkwatch.resolve", "when": "view == darkwatch.hits && viewItem == hit", "group": "1_triage@2" },
-        { "command": "darkwatch.falsePositive", "when": "view == darkwatch.hits && viewItem == hit", "group": "1_triage@3" }
+        {
+          "command": "darkwatch.copyUrl",
+          "when": "view == darkwatch.hits && viewItem == hit",
+          "group": "inline"
+        },
+        {
+          "command": "darkwatch.showHit",
+          "when": "view == darkwatch.hits && viewItem == hit",
+          "group": "0_show@1"
+        },
+        {
+          "command": "darkwatch.copyUrl",
+          "when": "view == darkwatch.hits && viewItem == hit",
+          "group": "0_show@2"
+        },
+        {
+          "command": "darkwatch.acknowledge",
+          "when": "view == darkwatch.hits && viewItem == hit",
+          "group": "1_triage@1"
+        },
+        {
+          "command": "darkwatch.resolve",
+          "when": "view == darkwatch.hits && viewItem == hit",
+          "group": "1_triage@2"
+        },
+        {
+          "command": "darkwatch.falsePositive",
+          "when": "view == darkwatch.hits && viewItem == hit",
+          "group": "1_triage@3"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "darkwatch.showHit",
+          "when": "darkwatch.state == ready"
+        },
+        {
+          "command": "darkwatch.copyUrl",
+          "when": "darkwatch.state == ready"
+        },
+        {
+          "command": "darkwatch.acknowledge",
+          "when": "darkwatch.state == ready"
+        },
+        {
+          "command": "darkwatch.resolve",
+          "when": "darkwatch.state == ready"
+        },
+        {
+          "command": "darkwatch.falsePositive",
+          "when": "darkwatch.state == ready"
+        }
       ]
     }
   },
@@ -160,7 +357,8 @@
     "watch": "tsc -watch -p ./",
     "lint": "eslint src --ext ts",
     "package": "vsce package",
-    "publish": "vsce publish"
+    "publish": "vsce publish",
+    "test": "npm run compile && node ./out/test/runTest.js"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
@@ -170,6 +368,7 @@
     "@vscode/vsce": "^2.24.0",
     "eslint": "^8.57.0",
     "ovsx": "^0.9.0",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "@vscode/test-electron": "^2.4.1"
   }
 }
