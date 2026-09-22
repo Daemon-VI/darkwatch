@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Darkwatch — dark web exposure monitor</title>
+<meta name="description" content="Darkwatch watches ransomware leak sites, onion services, infostealer logs, breach data and public Telegram channels for a person's or company's identifiers — and tells you what to do about each hit. Read-only, runs on your own machine." />
+<meta property="og:title" content="Darkwatch — dark web exposure monitor" />
+<meta property="og:description" content="Watch leak sites, onion services, infostealer logs, breaches and Telegram for your identifiers. Read-only, local, open source." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="favicon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b1220;
+    --bg-soft: #111a2c;
+    --panel: #141f36;
+    --line: #22304d;
+    --fg: #e7edf7;
+    --muted: #9fb0cc;
+    --teal: #5fe0c8;
+    --teal-dim: #37a892;
+    --crit: #ff6b60;
+    --high: #ff9a45;
+    --med: #e0bd3f;
+    --low: #6fcf73;
+    --maxw: 1060px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, kbd, .mono { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; }
+  .eyebrow { color: var(--teal); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: .8rem; }
+
+  /* header */
+  header.site {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  header.site .wrap { display: flex; align-items: center; gap: 14px; height: 62px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .01em; }
+  .brand svg { width: 26px; height: 26px; }
+  header.site nav { margin-left: auto; display: flex; gap: 22px; font-size: .93rem; }
+  header.site nav a { color: var(--muted); }
+  header.site nav a:hover { color: var(--fg); text-decoration: none; }
+  @media (max-width: 640px){ header.site nav { display: none; } }
+
+  /* hero */
+  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .radar {
+    position: absolute; right: -140px; top: -60px; width: 620px; height: 620px;
+    pointer-events: none; opacity: .5;
+  }
+  .radar span {
+    position: absolute; inset: 0; margin: auto; border: 1px solid var(--teal);
+    border-radius: 50%; opacity: .18;
+  }
+  .radar span:nth-child(1){ width: 620px; height: 620px; }
+  .radar span:nth-child(2){ width: 440px; height: 440px; }
+  .radar span:nth-child(3){ width: 270px; height: 270px; }
+  .radar span:nth-child(4){ width: 120px; height: 120px; }
+  .radar b {
+    position: absolute; inset: 0; margin: auto; width: 12px; height: 12px;
+    background: var(--crit); border-radius: 50%; box-shadow: 0 0 22px 4px color-mix(in srgb, var(--crit) 60%, transparent);
+  }
+  .pulse { position: absolute; inset: 0; margin: auto; width: 10px; height: 10px; border-radius: 50%; background: var(--teal); animation: ping 3.4s ease-out infinite; }
+  @keyframes ping { 0%{ transform: scale(1); opacity: .55 } 80%,100%{ transform: scale(46); opacity: 0 } }
+  @media (prefers-reduced-motion: reduce){ .pulse { animation: none; opacity: 0; } }
+
+  .hero .wrap { position: relative; padding: 84px 20px 76px; }
+  h1 { font-size: clamp(2.3rem, 6vw, 3.7rem); line-height: 1.05; margin: 14px 0 0; letter-spacing: -0.02em; max-width: 15ch; }
+  .lede { font-size: clamp(1.05rem, 2.4vw, 1.3rem); color: var(--muted); margin: 20px 0 0; max-width: 60ch; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 10px; font-weight: 600; font-size: .96rem; border: 1px solid transparent; }
+  .btn.primary { background: var(--teal); color: #06231d; }
+  .btn.primary:hover { background: #7cebd6; text-decoration: none; }
+  .btn.ghost { border-color: var(--line); color: var(--fg); }
+  .btn.ghost:hover { border-color: var(--teal-dim); text-decoration: none; }
+
+  .install { margin-top: 30px; max-width: 640px; }
+  .install .tabs { display: flex; gap: 6px; margin-bottom: 8px; }
+  .install .tabs button {
+    background: none; border: 1px solid var(--line); color: var(--muted);
+    padding: 6px 12px; border-radius: 8px; cursor: pointer; font: inherit; font-size: .85rem;
+  }
+  .install .tabs button[aria-selected="true"] { color: var(--fg); border-color: var(--teal-dim); background: var(--panel); }
+  .cmd {
+    display: flex; align-items: center; gap: 12px; background: #0a1424;
+    border: 1px solid var(--line); border-radius: 10px; padding: 13px 14px;
+  }
+  .cmd code { color: var(--fg); font-size: .92rem; overflow-x: auto; white-space: nowrap; flex: 1; }
+  .cmd code::before { content: "$ "; color: var(--teal-dim); }
+  .copy { background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 8px; padding: 6px 10px; cursor: pointer; font: inherit; font-size: .82rem; flex-shrink: 0; }
+  .copy:hover { color: var(--fg); border-color: var(--teal-dim); }
+  .cmd small { display:block; color: var(--muted); margin-top: 10px; font-size: .82rem; }
+
+  /* sections */
+  section { padding: 72px 0; border-bottom: 1px solid var(--line); }
+  section h2 { font-size: clamp(1.6rem, 3.6vw, 2.2rem); margin: 10px 0 8px; letter-spacing: -0.01em; }
+  section .sub { color: var(--muted); max-width: 62ch; margin: 0 0 34px; }
+
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .card p { margin: 0; color: var(--muted); font-size: .93rem; }
+  .card .k { color: var(--teal); font-weight: 600; }
+
+  .sources { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .src { display: flex; gap: 12px; align-items: baseline; padding: 12px 14px; background: var(--bg-soft); border: 1px solid var(--line); border-radius: 10px; }
+  .src .name { font-family: "JetBrains Mono", monospace; color: var(--teal); font-size: .9rem; white-space: nowrap; }
+  .src .desc { color: var(--muted); font-size: .9rem; }
+
+  .safety { display: grid; gap: 16px; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 720px){ .safety { grid-template-columns: 1fr; } }
+  .safety .card { border-color: color-mix(in srgb, var(--teal) 30%, var(--line)); }
+  .safety h3::before { content: "✓ "; color: var(--low); }
+  .safety .no h3::before { content: "✕ "; color: var(--crit); }
+
+  .sev-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .pill { font-size: .78rem; padding: 3px 10px; border-radius: 999px; font-weight: 600; }
+  .pill.c { background: color-mix(in srgb, var(--crit) 20%, transparent); color: var(--crit); }
+  .pill.h { background: color-mix(in srgb, var(--high) 20%, transparent); color: var(--high); }
+  .pill.m { background: color-mix(in srgb, var(--med) 22%, transparent); color: var(--med); }
+  .pill.l { background: color-mix(in srgb, var(--low) 20%, transparent); color: var(--low); }
+
+  footer { padding: 46px 0 60px; color: var(--muted); font-size: .9rem; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 26px; align-items: center; }
+  footer .sp { flex: 1; }
+  .note { font-size: .82rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <span class="brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#5fe0c8" stroke-width="1.4"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.6"/><circle cx="12" cy="12" r="2" fill="#ff6b60" stroke="none"/></svg>
+      Darkwatch
+    </span>
+    <nav>
+      <a href="#what">What it does</a>
+      <a href="#sources">Sources</a>
+      <a href="#safety">Safety</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/Daemon-VI/darkwatch">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="radar" aria-hidden="true"><span></span><span></span><span></span><span></span><b></b><i class="pulse"></i></div>
+  <div class="wrap">
+    <span class="eyebrow">Dark web exposure monitor</span>
+    <h1>Know the moment your name shows up where it shouldn't.</h1>
+    <p class="lede">Darkwatch watches ransomware leak sites, onion services, infostealer logs, breach and paste data, and public Telegram channels for the people and companies you're authorised to protect — scores every hit, remembers what it already told you, and says what to do about it. It only reads, and it runs on your own machine.</p>
+    <div class="cta">
+      <a class="btn primary" href="#install">Install</a>
+      <a class="btn ghost" href="https://marketplace.visualstudio.com/items?itemName=daemon-vi.darkwatch">VS Code extension</a>
+      <a class="btn ghost" href="https://github.com/Daemon-VI/darkwatch">Source &amp; docs</a>
+    </div>
+    <div class="install" id="install-top">
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-os="win">Windows</button>
+        <button role="tab" aria-selected="false" data-os="nix">macOS / Linux</button>
+        <button role="tab" aria-selected="false" data-os="pip">pip / uv</button>
+      </div>
+      <div class="cmd">
+        <code id="cmd" data-win="irm https://raw.githubusercontent.com/Daemon-VI/darkwatch/main/install.ps1 | iex" data-nix="curl -LsSf https://raw.githubusercontent.com/Daemon-VI/darkwatch/main/install.sh | sh" data-pip="uv tool install darkwatch  #  or:  pipx install darkwatch">irm https://raw.githubusercontent.com/Daemon-VI/darkwatch/main/install.ps1 | iex</code>
+        <button class="copy" id="copy">Copy</button>
+      </div>
+      <small>Then <span class="mono">darkwatch setup</span> to choose who to watch, and <span class="mono">darkwatch run</span>.</small>
+    </div>
+  </div>
+</div>
+
+<section id="what">
+  <div class="wrap">
+    <span class="eyebrow">What it does</span>
+    <h2>One watchlist, three ways to work</h2>
+    <p class="sub">List the identifiers you want protected — names, emails, phone numbers, domains, usernames. Darkwatch checks them everywhere below, de-duplicates in a local database, and writes a report with an action for every finding.</p>
+    <div class="grid">
+      <div class="card"><h3>Command line</h3><p>Run scans, search stored findings, or <span class="k">investigate</span> a one-off value across the live sources. A daily scheduled scan alerts you to anything new by desktop toast or phone push.</p></div>
+      <div class="card"><h3>Local dashboard</h3><p>Keyword search, charts, triage in place, live scans over server-sent events. Loopback-only with a per-session token — it shows your data and never leaves your machine.</p></div>
+      <div class="card"><h3>VS Code extension</h3><p>A findings tree by severity, scans and search from the command palette, triage from a finding's menu. On the <a href="https://marketplace.visualstudio.com/items?itemName=daemon-vi.darkwatch">Marketplace</a> and <a href="https://open-vsx.org/extension/daemon-vi/darkwatch">Open VSX</a>.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="sources">
+  <div class="wrap">
+    <span class="eyebrow">Coverage</span>
+    <h2>Ten sources. Nine need no key.</h2>
+    <p class="sub">Everything is read-only and matched locally against your watchlist. A deep scan widens the reach further — every Telegram channel, more onion pages, links followed into matching sites.</p>
+    <div class="sources">
+      <div class="src"><span class="name">leaksites</span><span class="desc">Every ransomware-gang leak-site post, via ransomware.live &amp; RansomLook.</span></div>
+      <div class="src"><span class="name">recentattacks</span><span class="desc">Reported incidents, gang-claimed or not, before a leak-site post exists.</span></div>
+      <div class="src"><span class="name">stealers</span><span class="desc">Infostealer-infected machines that saved your credentials (Hudson Rock).</span></div>
+      <div class="src"><span class="name">leakcheck</span><span class="desc">Which breaches hold each email <em>or username</em>, and what leaked.</span></div>
+      <div class="src"><span class="name">xposedornot</span><span class="desc">Breach and paste exposure per email, and breaches of a watched domain.</span></div>
+      <div class="src"><span class="name">hibp</span><span class="desc">Have I Been Pwned — domain breaches free, per-email with a key.</span></div>
+      <div class="src"><span class="name">sites</span><span class="desc">24 public profile sites carrying a watched username, checked in parallel.</span></div>
+      <div class="src"><span class="name">telegram</span><span class="desc">~940 public threat-actor &amp; infostealer channels, read with no login.</span></div>
+      <div class="src"><span class="name">ahmia</span><span class="desc">Ahmia's onion index, searched over Tor, then the onion pages themselves.</span></div>
+      <div class="src"><span class="name">seeds</span><span class="desc">Onion or clearnet pages you choose, same-host links one level deep.</span></div>
+    </div>
+    <div class="sev-row" style="margin-top:22px">
+      <span class="pill c">CRITICAL</span><span class="pill h">HIGH</span><span class="pill m">MEDIUM</span><span class="pill l">LOW</span>
+      <span class="note" style="align-self:center">Every hit is scored on what surrounds it — credentials, financial, government-ID, sale, doxxing, access — and the score is explained.</span>
+    </div>
+  </div>
+</section>
+
+<section id="safety">
+  <div class="wrap">
+    <span class="eyebrow">Responsible by design</span>
+    <h2>What it will, and won't, do</h2>
+    <p class="sub">Darkwatch is a defensive tool. The lines below are enforced in code, not just documented.</p>
+    <div class="safety">
+      <div class="card"><h3>Reads only</h3><p>It never logs in, joins, posts, buys, or downloads files. Onion pages are fetched as text; it keeps a URL, a title, times and a short snippet — never a copy of a leak site.</p></div>
+      <div class="card no"><h3>Never blind-crawls</h3><p>Onion discovery goes through Ahmia's abuse filter, and links are followed only out of pages that already mention a watched identifier — so it never wanders an unfiltered index.</p></div>
+      <div class="card no"><h3>No logins, no CAPTCHAs</h3><p>Account-walled forums and markets are out of scope on purpose: there is no read-only way in, and creating accounts is not what a monitor should do.</p></div>
+      <div class="card"><h3>Your data stays yours</h3><p>The watchlist and findings live on your machine. The dashboard binds to localhost with a token; phone pushes are redacted to counts. Monitor only identifiers you own or are authorised to.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <span class="eyebrow">Get started</span>
+    <h2>Install in one line</h2>
+    <p class="sub">The installer sets up <a href="https://docs.astral.sh/uv/">uv</a> if you don't have it, installs the latest release as the <span class="mono">darkwatch</span> command, and adds the VS Code extension when <span class="mono">code</span> is on your PATH.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Windows (PowerShell)</h3>
+        <div class="cmd" style="margin-top:12px"><code>irm https://raw.githubusercontent.com/Daemon-VI/darkwatch/main/install.ps1 | iex</code></div>
+      </div>
+      <div class="card">
+        <h3>macOS / Linux</h3>
+        <div class="cmd" style="margin-top:12px"><code>curl -LsSf https://raw.githubusercontent.com/Daemon-VI/darkwatch/main/install.sh | sh</code></div>
+      </div>
+      <div class="card">
+        <h3>Python package</h3>
+        <div class="cmd" style="margin-top:12px"><code>uv tool install darkwatch</code></div>
+        <p style="margin-top:10px">On <a href="https://pypi.org/project/darkwatch/">PyPI</a>. Or <span class="mono">pipx install darkwatch</span>.</p>
+      </div>
+      <div class="card">
+        <h3>Docker</h3>
+        <div class="cmd" style="margin-top:12px"><code>docker run --rm ghcr.io/daemon-vi/darkwatch --help</code></div>
+        <p style="margin-top:10px">Image on the GitHub Container Registry.</p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:20px">Then <span class="mono">darkwatch setup</span> → <span class="mono">darkwatch run</span> → <span class="mono">darkwatch web</span>. Full documentation is in the <a href="https://github.com/Daemon-VI/darkwatch#readme">README</a>.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="brand" style="font-size:.95rem">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#5fe0c8" stroke-width="1.4"><circle cx="12" cy="12" r="9.2"/><circle cx="12" cy="12" r="5.6"/><circle cx="12" cy="12" r="2" fill="#ff6b60" stroke="none"/></svg>
+      Darkwatch
+    </span>
+    <span class="sp"></span>
+    <a href="https://github.com/Daemon-VI/darkwatch">GitHub</a>
+    <a href="https://github.com/Daemon-VI/darkwatch/releases">Releases</a>
+    <a href="https://marketplace.visualstudio.com/items?itemName=daemon-vi.darkwatch">VS Code</a>
+    <a href="https://pypi.org/project/darkwatch/">PyPI</a>
+    <span class="note" style="flex-basis:100%">MIT licensed · read-only defensive OSINT · monitor only what you're authorised to.</span>
+  </div>
+</footer>
+
+<script>
+  // install tabs
+  const cmd = document.getElementById("cmd");
+  document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', 'false'));
+    b.setAttribute('aria-selected', 'true');
+    cmd.textContent = cmd.dataset[b.dataset.os];
+  }));
+  // copy
+  const copy = document.getElementById('copy');
+  copy.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(cmd.textContent); copy.textContent = 'Copied'; setTimeout(() => copy.textContent = 'Copy', 1400); }
+    catch { copy.textContent = 'Select it'; }
+  });
+</script>
+</body>
+</html>
