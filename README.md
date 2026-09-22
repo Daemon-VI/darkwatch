@@ -2,7 +2,7 @@
 
 A dark web exposure monitor for people and companies you are authorised to protect.
 
-**Website: https://daemon-vi.github.io/darkwatch/** · [VS Code extension](https://marketplace.visualstudio.com/items?itemName=daemon-vi.darkwatch) · [Releases](https://github.com/Daemon-VI/darkwatch/releases) · [PyPI](https://pypi.org/project/darkwatch/)
+**Website: https://rithikkrishnat.me/darkwatch/** · [VS Code extension](https://marketplace.visualstudio.com/items?itemName=daemon-vi.darkwatch) · [Releases](https://github.com/Daemon-VI/darkwatch/releases) · [PyPI](https://pypi.org/project/darkwatch/)
 
 You list identifiers in a watchlist: names, emails, phone numbers, domains, usernames. Darkwatch
 checks them against ransomware leak sites, onion pages fetched over Tor, infostealer logs, and
