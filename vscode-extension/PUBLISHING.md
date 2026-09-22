@@ -46,6 +46,7 @@ packages and uploads the `.vsix` as a build artifact — a safe dry run.
    cd vscode-extension
    npm install
    npm run compile && npm run lint
+   npm test               # launches VS Code; needs the darkwatch CLI installed
    npm run package        # sanity-check the .vsix locally
    ```
 2. **Bump `version`** in `vscode-extension/package.json` (the Marketplace rejects a duplicate
@@ -77,3 +78,4 @@ packages and uploads the `.vsix` as a build artifact — a safe dry run.
   and `darkwatch search --json`; scans and the dashboard run in a terminal. It never opens an
   evidence URL. Keep those two CLI flags stable — they are the extension's contract.
 - v0.1.0 first published 2026-09-21 (Marketplace confirmed; Open VSX from the same run).
+- v0.2.0 needs CLI 0.5.0+ (it calls `darkwatch doctor --json` and `darkwatch setup`). Keep those stable too.

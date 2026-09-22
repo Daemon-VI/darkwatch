@@ -1,6 +1,6 @@
 # Darkwatch — project state
 
-Last updated: 2026-09-19 (v0.4.0: deep-scan mode, Telegram and recent-attacks sources).
+Last updated: 2026-09-22 (v0.5.0: one-line install, `setup`/`doctor`, extension 0.2.0).
 v0.3.0 (dashboard, keyword search, infostealer and username-breach sources, 24 profile sites,
 measured accuracy pass) is below it.
 
@@ -18,6 +18,61 @@ it protects, with their names, emails, phones, domains and usernames. It then:
 5. Runs daily from Task Scheduler, or on demand from three Desktop shortcuts.
 6. Serves a local dashboard (`darkwatch web`) for search, charts, triage, live scans and
    one-off investigations.
+
+## v0.5.0 (2026-09-22): installable, and an extension that works
+
+Prompted by "fix all the errors like missing ui, and commands are not functioning, and focus on
+easy installation, and release it".
+
+### What was broken, and why
+
+- **The package could not be built from the repository.** `.gitignore`'s `data/` (meant for the
+  runtime database folder) also matched `src/darkwatch/data/`, so `telegram_channels.json` was
+  never committed and `pyproject.toml`'s force-include of that folder failed every build and
+  `uv sync`. With no installable CLI, every extension command failed. Fixed: rules anchored to the
+  root (`/data/`), the list rebuilt from deepdarkCTI by `scripts/build_telegram_channels.py`
+  (899 public channels: 98 infostealer, 801 threat-actor; the index has shrunk since 936), and the
+  force-include table removed (hatchling packages the folder on its own now).
+- **The extension's view had no usable UI when anything was missing.** A missing CLI or watchlist
+  showed one warning row, which hides the welcome view, so there was nothing to click.
+- **Default `["darkwatch"]` was not found** by a VS Code started before `uv tool install` put
+  `~/.local/bin` on PATH.
+- **Terminal commands were typed into the user's shell**: quoted paths broke in PowerShell, `$()`
+  in an investigate value would expand, and the view never refreshed after a scan.
+- **Show/Copy/Acknowledge/Resolve/False positive from the Command Palette did nothing** (no item).
+- **No folder open meant no working directory**, so nothing worked.
+
+### What changed
+
+- CLI: `darkwatch setup` (home folder `~/Darkwatch` or `DARKWATCH_HOME`, interactive or flags),
+  `darkwatch doctor [--json]`, the default `watchlist.yaml` falls back to the home one when absent
+  from the current folder (an explicit `--watchlist` is never redirected), Tor found in Tor
+  Browser installs and `<home>/tools`.
+- `install.ps1` / `install.sh`: uv if missing, the latest release wheel via `uv tool install`,
+  setup, Desktop shortcuts, the VS Code extension. `DARKWATCH_SOURCE`, `DARKWATCH_NO_SETUP`,
+  `DARKWATCH_NO_VSCODE` override.
+- Extension 0.2.0: a `darkwatch.state` context key (noCli / noWatchlist / badWatchlist / empty /
+  clean / ready / error) with a welcome view per state; CLI auto-detection; a pseudoterminal
+  runner (spawn, no shell, process-tree kill, refresh on exit); palette commands pick a finding;
+  install/setup/open-watchlist/report/check-tor/doctor/log commands; escaped hover text.
+- `.github/workflows/release.yml`: on a `v[0-9]*` tag, test, build the wheel and `.vsix`, and
+  publish a GitHub Release (notes from `docs/release-notes/<tag>.md`).
+
+### Verified 2026-09-22
+
+| Check | Result |
+|---|---|
+| `uv run pytest -q` | 234 passed (229 + 5 for setup/doctor/home fallback) |
+| `uv run ruff check src tests scripts` | clean |
+| `uv build` | wheel contains `darkwatch/data/telegram_channels.json` and all dashboard assets |
+| `install.ps1` against the built wheel (no prompts) | installs uv + darkwatch 0.5.0; `doctor` OK |
+| installed CLI from an unrelated folder | `setup`, `doctor`, `hits --json`, `search --json`, a live `run` all work |
+| dashboard (`darkwatch web`), headless Edge screenshot | hero, stats, Pulse charts, Findings search all render; every static asset 200 |
+| extension `npm run compile && npm run lint` | clean |
+| extension `npm test` (real VS Code + real CLI) | 9/9: commands registered; noWatchlist, empty, ready, badWatchlist, noCli states; show, copy URL, acknowledge |
+
+Not verified: that `winget install TorProject.TorBrowser` puts Tor Browser in one of the probed
+locations, and `install.sh` on a real macOS/Linux machine.
 
 ## v0.4.0 additions (2026-09-19)
 

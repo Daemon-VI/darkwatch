@@ -165,6 +165,8 @@ def test_env_example_documents_every_secret_the_settings_read():
 
     source = (Path(__file__).resolve().parents[1] / "src/darkwatch/config.py").read_text(encoding="utf-8")
     used = set(re.findall(r'environ(?:\.get)?[\(\[]["\'](DARKWATCH_[A-Z_]+)', source))
+    # DARKWATCH_HOME says where the .env lives, so it cannot be set from inside it (see README)
+    used.discard("DARKWATCH_HOME")
     assert used, "the scan found no environment variables at all"
     documented = set(re.findall(r"^(DARKWATCH_[A-Z_]+)=", ENV_EXAMPLE, re.MULTILINE))
     assert used <= documented, f"undocumented: {sorted(used - documented)}"

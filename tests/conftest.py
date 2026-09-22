@@ -97,3 +97,11 @@ def watchlist_file(tmp_path: Path, monkeypatch) -> Path:
     p = tmp_path / "watchlist.yaml"
     p.write_text(WATCHLIST, encoding="utf-8")
     return p
+
+
+@pytest.fixture(autouse=True)
+def isolated_home(tmp_path_factory, monkeypatch):
+    """A Darkwatch home per test, so a real ~/Darkwatch never leaks into a test."""
+    home = tmp_path_factory.mktemp("dwhome")
+    monkeypatch.setenv("DARKWATCH_HOME", str(home))
+    return home

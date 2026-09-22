@@ -352,3 +352,57 @@ def test_search_json_carries_page_and_facets(watchlist_file):
     # a miss is a clean empty page, still valid JSON
     miss = _json_from(invoke("search", "no-such-token-xyz", "-w", w, "--json").output)
     assert miss["total"] == 0 and miss["hits"] == []
+
+
+def test_setup_writes_a_real_watchlist_once(tmp_path):
+    from darkwatch.config import load_watchlist
+
+    home = tmp_path / "dw"
+    r = invoke("setup", "--dir", home, "--name", "Asha Rao", "--email", "asha@example.com,a.rao@example.org",
+               "--username", "asharao", "--no-prompt")
+    assert r.exit_code == 0 and "Darkwatch is set up" in r.output
+    wl = load_watchlist(home / "watchlist.yaml")
+    assert [t.name for t in wl.targets] == ["Asha Rao"]
+    assert wl.targets[0].emails == ["asha@example.com", "a.rao@example.org"]
+    assert (home / ".env.example").exists()
+    # re-running (an installer run twice) never overwrites what the user wrote
+    r = invoke("setup", "--dir", home, "--name", "Someone Else", "--no-prompt")
+    assert r.exit_code == 0 and "already set up" in r.output
+    assert load_watchlist(home / "watchlist.yaml").targets[0].name == "Asha Rao"
+
+
+def test_setup_rejects_a_bad_email_and_leaves_nothing(tmp_path):
+    r = invoke("setup", "--dir", tmp_path, "--name", "X Y", "--email", "not-an-email", "--no-prompt")
+    assert r.exit_code == 2 and "not an email" in r.output
+    assert not (tmp_path / "watchlist.yaml").exists()
+
+
+def test_setup_without_a_name_writes_the_example(tmp_path):
+    r = invoke("setup", "--dir", tmp_path, "--no-prompt")
+    assert r.exit_code == 0 and "example targets" in r.output
+    assert "Example Person" in (tmp_path / "watchlist.yaml").read_text(encoding="utf-8")
+
+
+def test_commands_find_the_home_watchlist_from_any_folder(tmp_path, monkeypatch, isolated_home):
+    invoke("setup", "--name", "Asha Rao", "--email", "asha@example.com", "--no-prompt")
+    assert (isolated_home / "watchlist.yaml").exists()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
+    r = invoke("hits", "--json")
+    assert r.exit_code == 0 and json.loads(r.output) == []
+    # an explicit path is never redirected to the home
+    assert invoke("hits", "-w", elsewhere / "watchlist.yaml").exit_code == 2
+
+
+def test_doctor_json_reports_what_is_missing(tmp_path, monkeypatch, watchlist_file):
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    monkeypatch.chdir(empty)
+    info = json.loads(invoke("doctor", "--json").output)
+    assert info["watchlist_exists"] is False and info["targets"] == 0
+    info = json.loads(invoke("doctor", "-w", watchlist_file, "--json").output)
+    assert info["watchlist_exists"] and not info["watchlist_error"] and info["targets"] >= 1
+    assert info["open_hits"] == 0 and info["runs"] == 0
+    r = invoke("doctor")
+    assert r.exit_code == 0 and "darkwatch setup" in r.output
