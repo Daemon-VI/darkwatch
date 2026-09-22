@@ -96,6 +96,22 @@ watched identifier, and onion discovery still goes through Ahmia's abuse filter.
   gang-claimed or not, so an incident disclosed before any leak-site post is still caught.
 - Ten sources now; `attack` weight 3, `telegram` weight 2.
 
+### Distribution channels (2026-09-22)
+
+Darkwatch ships on five channels now:
+
+| Channel | Where | How it publishes |
+|---|---|---|
+| GitHub Release | wheel + sdist + `.vsix` + install scripts | `release.yml` on a `v*` tag |
+| PyPI | `pip install darkwatch` (name is registered/free) | `release.yml` `pypi` job, trusted publishing — **needs a one-time PyPI trusted publisher** for `darkwatch` -> Daemon-VI/darkwatch -> `release.yml`; not yet on PyPI |
+| VS Code Marketplace + Open VSX | `daemon-vi.darkwatch` v0.2.0 | `publish-vscode.yml` on a `vscode-v*` tag |
+| Docker (GHCR) | `ghcr.io/daemon-vi/darkwatch` | `docker.yml` on a `v*` tag; CLI + Tor image, dry-run build verified in CI 2026-09-22 |
+| Website | https://rithikkrishnat.me/darkwatch/ (LIVE) | `pages.yml` deploys `site/` to GitHub Pages (custom domain) |
+
+The website is a static landing page (`site/index.html`), not the dashboard — the dashboard stays
+loopback-only by design. The one channel not yet live is PyPI, which needs Rithik to configure the
+trusted publisher on PyPI (he has done this for the rithik CLI); the next `v*` tag then publishes.
+
 ### VS Code extension (2026-09-21)
 
 `vscode-extension/` — a TypeScript extension, a thin safe front end over the CLI:
