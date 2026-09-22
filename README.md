@@ -2,6 +2,8 @@
 
 A dark web exposure monitor for people and companies you are authorised to protect.
 
+**Website: https://daemon-vi.github.io/darkwatch/** · [VS Code extension](https://marketplace.visualstudio.com/items?itemName=daemon-vi.darkwatch) · [Releases](https://github.com/Daemon-VI/darkwatch/releases) · [PyPI](https://pypi.org/project/darkwatch/)
+
 You list identifiers in a watchlist: names, emails, phone numbers, domains, usernames. Darkwatch
 checks them against ransomware leak sites, onion pages fetched over Tor, infostealer logs, and
 breach and paste data. It scores each hit by what surrounds it, remembers what it has already
@@ -105,6 +107,20 @@ watch, offers Desktop shortcuts, and installs the VS Code extension if VS Code i
 again at any time to upgrade; your watchlist and findings are kept.
 
 Already have uv? `uv tool install <wheel URL from the latest release>` does the same install.
+
+**From PyPI:**
+
+```sh
+uv tool install darkwatch     # or: pipx install darkwatch
+```
+
+**Docker** — the CLI with Tor already inside, for running scans anywhere (the dashboard stays
+local by design):
+
+```sh
+docker run --rm -v "$PWD/dw:/work" ghcr.io/daemon-vi/darkwatch setup --name "Acme Inc" --company
+docker run --rm -v "$PWD/dw:/work" ghcr.io/daemon-vi/darkwatch run
+```
 
 **Setup.** `darkwatch setup` creates your Darkwatch folder (`~/Darkwatch`, or `DARKWATCH_HOME`)
 with a watchlist for one person or company, asking for their name, emails, domains, usernames

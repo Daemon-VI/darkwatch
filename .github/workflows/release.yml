@@ -1,20 +1,23 @@
 name: Release
 
-# Builds and tests Darkwatch, then publishes a GitHub Release carrying the wheel (which install.ps1
-# and install.sh install from), the sdist, the VS Code extension .vsix and the install scripts.
-# Trigger by pushing a tag like `v0.5.0` (the `vscode-v*` tags are publish-vscode.yml's).
+# On a version tag like `v0.5.0`:
+#   - `release` builds and tests, then publishes a GitHub Release carrying the wheel, sdist, the
+#     VS Code extension .vsix and the install scripts (install.ps1 / install.sh install from it).
+#   - `pypi` publishes the wheel and sdist to PyPI via trusted publishing (no token). This needs a
+#     one-time PyPI trusted publisher for project `darkwatch` -> Daemon-VI/darkwatch, workflow
+#     `release.yml`. Until that exists the step fails safely and the GitHub Release still ships.
+# The `vscode-v*` tags are handled by publish-vscode.yml.
 
 on:
   push:
     tags:
       - "v[0-9]*"
 
-permissions:
-  contents: write
-
 jobs:
   release:
     runs-on: windows-latest
+    permissions:
+      contents: write
     defaults:
       run:
         shell: bash
@@ -51,3 +54,14 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" dist/* vscode-extension/*.vsix install.ps1 install.sh \
             --title "Darkwatch $GITHUB_REF_NAME" --notes-file docs/release-notes/$GITHUB_REF_NAME.md
+
+  pypi:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # trusted publishing to PyPI, no stored token
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv build
+      - name: Publish to PyPI (trusted publishing)
+        uses: pypa/gh-action-pypi-publish@release/v1
